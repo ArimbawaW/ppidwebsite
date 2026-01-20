@@ -1,0 +1,179 @@
+/* ========================================
+   ANIMATED BACKGROUND
+   ======================================== */
+body {
+    background: white;
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ========================================
+   WELCOME BANNER – RESPONSIVE & GAP FIX
+   ======================================== */
+.welcome-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 30px 15px;
+    border-radius: 25px;
+    overflow: hidden;
+    position: relative;
+
+    /* KUNCI: jangan kasih jarak atas default */
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+/* Decorative elements */
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(213, 197, 138, 0.1), transparent);
+    border-radius: 50%;
+}
+
+.welcome-card::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(14, 91, 115, 0.08), transparent);
+    border-radius: 50%;
+}
+
+/* Text */
+.welcome-title {
+    color: #002733;
+    font-size: 48px;
+    letter-spacing: 2px;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+}
+
+.welcome-subtitle {
+    color: #002733;
+    font-size: 24px;
+    letter-spacing: 1px;
+    line-height: 1.4;
+}
+
+/* Divider */
+.welcome-divider {
+    flex: 1;
+    max-width: 250px;
+    height: 3px;
+    display: block;
+}
+
+.welcome-divider-left {
+    background: linear-gradient(to right, transparent, #d5c58a);
+    margin-right: 30px;
+}
+
+.welcome-divider-right {
+    background: linear-gradient(to left, transparent, #d5c58a);
+    margin-left: 30px;
+}
+
+/* ========================================
+   TABLET & BELOW
+   ======================================== */
+@media (max-width: 992px) {
+    .welcome-card {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+
+    .welcome-title {
+        font-size: 36px;
+        letter-spacing: 1px;
+    }
+
+    .welcome-subtitle {
+        font-size: 20px;
+    }
+
+    .welcome-divider {
+        max-width: 150px;
+        margin: 0 15px;
+    }
+}
+
+/* ========================================
+   MOBILE — GAP DIHILANGKAN DI SINI
+   ======================================== */
+@media (max-width: 768px) {
+
+    /* TARIK WELCOME KE ATAS */
+    .welcome-card {
+        padding: 20px 10px;
+        border-radius: 15px;
+        margin: -24px 10px 0; /* 🔥 POTONG GAP PUTIH */
+    }
+
+    .welcome-title {
+        font-size: 28px;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .welcome-subtitle {
+        font-size: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .welcome-divider {
+        max-width: 80px;
+        height: 2px;
+        margin: 0 10px;
+    }
+
+    .welcome-divider-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+   SMALL MOBILE
+   ======================================== */
+@media (max-width: 576px) {
+
+    /* Lebih rapat lagi di HP kecil */
+    .welcome-card {
+        padding: 15px 10px;
+        border-radius: 12px;
+        margin-top: -32px; /* 🔥 ekstra rapat */
+    }
+
+    .welcome-title {
+        font-size: 22px;
+        letter-spacing: 0;
+    }
+
+    .welcome-subtitle {
+        font-size: 14px;
+        letter-spacing: 0;
+    }
+
+    .welcome-divider {
+        display: none;
+    }
+
+    .welcome-card::before,
+    .welcome-card::after {
+        width: 100px;
+        height: 100px;
+    }
+}

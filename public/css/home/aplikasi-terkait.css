@@ -1,0 +1,186 @@
+/* Aplikasi Terkait Section */
+.aplikasi-terkait-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative elements */
+.aplikasi-terkait-section::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(14, 91, 115, 0.03) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.aplikasi-terkait-section::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(213, 197, 138, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.aplikasi-terkait-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0e5b73;
+    text-align: center;
+    margin-bottom: 50px;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.aplikasi-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 15px;
+    background: white;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect - top border animation */
+.aplikasi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0e5b73, #d5c58a);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.aplikasi-card:hover::before {
+    transform: scaleX(1);
+}
+
+.aplikasi-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 40px rgba(14, 91, 115, 0.2);
+}
+
+.aplikasi-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 50%;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.aplikasi-card:hover .aplikasi-icon-wrapper {
+    background: linear-gradient(135deg, #0e5b73 0%, #3a7283 100%);
+    transform: rotate(5deg) scale(1.1);
+}
+
+.aplikasi-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.aplikasi-card:hover .aplikasi-icon {
+    filter: brightness(0) invert(1);
+}
+
+.aplikasi-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0e5b73;
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aplikasi-card:hover .aplikasi-name {
+    color: #002733;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .aplikasi-terkait-title {
+        font-size: 32px;
+    }
+    
+    .aplikasi-card {
+        min-height: 200px;
+    }
+    
+    .aplikasi-icon-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .aplikasi-name {
+        font-size: 13px;
+        min-height: 55px;
+    }
+}
+
+@media (max-width: 768px) {
+    .aplikasi-terkait-section {
+        padding: 40px 0;
+    }
+    
+    .aplikasi-terkait-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+    
+    .aplikasi-card {
+        min-height: 180px;
+        padding: 20px 10px;
+    }
+    
+    .aplikasi-icon-wrapper {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 15px;
+    }
+    
+    .aplikasi-name {
+        font-size: 12px;
+        min-height: 50px;
+    }
+}
+
+@media (max-width: 576px) {
+    .aplikasi-card {
+        min-height: 160px;
+    }
+}

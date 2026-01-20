@@ -1,0 +1,124 @@
+/* ==== STICKY FOOTER ==== */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+/* ==== END STICKY FOOTER ==== */
+
+body, * {
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 600;
+}
+
+.navbar-brand {
+    font-weight: 800 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Agar navbar menempel kiri */
+.navbar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    position: relative;
+}
+
+.navbar .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+}
+
+.navbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #d5c58a;
+}
+
+footer {
+    position: relative;
+}
+
+footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #d5c58a;
+}
+
+/* === PERGESERAN LOGO SEDIKIT KE KANAN === */
+.navbar-brand img {
+    margin-left: 8px !important;
+}
+
+/* === GALERI LIGHTBOX STYLE === */
+.galeri-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.galeri-item:hover {
+    transform: scale(1.05);
+}
+
+.galeri-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.galeri-item:hover img {
+    transform: scale(1.1);
+}
+
+.galeri-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.galeri-item:hover .galeri-overlay {
+    opacity: 1;
+}
+
+/* Custom GLightbox styling */
+.glightbox-clean .gslide-description {
+    background: rgba(0, 0, 0, 0.75);
+    padding: 15px 20px;
+}
+
+/* Navbar active state */
+.nav-link.active {
+    color: #d5c58a !important;
+}
+

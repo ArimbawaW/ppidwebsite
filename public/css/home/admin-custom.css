@@ -1,0 +1,188 @@
+/* ===== ADMIN CUSTOM STYLES ===== */
+
+body, * {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* ===== SIDEBAR STYLE ===== */
+.sidebar {
+    background-color: #003f54 !important;
+    min-height: 100vh;
+    padding-top: 15px;
+    color: white;
+}
+
+.sidebar .logo-area {
+    text-align: center;
+    padding: 30px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 10px;
+}
+
+.sidebar .logo-area img {
+    width: 180px;
+    margin-bottom: 5px;
+}
+
+.sidebar .menu-title {
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.sidebar .nav-link {
+    color: #e6e6e6 !important;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.sidebar .nav-link i {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+    background: #0a576e !important;
+    color: #ffffff !important;
+}
+
+.sidebar .nav-link.active i,
+.sidebar .nav-link:hover i {
+    color: white !important;
+}
+
+.sidebar .nav-link.homepage-link {
+    background: rgba(213, 197, 138, 0.15);
+    border: 1px solid rgba(213, 197, 138, 0.3);
+    margin-top: 15px;
+    color: #d5c58a !important;
+}
+
+.sidebar .nav-link.homepage-link:hover {
+    background: rgba(213, 197, 138, 0.25) !important;
+    border-color: rgba(213, 197, 138, 0.5);
+    color: #ffffff !important;
+}
+
+.sidebar .nav-link.homepage-link i {
+    color: #d5c58a;
+}
+
+.sidebar .nav-link.homepage-link:hover i {
+    color: #ffffff !important;
+}
+
+/* ===== STATUS BADGE STYLE (PERMOHONAN & KEBERATAN) ===== */
+.badge.status-selesai,
+.badge.bg-success {
+    background-color: #28a745 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-pending,
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-weight: 500;
+}
+
+.badge.status-diproses {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-ditolak,
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-verifikasi {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-perbaikan {
+    background-color: #fd7e14 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-baru {
+    background-color: #17a2b8 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-dibatalkan,
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+/* ===== AGENDA STATUS BADGE ===== */
+.badge.status-upcoming {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-ongoing {
+    background-color: #28a745 !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.badge.status-selesai-agenda {
+    background-color: #6c757d !important;
+    color: white !important;
+    font-weight: 500;
+}
+/* Mobile Sidebar */
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        width: 80%;
+        max-width: 280px;
+        height: 100vh;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    /* Overlay ketika sidebar terbuka */
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Main content full width di mobile */
+    main.col-md-9 {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+}

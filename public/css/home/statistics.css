@@ -1,0 +1,146 @@
+/* Statistics Section */
+.statistics-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+    margin-top: 40px;
+}
+
+.statistics-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.statistics-title h2 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0e5b73;
+    margin-bottom: 10px;
+}
+
+.statistics-title p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Stats Cards */
+.stats-card-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 5px solid;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.stats-card.masuk {
+    border-left-color: #17a2b8;
+}
+
+.stats-card.selesai {
+    border-left-color: #28a745;
+}
+
+.stats-card.ditolak {
+    border-left-color: #dc3545;
+}
+
+.stats-card-title {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.stats-card-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: #2c3e50;
+    line-height: 1;
+}
+
+/* Chart Container */
+.chart-container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+}
+
+.chart-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Total Summary */
+.total-summary {
+    background: linear-gradient(135deg, #0e5b73 0%, #003344 100%);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 15px rgba(14, 91, 115, 0.3);
+}
+
+.total-summary h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.total-summary .total-number {
+    font-size: 72px;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.total-summary p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .stats-card-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-card-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-card-number {
+        font-size: 36px;
+    }
+    
+    .total-summary .total-number {
+        font-size: 56px;
+    }
+    
+    .statistics-section {
+        padding: 40px 0;
+    }
+    
+    .statistics-title h2 {
+        font-size: 28px;
+    }
+}

@@ -1,0 +1,699 @@
+/* ========================================
+   ADMIN PANEL - UNIFIED THEME SYSTEM
+   File: public/css/admin-theme.css
+   ======================================== */
+
+/* === ROOT VARIABLES === */
+:root {
+    --admin-primary: #1a6b8a;
+    --admin-primary-dark: #003344;
+    --admin-secondary: #6c757d;
+    --admin-success: #198754;
+    --admin-danger: #dc3545;
+    --admin-warning: #ffc107;
+    --admin-info: #0dcaf0;
+    --admin-light: #f8f9fa;
+    --admin-dark: #212529;
+    --admin-gold: #d5c58a;
+    
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --transition: all 0.3s ease;
+}
+
+/* === GLOBAL STYLES === */
+* {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+body {
+    background: #f5f7fa;
+    font-size: 14px;
+    color: var(--admin-dark);
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+}
+
+/* Logo Area */
+.logo-area {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--admin-gold);
+    background: rgba(0,0,0,0.2);
+}
+
+.logo-area img {
+    max-width: 120px;
+    height: auto;
+}
+
+/* Menu Title */
+.menu-title {
+    padding: 20px 20px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--admin-gold);
+    opacity: 0.9;
+}
+
+/* Navigation Links */
+.sidebar .nav-link {
+    color: rgba(255,255,255,0.85);
+    padding: 12px 20px;
+    margin: 2px 10px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 14px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    transform: translateX(5px);
+}
+
+.sidebar .nav-link.active {
+    background: var(--admin-gold);
+    color: var(--admin-primary-dark);
+    font-weight: 700;
+    box-shadow: 0 4px 8px rgba(213, 197, 138, 0.3);
+}
+
+.sidebar .homepage-link {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar .homepage-link:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* === MAIN CONTENT AREA === */
+main {
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    min-height: 100vh;
+}
+
+/* === PAGE HEADER === */
+.page-header {
+    background: white;
+    padding: 20px 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header h2,
+.page-header h1 {
+    margin: 0;
+    color: var(--admin-primary);
+    font-weight: 700;
+}
+
+.page-header p {
+    margin: 5px 0 0;
+    color: var(--admin-secondary);
+    font-size: 14px;
+}
+
+/* === CARDS === */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+    color: white;
+    font-weight: 700;
+    border-bottom: 2px solid var(--admin-gold);
+    padding: 15px 20px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* === BUTTONS === */
+.btn {
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    border: none;
+}
+
+.btn-primary {
+    background: var(--admin-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--admin-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(26, 107, 138, 0.3);
+}
+
+.btn-success {
+    background: var(--admin-success);
+}
+
+.btn-success:hover {
+    background: #157347;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: var(--admin-danger);
+}
+
+.btn-danger:hover {
+    background: #bb2d3b;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background: var(--admin-warning);
+    color: var(--admin-dark);
+}
+
+.btn-warning:hover {
+    background: #ffca2c;
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background: var(--admin-info);
+    color: var(--admin-dark);
+}
+
+.btn-info:hover {
+    background: #31d2f2;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--admin-secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5c636a;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-lg {
+    padding: 12px 30px;
+    font-size: 16px;
+}
+
+/* === TABLES === */
+.table-responsive {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+    color: white;
+}
+
+.table thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 15px;
+    border: none;
+}
+
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* === BADGES === */
+.badge {
+    padding: 6px 12px;
+    font-weight: 600;
+    border-radius: 5px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.badge.bg-success { background: var(--admin-success) !important; }
+.badge.bg-danger { background: var(--admin-danger) !important; }
+.badge.bg-warning { background: var(--admin-warning) !important; color: var(--admin-dark) !important; }
+.badge.bg-info { background: var(--admin-info) !important; color: var(--admin-dark) !important; }
+.badge.bg-primary { background: var(--admin-primary) !important; }
+.badge.bg-secondary { background: var(--admin-secondary) !important; }
+
+/* === FORMS === */
+.form-label {
+    font-weight: 600;
+    color: var(--admin-dark);
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    border: 2px solid #e9ecef;
+    border-radius: var(--border-radius);
+    padding: 10px 15px;
+    transition: var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 0.2rem rgba(26, 107, 138, 0.25);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--admin-danger);
+}
+
+.invalid-feedback {
+    color: var(--admin-danger);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* === ALERTS === */
+.alert {
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.alert-info {
+    background: #cff4fc;
+    color: #055160;
+}
+
+/* === PAGINATION === */
+.pagination {
+    margin-top: 20px;
+}
+
+.page-link {
+    color: var(--admin-primary);
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+.page-link:hover {
+    background: var(--admin-primary);
+    color: white;
+    border-color: var(--admin-primary);
+}
+
+.page-item.active .page-link {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+/* === MODAL === */
+.modal-header {
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+    color: white;
+    border-bottom: 2px solid var(--admin-gold);
+}
+
+.modal-title {
+    font-weight: 700;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    padding: 15px 25px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* === STATISTICS CARDS === */
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--admin-primary);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--admin-primary);
+    margin: 0;
+}
+
+.stat-card p {
+    margin: 5px 0 0;
+    color: var(--admin-secondary);
+    font-weight: 600;
+}
+
+/* === LOADING SPINNER === */
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.25em;
+}
+
+/* === UTILITIES === */
+.text-primary { color: var(--admin-primary) !important; }
+.bg-primary { background: var(--admin-primary) !important; }
+.border-primary { border-color: var(--admin-primary) !important; }
+
+.fw-bold { font-weight: 700 !important; }
+.fw-semibold { font-weight: 600 !important; }
+
+.shadow-sm { box-shadow: var(--box-shadow) !important; }
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    main {
+        margin-left: 0;
+        padding: 15px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+/* === CUSTOM SCROLLBAR === */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--admin-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-primary-dark);
+}
+
+/* ========================================
+   GLOBAL STATUS STANDARDIZATION (ADMIN)
+   Fix: status teks putih tidak terlihat
+   Berlaku untuk seluruh modul admin
+   ======================================== */
+
+/* Base status */
+.status,
+.status-text,
+.status-label {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    /* SAFETY DEFAULT */
+    background: #e9ecef;
+    color: #212529 !important;
+}
+
+/* SUCCESS */
+.status.success,
+.status-text.success,
+.status-label.success {
+    background: #d1e7dd;
+    color: #0f5132 !important;
+}
+
+/* WARNING */
+.status.warning,
+.status-text.warning,
+.status-label.warning {
+    background: #fff3cd;
+    color: #664d03 !important;
+}
+
+/* DANGER */
+.status.danger,
+.status-text.danger,
+.status-label.danger {
+    background: #f8d7da;
+    color: #842029 !important;
+}
+
+/* INFO */
+.status.info,
+.status-text.info,
+.status-label.info {
+    background: #cff4fc;
+    color: #055160 !important;
+}
+
+/* SECONDARY / DEFAULT */
+.status.secondary,
+.status-text.secondary,
+.status-label.secondary {
+    background: #e2e3e5;
+    color: #41464b !important;
+}
+
+/* FALLBACK: status tanpa class */
+td .status,
+td .status-text {
+    background: #e9ecef;
+    color: #212529 !important;
+}
+
+/* =====================================================
+   GLOBAL STATUS FINAL OVERRIDE - ADMIN PANEL
+   Tempelkan PALING BAWAH admin-theme.css
+   ===================================================== */
+
+/* SAFETY NET: SEMUA STATUS PUNYA BACKGROUND */
+.status,
+.status-text,
+.status-label,
+td span.status,
+td span[class*="status"] {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    background: #e9ecef;
+    color: #212529 !important;
+}
+
+/* =======================
+   STATUS AKTIF (HIJAU)
+   ======================= */
+.status-aktif,
+.status-active,
+.status-published,
+.status-enabled,
+.status-on,
+.status-yes,
+td span[class*="aktif"],
+td span[class*="active"] {
+    background: var(--admin-success) !important;
+    color: #ffffff !important;
+}
+
+/* =======================
+   STATUS NON-AKTIF
+   ======================= */
+.status-nonaktif,
+.status-inactive,
+.status-disabled,
+.status-draft,
+.status-off,
+td span[class*="nonaktif"],
+td span[class*="inactive"],
+td span[class*="draft"] {
+    background: var(--admin-secondary) !important;
+    color: #ffffff !important;
+}
+
+/* =======================
+   AGENDA KEGIATAN
+   ======================= */
+.status-upcoming,
+.status-belum,
+.status-schedule {
+    background: var(--admin-warning) !important;
+    color: #212529 !important;
+}
+
+.status-ongoing,
+.status-berlangsung,
+.status-progress {
+    background: var(--admin-info) !important;
+    color: #212529 !important;
+}
+
+.status-selesai,
+.status-finished,
+.status-done {
+    background: var(--admin-success) !important;
+    color: #ffffff !important;
+}
+
+/* =======================
+   HALAMAN STATIS & GALERI
+   ======================= */
+.status-visible,
+.status-show,
+.status-public {
+    background: var(--admin-success) !important;
+    color: #ffffff !important;
+}
+
+.status-hidden,
+.status-private {
+    background: var(--admin-danger) !important;
+    color: #ffffff !important;
+}
+
+/* =======================
+   FORCE FIX TEKS PUTIH
+   ======================= */
+td span.text-white,
+td .text-white {
+    background: var(--admin-secondary) !important;
+    color: #ffffff !important;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+/* =======================
+   TABLE CONSISTENCY
+   ======================= */
+.table td span {
+    line-height: 1.2;
+    vertical-align: middle;
+}
+
