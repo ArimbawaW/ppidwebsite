@@ -1,43 +1,71 @@
-@extends('layouts.admin')
 
-@section('title', 'Edit Halaman Statis')
 
-@php
+<?php $__env->startSection('title', 'Edit Halaman Statis'); ?>
+
+<?php
     use Illuminate\Support\Facades\Storage;
-@endphp
+?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Edit Halaman Statis</h2>
-        <a href="{{ route('admin.halaman-statis.index') }}" class="btn btn-secondary">
+        <a href="<?php echo e(route('admin.halaman-statis.index')); ?>" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Kembali
         </a>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('admin.halaman-statis.update', $halamanStatis->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+            <form action="<?php echo e(route('admin.halaman-statis.update', $halamanStatis->id)); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Slug <span class="text-danger">*</span></label>
-                            <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" 
-                                   value="{{ old('slug', $halamanStatis->slug) }}" required>
+                            <input type="text" name="slug" class="form-control <?php $__errorArgs = ['slug'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                   value="<?php echo e(old('slug', $halamanStatis->slug)); ?>" required>
                             <small class="text-muted">Contoh: informasi-berkala, informasi-setiap-saat</small>
-                            @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <?php $__errorArgs = ['slug'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="invalid-feedback"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Judul Halaman <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror" 
-                                   value="{{ old('judul', $halamanStatis->judul) }}" required>
-                            @error('judul')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="judul" class="form-control <?php $__errorArgs = ['judul'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                   value="<?php echo e(old('judul', $halamanStatis->judul)); ?>" required>
+                            <?php $__errorArgs = ['judul'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="invalid-feedback"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -53,11 +81,11 @@
                     </div>
 
                     <div id="sectionsContainer">
-                        @foreach($halamanStatis->konten as $sectionIndex => $section)
-                        <div class="section-item card mb-3" data-index="{{ $sectionIndex }}">
+                        <?php $__currentLoopData = $halamanStatis->konten; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sectionIndex => $section): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="section-item card mb-3" data-index="<?php echo e($sectionIndex); ?>">
                             <div class="card-header bg-light">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0 fw-bold">Section {{ $sectionIndex + 1 }}</h6>
+                                    <h6 class="mb-0 fw-bold">Section <?php echo e($sectionIndex + 1); ?></h6>
                                     <button type="button" class="btn btn-sm btn-danger" onclick="removeSection(this)">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -67,43 +95,43 @@
                                 <div class="mb-3">
                                     <label class="form-label">Judul Section</label>
                                     <input type="text" name="sections[]" class="form-control" 
-                                           value="{{ $section['section'] }}" 
+                                           value="<?php echo e($section['section']); ?>" 
                                            placeholder="Contoh: A. Informasi tentang...">
                                 </div>
 
                                 <div class="items-container">
                                     <label class="form-label fw-bold">Items:</label>
-                                    @foreach($section['items'] as $itemIndex => $item)
+                                    <?php $__currentLoopData = $section['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $itemIndex => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="item-row mb-2">
                                         <div class="row g-2">
                                             <div class="col-md-4">
                                                 <input type="text" 
-                                                       name="items[{{ $sectionIndex }}][]" 
+                                                       name="items[<?php echo e($sectionIndex); ?>][]" 
                                                        class="form-control" 
-                                                       value="{{ $item['text'] }}"
+                                                       value="<?php echo e($item['text']); ?>"
                                                        placeholder="Nama item">
                                             </div>
                                             <div class="col-md-4">
                                                 <input type="url" 
-                                                       name="file_urls[{{ $sectionIndex }}][]" 
+                                                       name="file_urls[<?php echo e($sectionIndex); ?>][]" 
                                                        class="form-control" 
-                                                       value="{{ $item['file_url'] ?? '' }}"
+                                                       value="<?php echo e($item['file_url'] ?? ''); ?>"
                                                        placeholder="URL file (opsional)">
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="file" 
-                                                       name="files[{{ $sectionIndex }}][]" 
+                                                       name="files[<?php echo e($sectionIndex); ?>][]" 
                                                        class="form-control" 
                                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
-                                                <input type="hidden" name="existing_files[{{ $sectionIndex }}][]" value="{{ $item['file_path'] ?? '' }}">
-                                                @if(!empty($item['file_path']))
+                                                <input type="hidden" name="existing_files[<?php echo e($sectionIndex); ?>][]" value="<?php echo e($item['file_path'] ?? ''); ?>">
+                                                <?php if(!empty($item['file_path'])): ?>
                                                     <small class="text-muted d-block">
                                                         File saat ini: 
-                                                        <a href="{{ Storage::url($item['file_path']) }}" target="_blank" rel="noopener">Unduh</a>
+                                                        <a href="<?php echo e(Storage::url($item['file_path'])); ?>" target="_blank" rel="noopener">Unduh</a>
                                                     </small>
-                                                @else
+                                                <?php else: ?>
                                                     <small class="text-muted d-block">Maks 5 MB</small>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                             <div class="col-md-1">
                                                 <button type="button" class="btn btn-sm btn-danger w-100" onclick="removeItem(this)">
@@ -112,7 +140,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
 
                                 <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addItem(this)">
@@ -120,14 +148,14 @@
                                 </button>
                             </div>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <div class="form-check">
                         <input type="checkbox" name="is_active" class="form-check-input" id="is_active" 
-                               value="1" {{ old('is_active', $halamanStatis->is_active) ? 'checked' : '' }}>
+                               value="1" <?php echo e(old('is_active', $halamanStatis->is_active) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="is_active">Aktif</label>
                     </div>
                 </div>
@@ -136,18 +164,18 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save me-2"></i>Update
                     </button>
-                    <a href="{{ route('admin.halaman-statis.index') }}" class="btn btn-secondary">Batal</a>
+                    <a href="<?php echo e(route('admin.halaman-statis.index')); ?>" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
-let sectionCounter = {{ count($halamanStatis->konten) }};
+let sectionCounter = <?php echo e(count($halamanStatis->konten)); ?>;
 
 function addSection() {
     const container = document.getElementById('sectionsContainer');
@@ -241,4 +269,5 @@ function removeItem(button) {
     button.closest('.item-row').remove();
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ppid-website\ppidwebsite\resources\views/admin/halaman-statis/edit.blade.php ENDPATH**/ ?>

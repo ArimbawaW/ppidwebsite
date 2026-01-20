@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', $halaman->judul)
 
-@php
+<?php $__env->startSection('title', $halaman->judul); ?>
+
+<?php
     use Illuminate\Support\Facades\Storage;
-@endphp
+?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     /* HEADER - Warna Putih/Abu */
     .header-section {
@@ -116,48 +116,51 @@
         margin-right: 8px;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="header-section">
     <div class="container">
         <div class="logo-section">
-            <img src="{{ asset('images/logo-kemenpkp.png') }}" alt="Logo Kemen PKP">
+            <img src="<?php echo e(asset('images/logo-kemenpkp.png')); ?>" alt="Logo Kemen PKP">
         </div>
-        <h1 class="page-title">{{ $halaman->judul }}</h1>
+        <h1 class="page-title"><?php echo e($halaman->judul); ?></h1>
     </div>
 </div>
 
 <div class="container mb-5">
     <div class="content-section">
         
-        @foreach($halaman->konten as $section)
-            <h2 class="section-header">{{ $section['section'] }}</h2>
+        <?php $__currentLoopData = $halaman->konten; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $section): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <h2 class="section-header"><?php echo e($section['section']); ?></h2>
             
             <ol class="item-list">
-                @foreach($section['items'] as $item)
-                    @php
+                <?php $__currentLoopData = $section['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $fileLink = !empty($item['file_path'])
                             ? Storage::url($item['file_path'])
                             : ($item['file_url'] ?? null);
-                    @endphp
-                    <li class="{{ $fileLink ? '' : 'no-link' }}">
-                        @if($fileLink)
-                            <a href="{{ $fileLink }}" target="_blank" rel="noopener">
+                    ?>
+                    <li class="<?php echo e($fileLink ? '' : 'no-link'); ?>">
+                        <?php if($fileLink): ?>
+                            <a href="<?php echo e($fileLink); ?>" target="_blank" rel="noopener">
                                 <i class="bi bi-file-earmark-pdf icon-file"></i>
-                                {{ $item['text'] }}
+                                <?php echo e($item['text']); ?>
+
                             </a>
-                        @else
+                        <?php else: ?>
                             <i class="bi bi-file-earmark icon-file"></i>
-                            {{ $item['text'] }}
-                        @endif
+                            <?php echo e($item['text']); ?>
+
+                        <?php endif; ?>
                     </li>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ol>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ppid-website\ppidwebsite\resources\views/frontend/halaman-statis/show.blade.php ENDPATH**/ ?>

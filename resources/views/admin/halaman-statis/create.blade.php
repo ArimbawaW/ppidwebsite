@@ -39,7 +39,7 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('admin.halaman-statis.store') }}" method="POST" id="formHalaman">
+            <form action="{{ route('admin.halaman-statis.store') }}" method="POST" id="formHalaman" enctype="multipart/form-data">
                 @csrf
 
                 {{-- INFORMASI DASAR --}}
@@ -195,25 +195,33 @@ function addSection() {
                 </div>
 
                 <div class="items-container">
-                    <label class="form-label fw-bold">
-                        <i class="bi bi-list-ol me-1"></i>Items dalam Section:
+                    <label class="form-label fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-list-ol me-1"></i>Items dalam Section
+                        <small class="text-muted">(isi URL atau unggah file untuk diunduh)</small>
                     </label>
                     
                     {{-- Item pertama otomatis ditambahkan --}}
                     <div class="item-row mb-2">
                         <div class="row g-2">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" 
                                        name="items[${sectionCounter}][]" 
                                        class="form-control" 
                                        placeholder="Nama item (contoh: Alamat Lengkap)"
                                        required>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <input type="url" 
                                        name="file_urls[${sectionCounter}][]" 
                                        class="form-control" 
                                        placeholder="https://example.com/file.pdf (opsional)">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="file"
+                                       name="files[${sectionCounter}][]"
+                                       class="form-control"
+                                       accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+                                <small class="text-muted">Maks 5 MB</small>
                             </div>
                             <div class="col-md-1">
                                 <button type="button" 
@@ -261,18 +269,25 @@ function addItem(button) {
     const itemHTML = `
         <div class="item-row mb-2">
             <div class="row g-2">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <input type="text" 
                            name="items[${sectionIndex}][]" 
                            class="form-control" 
                            placeholder="Nama item"
                            required>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <input type="url" 
                            name="file_urls[${sectionIndex}][]" 
                            class="form-control" 
                            placeholder="URL file (opsional)">
+                </div>
+                <div class="col-md-3">
+                    <input type="file"
+                           name="files[${sectionIndex}][]"
+                           class="form-control"
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+                    <small class="text-muted">Maks 5 MB</small>
                 </div>
                 <div class="col-md-1">
                     <button type="button" 
