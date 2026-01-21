@@ -6,8 +6,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Keberatan;
 use App\Models\Permohonan;
+use App\Services\GraphMailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class KeberatanController extends Controller
 {
@@ -64,22 +64,15 @@ class KeberatanController extends Controller
             'status'                       => 'pending',
         ]);
 
-        // Kirim Email Notifikasi
-        try {
-            Mail::raw(
-                "Keberatan baru diterima:\n\n" .
-                "Nomor Registrasi Keberatan : {$keberatan->nomor_registrasi}\n" .
-                "Nomor Registrasi Permohonan : {$keberatan->nomor_registrasi_permohonan}\n" .
-                "Nama Pemohon                : {$keberatan->nama_pemohon}\n" .
-                "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}",
-                function ($message) {
-                    $message->to(config('mail.from.address'))
-                            ->subject('Keberatan Baru - PPID');
-                }
-            );
-        } catch (\Exception $e) {
-            // Log error
-        }
+        $mailer = app(GraphMailService::class);
+        $content =
+            "Keberatan baru diterima:\n\n" .
+            "Nomor Registrasi Keberatan : {$keberatan->nomor_registrasi}\n" .
+            "Nomor Registrasi Permohonan : {$keberatan->nomor_registrasi_permohonan}\n" .
+            "Nama Pemohon                : {$keberatan->nama_pemohon}\n" .
+            "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}";
+
+        $mailer->send(config('mail.from.address'), 'Keberatan Baru - PPID', $content);
 
         return redirect()
             ->route('keberatan.index')

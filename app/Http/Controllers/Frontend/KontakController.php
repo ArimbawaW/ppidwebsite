@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kontak;
+use App\Services\GraphMailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class KontakController extends Controller
 {
@@ -32,14 +32,9 @@ class KontakController extends Controller
         ]);
 
         // Kirim email notifikasi ke admin
-        try {
-            Mail::raw("Pesan kontak baru telah diterima.\n\nNama: {$kontak->nama}\nEmail: {$kontak->email}\nSubjek: {$kontak->subjek}\n\nPesan:\n{$kontak->pesan}", function ($message) use ($kontak) {
-                $message->to(config('mail.from.address'))
-                    ->subject('Pesan Kontak Baru: ' . $kontak->subjek);
-            });
-        } catch (\Exception $e) {
-            // Log error jika email gagal
-        }
+        $mailer = app(GraphMailService::class);
+        $content = "Pesan kontak baru telah diterima.\n\nNama: {$kontak->nama}\nEmail: {$kontak->email}\nSubjek: {$kontak->subjek}\n\nPesan:\n{$kontak->pesan}";
+        $mailer->send(config('mail.from.address'), 'Pesan Kontak Baru: ' . $kontak->subjek, $content);
 
         return redirect()->route('kontak.index')
             ->with('success', 'Pesan berhasil dikirim. Kami akan merespons segera.');

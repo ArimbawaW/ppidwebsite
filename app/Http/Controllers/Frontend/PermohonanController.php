@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
+use App\Services\GraphMailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -199,30 +199,35 @@ class PermohonanController extends Controller
                     ->with('error', '❌ Gagal menyimpan permohonan ke database. Silakan coba lagi. Error: ' . $e->getMessage());
             }
 
-            // Kirim email notifikasi
-            try {
-                $kategoriLabel = match($permohonan->kategori_pemohon) {
-                    'perorangan' => 'Perorangan',
-                    'kelompok' => 'Kelompok Orang',
-                    'badan_hukum' => 'Badan Hukum',
-                    default => $permohonan->kategori_pemohon,
-                };
+            $mailer = app(GraphMailService::class);
+            $kategoriLabel = match($permohonan->kategori_pemohon) {
+                'perorangan' => 'Perorangan',
+                'kelompok' => 'Kelompok Orang',
+                'badan_hukum' => 'Badan Hukum',
+                default => $permohonan->kategori_pemohon,
+            };
 
-                Mail::raw(
-                    "Permohonan informasi baru telah diterima.\n\n" .
-                    "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
-                    "Kategori Pemohon: {$kategoriLabel}\n" .
-                    "Nama: {$permohonan->nama}\n" .
-                    "Email: {$permohonan->email}\n" .
-                    "Pekerjaan: {$permohonan->pekerjaan}",
-                    function ($message) {
-                        $message->to(config('mail.from.address'))
-                            ->subject('Permohonan Informasi Baru - PPID');
-                    }
-                );
-            } catch (Exception $e) {
-                Log::error('Email gagal dikirim: ' . $e->getMessage());
-                // Tidak perlu return error karena data sudah tersimpan
+            $adminContent =
+                "Permohonan informasi baru telah diterima.\n\n" .
+                "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
+                "Kategori Pemohon: {$kategoriLabel}\n" .
+                "Nama: {$permohonan->nama}\n" .
+                "Email: {$permohonan->email}\n" .
+                "Pekerjaan: {$permohonan->pekerjaan}";
+
+            if (!$mailer->send(config('mail.from.address'), 'Permohonan Informasi Baru - PPID', $adminContent)) {
+                Log::error('Email admin permohonan gagal dikirim (Graph).');
+            }
+
+            $pemohonContent =
+                "Halo {$permohonan->nama},\n\n" .
+                "Permohonan informasi Anda telah kami terima.\n" .
+                "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
+                "Status awal: Pending\n\n" .
+                "Simpan nomor registrasi ini untuk mengecek status permohonan Anda.";
+
+            if (!$mailer->send($permohonan->email, 'Nomor Registrasi Permohonan Informasi - PPID', $pemohonContent)) {
+                Log::error('Email ke pemohon gagal dikirim (Graph).');
             }
 
             return redirect()->route('permohonan.index')

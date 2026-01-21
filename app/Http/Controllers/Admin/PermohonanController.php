@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
+use App\Services\GraphMailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class PermohonanController extends Controller
 {
@@ -62,6 +64,8 @@ class PermohonanController extends Controller
             'catatan_admin' => 'nullable|string|max:1000'
         ]);
 
+        $oldStatus = $permohonan->status;
+        $oldStatusLabel = $permohonan->status_label;
         $permohonan->status = $request->status;
         $permohonan->catatan_admin = $request->catatan_admin;
         
@@ -70,6 +74,26 @@ class PermohonanController extends Controller
         }
         
         $permohonan->save();
+
+        // Kirim email pemberitahuan perubahan status ke pemohon
+        if ($permohonan->email) {
+            $mailer = app(GraphMailService::class);
+            $content =
+                "Halo {$permohonan->nama},\n\n" .
+                "Status permohonan informasi Anda telah berubah.\n" .
+                "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
+                "Status sebelumnya: {$oldStatusLabel}\n" .
+                "Status sekarang: {$permohonan->status_label}\n" .
+                ($permohonan->catatan_admin ? "Catatan: {$permohonan->catatan_admin}\n" : '') .
+                "\nAnda dapat mengecek status melalui halaman cek status permohonan.";
+
+            if (!$mailer->send($permohonan->email, 'Pembaruan Status Permohonan Informasi - PPID', $content)) {
+                Log::error('Gagal mengirim email status permohonan (Graph).', [
+                    'permohonan_id' => $permohonan->id,
+                    'email' => $permohonan->email,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.permohonan.show', $permohonan)
             ->with('success', 'Status permohonan berhasil diperbarui.');

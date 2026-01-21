@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Permohonan Informasi - PPID')
 
-@push('styles')
+<?php $__env->startSection('title', 'Permohonan Informasi - PPID'); ?>
+
+<?php $__env->startPush('styles'); ?>
 <style>
     .kategori-option {
         cursor: pointer;
@@ -84,19 +84,19 @@
         }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container my-5">
     <h2 class="mb-4 fw-bold">Formulir Permohonan Informasi</h2>
     <div class="row">
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <form action="{{ route('permohonan.store') }}" method="POST" enctype="multipart/form-data" id="formPermohonan">
-                        @csrf
+                    <form action="<?php echo e(route('permohonan.store')); ?>" method="POST" enctype="multipart/form-data" id="formPermohonan">
+                        <?php echo csrf_field(); ?>
                         
-                        {{-- STEP 1: KATEGORI PEMOHON --}}
+                        
                         <div class="mb-5">
                             <h5 class="fw-bold mb-3">
                                 <i class="bi bi-person-badge me-2"></i>
@@ -104,7 +104,7 @@
                                 <span class="required-badge">WAJIB</span>
                             </h5>
                             
-                            {{-- Hidden radio untuk trigger native validation --}}
+                            
                             <input type="radio" 
                                    name="kategori_pemohon" 
                                    value="" 
@@ -114,13 +114,14 @@
                                    data-error="Silakan pilih kategori pemohon terlebih dahulu!">
                             
                             <div class="row g-3" id="kategoriContainer">
-                                {{-- Perorangan --}}
+                                
                                 <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
+                                    <label class="kategori-option p-3 rounded text-center d-block <?php echo e($errors->has('kategori_pemohon') ? 'error' : ''); ?>">
                                         <input type="radio" 
                                                name="kategori_pemohon" 
                                                value="perorangan" 
-                                               {{ old('kategori_pemohon') == 'perorangan' ? 'checked' : '' }}
+                                               <?php echo e(old('kategori_pemohon') == 'perorangan' ? 'checked' : ''); ?>
+
                                                class="kategori-radio">
                                         <i class="bi bi-person-circle fs-1 d-block text-primary mb-2"></i>
                                         <strong>Perorangan</strong>
@@ -128,13 +129,14 @@
                                     </label>
                                 </div>
                                 
-                                {{-- Kelompok Orang --}}
+                                
                                 <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
+                                    <label class="kategori-option p-3 rounded text-center d-block <?php echo e($errors->has('kategori_pemohon') ? 'error' : ''); ?>">
                                         <input type="radio" 
                                                name="kategori_pemohon" 
                                                value="kelompok" 
-                                               {{ old('kategori_pemohon') == 'kelompok' ? 'checked' : '' }}
+                                               <?php echo e(old('kategori_pemohon') == 'kelompok' ? 'checked' : ''); ?>
+
                                                class="kategori-radio">
                                         <i class="bi bi-people-fill fs-1 d-block text-success mb-2"></i>
                                         <strong>Kelompok Orang</strong>
@@ -142,13 +144,14 @@
                                     </label>
                                 </div>
                                 
-                                {{-- Badan Hukum --}}
+                                
                                 <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
+                                    <label class="kategori-option p-3 rounded text-center d-block <?php echo e($errors->has('kategori_pemohon') ? 'error' : ''); ?>">
                                         <input type="radio" 
                                                name="kategori_pemohon" 
                                                value="badan_hukum" 
-                                               {{ old('kategori_pemohon') == 'badan_hukum' ? 'checked' : '' }}
+                                               <?php echo e(old('kategori_pemohon') == 'badan_hukum' ? 'checked' : ''); ?>
+
                                                class="kategori-radio">
                                         <i class="bi bi-building fs-1 d-block text-warning mb-2"></i>
                                         <strong>Badan Hukum</strong>
@@ -157,23 +160,31 @@
                                 </div>
                             </div>
                             
-                            {{-- Error Message untuk Kategori --}}
-                            <div class="error-message-kategori {{ $errors->has('kategori_pemohon') ? 'show' : '' }}" id="errorKategori">
+                            
+                            <div class="error-message-kategori <?php echo e($errors->has('kategori_pemohon') ? 'show' : ''); ?>" id="errorKategori">
                                 <i class="bi bi-exclamation-circle-fill me-2"></i>
                                 <strong>Silakan pilih kategori pemohon terlebih dahulu!</strong>
                             </div>
                             
-                            @error('kategori_pemohon')
+                            <?php $__errorArgs = ['kategori_pemohon'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                 <div class="text-danger small mt-2">
                                     <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ $message }}
+                                    <?php echo e($message); ?>
+
                                 </div>
-                            @enderror
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- STEP 2: DATA PEMOHON --}}
+                        
                         <div class="mb-4">
                             <h5 class="fw-bold mb-3">
                                 <i class="bi bi-person-lines-fill me-2"></i>
@@ -181,134 +192,232 @@
                             </h5>
 
                             <div class="row">
-                                {{-- Nama --}}
+                                
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">
                                         Nama Lengkap <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="nama" 
-                                           class="form-control @error('nama') is-invalid @enderror" 
-                                           value="{{ old('nama') }}" 
+                                           class="form-control <?php $__errorArgs = ['nama'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('nama')); ?>" 
                                            placeholder="Masukkan nama lengkap" required>
-                                    @error('nama')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['nama'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
-                                {{-- Pekerjaan --}}
+                                
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">
                                         Pekerjaan <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="pekerjaan" 
-                                           class="form-control @error('pekerjaan') is-invalid @enderror" 
-                                           value="{{ old('pekerjaan') }}" 
+                                           class="form-control <?php $__errorArgs = ['pekerjaan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('pekerjaan')); ?>" 
                                            placeholder="Contoh: PNS, Wiraswasta, Mahasiswa" required>
-                                    @error('pekerjaan')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['pekerjaan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
-                                {{-- Alamat --}}
+                                
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label fw-bold">
                                         Alamat Lengkap <span class="text-danger">*</span>
                                     </label>
                                     <textarea name="alamat" 
-                                              class="form-control @error('alamat') is-invalid @enderror" 
+                                              class="form-control <?php $__errorArgs = ['alamat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                               rows="3" 
-                                              placeholder="Masukkan alamat lengkap termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi" required>{{ old('alamat') }}</textarea>
-                                    @error('alamat')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                              placeholder="Masukkan alamat lengkap termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi" required><?php echo e(old('alamat')); ?></textarea>
+                                    <?php $__errorArgs = ['alamat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
-                                {{-- No Telepon --}}
+                                
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">
                                         No. Telepon/HP <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="no_telepon" 
-                                           class="form-control @error('no_telepon') is-invalid @enderror" 
-                                           value="{{ old('no_telepon') }}" 
+                                           class="form-control <?php $__errorArgs = ['no_telepon'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('no_telepon')); ?>" 
                                            placeholder="Contoh: 08123456789" required>
-                                    @error('no_telepon')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['no_telepon'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
-                                {{-- Email --}}
+                                
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">
                                         Email <span class="text-danger">*</span>
                                     </label>
                                     <input type="email" name="email" 
-                                           class="form-control @error('email') is-invalid @enderror" 
-                                           value="{{ old('email') }}" 
+                                           class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('email')); ?>" 
                                            placeholder="contoh@email.com" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- STEP 3: RINCIAN PERMOHONAN --}}
+                        
                         <div class="mb-4">
                             <h5 class="fw-bold mb-3">
                                 <i class="bi bi-file-text me-2"></i>
                                 Rincian Permohonan Informasi
                             </h5>
 
-                            {{-- Rincian Informasi --}}
+                            
                             <div class="mb-3">
                                 <label class="form-label fw-bold">
                                     Rincian Informasi yang Dibutuhkan <span class="text-danger">*</span>
                                 </label>
                                 <textarea name="rincian_informasi" 
-                                          class="form-control @error('rincian_informasi') is-invalid @enderror" 
+                                          class="form-control <?php $__errorArgs = ['rincian_informasi'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                           rows="4" 
-                                          placeholder="Jelaskan secara detail dan spesifik informasi apa yang Anda butuhkan..." required>{{ old('rincian_informasi') }}</textarea>
+                                          placeholder="Jelaskan secara detail dan spesifik informasi apa yang Anda butuhkan..." required><?php echo e(old('rincian_informasi')); ?></textarea>
                                 <small class="form-text text-muted">
                                     <i class="bi bi-info-circle me-1"></i>
                                     Jelaskan informasi yang Anda butuhkan dengan jelas dan spesifik
                                 </small>
-                                @error('rincian_informasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['rincian_informasi'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
-                            {{-- Tujuan Penggunaan --}}
+                            
                             <div class="mb-3">
                                 <label class="form-label fw-bold">
                                     Tujuan Penggunaan Informasi <span class="text-danger">*</span>
                                 </label>
                                 <textarea name="tujuan_penggunaan" 
-                                          class="form-control @error('tujuan_penggunaan') is-invalid @enderror" 
+                                          class="form-control <?php $__errorArgs = ['tujuan_penggunaan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                           rows="4" 
-                                          placeholder="Jelaskan untuk apa informasi ini akan digunakan..." required>{{ old('tujuan_penggunaan') }}</textarea>
+                                          placeholder="Jelaskan untuk apa informasi ini akan digunakan..." required><?php echo e(old('tujuan_penggunaan')); ?></textarea>
                                 <small class="form-text text-muted">
                                     <i class="bi bi-info-circle me-1"></i>
                                     Jelaskan tujuan dan penggunaan informasi yang dimohonkan
                                 </small>
-                                @error('tujuan_penggunaan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['tujuan_penggunaan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- STEP 4: DOKUMEN KELENGKAPAN (DYNAMIC) --}}
+                        
                         <div class="mb-4">
                             <h5 class="fw-bold mb-3">
                                 <i class="bi bi-file-earmark-arrow-up me-2"></i>
                                 Dokumen Kelengkapan
                             </h5>
 
-                            {{-- UNTUK PERORANGAN --}}
+                            
                             <div id="fields-perorangan" class="dynamic-fields">
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -320,15 +429,29 @@
                                         Jenis Kartu Identitas <span class="text-danger">*</span>
                                     </label>
                                     <select name="jenis_identitas" 
-                                            class="form-select @error('jenis_identitas') is-invalid @enderror">
+                                            class="form-select <?php $__errorArgs = ['jenis_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
                                         <option value="">-- Pilih Jenis Identitas --</option>
-                                        <option value="KTP" {{ old('jenis_identitas') == 'KTP' ? 'selected' : '' }}>KTP</option>
-                                        <option value="Paspor" {{ old('jenis_identitas') == 'Paspor' ? 'selected' : '' }}>Paspor</option>
-                                        <option value="SIM" {{ old('jenis_identitas') == 'SIM' ? 'selected' : '' }}>SIM</option>
+                                        <option value="KTP" <?php echo e(old('jenis_identitas') == 'KTP' ? 'selected' : ''); ?>>KTP</option>
+                                        <option value="Paspor" <?php echo e(old('jenis_identitas') == 'Paspor' ? 'selected' : ''); ?>>Paspor</option>
+                                        <option value="SIM" <?php echo e(old('jenis_identitas') == 'SIM' ? 'selected' : ''); ?>>SIM</option>
                                     </select>
-                                    @error('jenis_identitas')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['jenis_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -336,12 +459,26 @@
                                         Nomor Identitas <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="nomor_identitas" 
-                                           class="form-control @error('nomor_identitas') is-invalid @enderror" 
-                                           value="{{ old('nomor_identitas') }}" 
+                                           class="form-control <?php $__errorArgs = ['nomor_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('nomor_identitas')); ?>" 
                                            placeholder="Masukkan nomor identitas">
-                                    @error('nomor_identitas')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['nomor_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -349,16 +486,30 @@
                                         Upload Kartu Identitas <span class="text-danger">*</span>
                                     </label>
                                     <input type="file" name="file_identitas" 
-                                           class="form-control @error('file_identitas') is-invalid @enderror" 
+                                           class="form-control <?php $__errorArgs = ['file_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            accept=".pdf,.jpg,.jpeg,.png">
                                     <small class="form-text text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                    @error('file_identitas')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['file_identitas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
-                            {{-- UNTUK KELOMPOK ORANG --}}
+                            
                             <div id="fields-kelompok" class="dynamic-fields">
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -370,12 +521,26 @@
                                         Nomor KTP Pemberi Kuasa <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="nomor_ktp_pemberi_kuasa" 
-                                           class="form-control @error('nomor_ktp_pemberi_kuasa') is-invalid @enderror" 
-                                           value="{{ old('nomor_ktp_pemberi_kuasa') }}" 
+                                           class="form-control <?php $__errorArgs = ['nomor_ktp_pemberi_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('nomor_ktp_pemberi_kuasa')); ?>" 
                                            placeholder="Masukkan nomor KTP pemberi kuasa">
-                                    @error('nomor_ktp_pemberi_kuasa')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['nomor_ktp_pemberi_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -383,12 +548,26 @@
                                         Upload Surat Kuasa <span class="text-danger">*</span>
                                     </label>
                                     <input type="file" name="file_surat_kuasa" 
-                                           class="form-control @error('file_surat_kuasa') is-invalid @enderror" 
+                                           class="form-control <?php $__errorArgs = ['file_surat_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            accept=".pdf">
                                     <small class="form-text text-muted">Format: PDF (Max: 2MB)</small>
-                                    @error('file_surat_kuasa')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['file_surat_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -396,16 +575,30 @@
                                         Upload KTP Pemberi Kuasa <span class="text-danger">*</span>
                                     </label>
                                     <input type="file" name="file_ktp_pemberi_kuasa" 
-                                           class="form-control @error('file_ktp_pemberi_kuasa') is-invalid @enderror" 
+                                           class="form-control <?php $__errorArgs = ['file_ktp_pemberi_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            accept=".pdf,.jpg,.jpeg,.png">
                                     <small class="form-text text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                    @error('file_ktp_pemberi_kuasa')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['file_ktp_pemberi_kuasa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
-                            {{-- UNTUK BADAN HUKUM --}}
+                            
                             <div id="fields-badan_hukum" class="dynamic-fields">
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -417,12 +610,26 @@
                                         Nomor Akta AHU Kementerian Hukum RI <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="nomor_akta_ahu" 
-                                           class="form-control @error('nomor_akta_ahu') is-invalid @enderror" 
-                                           value="{{ old('nomor_akta_ahu') }}" 
+                                           class="form-control <?php $__errorArgs = ['nomor_akta_ahu'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           value="<?php echo e(old('nomor_akta_ahu')); ?>" 
                                            placeholder="Masukkan nomor akta AHU">
-                                    @error('nomor_akta_ahu')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['nomor_akta_ahu'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -430,12 +637,26 @@
                                         Upload Akta AHU Kementerian Hukum RI <span class="text-danger">*</span>
                                     </label>
                                     <input type="file" name="file_akta_ahu" 
-                                           class="form-control @error('file_akta_ahu') is-invalid @enderror" 
+                                           class="form-control <?php $__errorArgs = ['file_akta_ahu'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            accept=".pdf">
                                     <small class="form-text text-muted">Format: PDF (Max: 2MB)</small>
-                                    @error('file_akta_ahu')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['file_akta_ahu'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
@@ -443,19 +664,33 @@
                                         Upload Anggaran Dasar/Anggaran Rumah Tangga (AD/ART) <span class="text-danger">*</span>
                                     </label>
                                     <input type="file" name="file_ad_art" 
-                                           class="form-control @error('file_ad_art') is-invalid @enderror" 
+                                           class="form-control <?php $__errorArgs = ['file_ad_art'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            accept=".pdf">
                                     <small class="form-text text-muted">Format: PDF (Max: 2MB)</small>
-                                    @error('file_ad_art')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['file_ad_art'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        {{-- STEP 5: TERMS AND CONDITIONS --}}
+                        
                         <div class="mb-4">
                             <div class="card border-warning">
                                 <div class="card-body">
@@ -465,27 +700,41 @@
                                     </h6>
                                     
                                     <div class="form-check">
-                                        <input class="form-check-input @error('persetujuan_terms') is-invalid @enderror" 
+                                        <input class="form-check-input <?php $__errorArgs = ['persetujuan_terms'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                                type="checkbox" 
                                                name="persetujuan_terms" 
                                                id="persetujuan_terms" 
                                                value="1"
-                                               {{ old('persetujuan_terms') ? 'checked' : '' }} 
+                                               <?php echo e(old('persetujuan_terms') ? 'checked' : ''); ?> 
                                                required>
                                         <label class="form-check-label" for="persetujuan_terms">
                                             Saya menyatakan bahwa informasi yang diperoleh <strong>tidak akan disalahgunakan</strong> 
                                             dan <strong>hanya digunakan sebagaimana mestinya</strong> sesuai dengan tujuan yang telah saya sampaikan. 
                                             Saya memahami dan bertanggung jawab penuh atas penggunaan informasi yang diberikan.
                                         </label>
-                                        @error('persetujuan_terms')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['persetujuan_terms'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- SUBMIT BUTTON --}}
+                        
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="bi bi-send-fill me-2"></i>
@@ -497,7 +746,7 @@
             </div>
         </div>
 
-        {{-- SIDEBAR INFO --}}
+        
         <div class="col-md-4">
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-body">
@@ -532,9 +781,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const kategoriOptions = document.querySelectorAll('.kategori-option');
@@ -653,4 +902,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ppid-website\ppidwebsite\resources\views/frontend/permohonan/index.blade.php ENDPATH**/ ?>

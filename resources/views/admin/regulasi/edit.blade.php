@@ -28,6 +28,7 @@
                             <option value="Peraturan Pemerintah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Pemerintah' ? 'selected' : '' }}>Peraturan Pemerintah</option>
                             <option value="Peraturan Menteri" {{ old('kategori', $regulasi->kategori) == 'Peraturan Menteri' ? 'selected' : '' }}>Peraturan Menteri</option>
                             <option value="Peraturan Daerah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Daerah' ? 'selected' : '' }}>Peraturan Daerah</option>
+                            <option value="Surat Edaran" {{ old('kategori', $regulasi->kategori) == 'Surat Edaran' ? 'selected' : '' }}>Surat Edaran</option>
                             <option value="Keputusan" {{ old('kategori', $regulasi->kategori) == 'Keputusan' ? 'selected' : '' }}>Keputusan</option>
                             <option value="Lainnya" {{ old('kategori', $regulasi->kategori) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
