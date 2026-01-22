@@ -8,6 +8,7 @@ use App\Models\Keberatan;
 use App\Models\Permohonan;
 use App\Services\GraphMailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class KeberatanController extends Controller
 {
@@ -41,6 +42,14 @@ class KeberatanController extends Controller
                 ->with('error', 'Nomor registrasi permohonan tidak ditemukan. Silakan periksa kembali.');
         }
 
+        // Cek apakah sudah ada keberatan yang masih aktif (pending atau diproses)
+        if ($permohonan->hasActiveKeberatan()) {
+            $activeKeberatan = $permohonan->getActiveKeberatan();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Anda masih memiliki keberatan yang sedang diproses untuk permohonan ini. Nomor Registrasi Keberatan: ' . $activeKeberatan->nomor_registrasi . ' (Status: ' . $activeKeberatan->status_label . '). Silakan tunggu hingga keberatan sebelumnya selesai diproses oleh admin.');
+        }
+
         // Generate Nomor Registrasi Keberatan
         $nomorRegistrasi = Keberatan::generateNomorRegistrasi();
 
@@ -65,14 +74,38 @@ class KeberatanController extends Controller
         ]);
 
         $mailer = app(GraphMailService::class);
-        $content =
+        
+        // Email ke Admin
+        $adminContent =
             "Keberatan baru diterima:\n\n" .
             "Nomor Registrasi Keberatan : {$keberatan->nomor_registrasi}\n" .
             "Nomor Registrasi Permohonan : {$keberatan->nomor_registrasi_permohonan}\n" .
             "Nama Pemohon                : {$keberatan->nama_pemohon}\n" .
             "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}";
 
-        $mailer->send(config('mail.from.address'), 'Keberatan Baru - PPID', $content);
+        if (!$mailer->send(config('mail.from.address'), 'Keberatan Baru - PPID', $adminContent)) {
+            Log::error('Email admin keberatan gagal dikirim (Graph).');
+        }
+
+        // Email ke Pemohon
+        // Ambil email dari permohonan terkait
+        $permohonan = $keberatan->permohonan;
+        if ($permohonan && $permohonan->email) {
+            $pemohonContent =
+                "Halo {$keberatan->nama_pemohon},\n\n" .
+                "Keberatan Anda telah kami terima.\n" .
+                "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
+                "Nomor Registrasi Permohonan: {$keberatan->nomor_registrasi_permohonan}\n" .
+                "Status awal: Pending\n\n" .
+                "Simpan nomor registrasi ini untuk mengecek status keberatan Anda.";
+
+            if (!$mailer->send($permohonan->email, 'Nomor Registrasi Keberatan - PPID', $pemohonContent)) {
+                Log::error('Email ke pemohon keberatan gagal dikirim (Graph).', [
+                    'keberatan_id' => $keberatan->id,
+                    'email' => $permohonan->email,
+                ]);
+            }
+        }
 
         return redirect()
             ->route('keberatan.index')

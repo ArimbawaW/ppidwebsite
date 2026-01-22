@@ -30,8 +30,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen Regulasi</h2>
-        <p>Kelola peraturan dan regulasi yang dipublikasikan</p>
+        <h2>Kelola Regulasi</h2>
     </div>
     <div>
         <a href="{{ route('admin.regulasi.create') }}" class="btn btn-primary">

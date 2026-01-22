@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Keberatan;
+use App\Services\GraphMailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class KeberatanController extends Controller
@@ -33,13 +35,13 @@ class KeberatanController extends Controller
                 })
                 ->addColumn('status', function ($item) {
                     $badges = [
-                        'pending' => '<span class="badge bg-warning text-dark">Pending</span>',
-                        'diproses' => '<span class="badge bg-info">Diproses</span>',
-                        'selesai' => '<span class="badge bg-success">Selesai</span>',
-                        'ditolak' => '<span class="badge bg-danger">Ditolak</span>',
+                        'pending' => '<span class="badge badge-warning">Pending</span>',
+                        'diproses' => '<span class="badge badge-info">Diproses</span>',
+                        'selesai' => '<span class="badge badge-success">Selesai</span>',
+                        'ditolak' => '<span class="badge badge-danger">Ditolak</span>',
                     ];
                     
-                    return $badges[$item->status] ?? '<span class="badge bg-secondary">' . ucfirst($item->status) . '</span>';
+                    return $badges[$item->status] ?? '<span class="badge badge-secondary">' . ucfirst($item->status) . '</span>';
                 })
                 ->editColumn('created_at', function ($item) {
                     return $item->created_at->format('d M Y H:i');
@@ -73,8 +75,36 @@ class KeberatanController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        $keberatan = Keberatan::findOrFail($id);
+        $keberatan = Keberatan::with('permohonan')->findOrFail($id);
+        $oldStatus = $keberatan->status;
+        $oldStatusLabel = $keberatan->status_label;
+        
         $keberatan->update($validated);
+        
+        // Refresh untuk mendapatkan status_label yang baru
+        $keberatan->refresh();
+
+        // Kirim email pemberitahuan perubahan status ke pemohon
+        $permohonan = $keberatan->permohonan;
+        if ($permohonan && $permohonan->email) {
+            $mailer = app(GraphMailService::class);
+            $content =
+                "Halo {$keberatan->nama_pemohon},\n\n" .
+                "Status keberatan Anda telah berubah.\n" .
+                "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
+                "Nomor Registrasi Permohonan: {$keberatan->nomor_registrasi_permohonan}\n" .
+                "Status sebelumnya: {$oldStatusLabel}\n" .
+                "Status sekarang: {$keberatan->status_label}\n" .
+                ($keberatan->keterangan ? "Keterangan: {$keberatan->keterangan}\n" : '') .
+                "\nAnda dapat mengecek status melalui halaman cek status keberatan.";
+
+            if (!$mailer->send($permohonan->email, 'Pembaruan Status Keberatan - PPID', $content)) {
+                Log::error('Gagal mengirim email status keberatan (Graph).', [
+                    'keberatan_id' => $keberatan->id,
+                    'email' => $permohonan->email,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.keberatan.index')
             ->with('success', 'Status keberatan berhasil diperbarui.');

@@ -29,14 +29,18 @@ class RegulasiController extends Controller
             'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
             'tanggal_terbit' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'is_active' => 'boolean',
+            'status' => 'required|in:aktif,tidak_aktif',
         ]);
 
         if ($request->hasFile('file')) {
             $validated['file'] = $request->file('file')->store('regulasi', 'public');
         }
 
-        $validated['is_active'] = $request->has('is_active');
+        // Convert status string ke boolean
+        $validated['is_active'] = ($request->status === 'aktif');
+
+        // Hapus field 'status' karena tidak ada di database
+        unset($validated['status']);
 
         Regulasi::create($validated);
 
@@ -58,7 +62,7 @@ class RegulasiController extends Controller
             'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
             'tanggal_terbit' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'is_active' => 'boolean',
+            'status' => 'required|in:aktif,tidak_aktif',
         ]);
 
         if ($request->hasFile('file')) {
@@ -68,7 +72,11 @@ class RegulasiController extends Controller
             $validated['file'] = $request->file('file')->store('regulasi', 'public');
         }
 
-        $validated['is_active'] = $request->has('is_active');
+        // Convert status string ke boolean
+        $validated['is_active'] = ($request->status === 'aktif');
+
+        // Hapus field 'status' karena tidak ada di database
+        unset($validated['status']);
 
         $regulasi->update($validated);
 

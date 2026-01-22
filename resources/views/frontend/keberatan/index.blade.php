@@ -307,10 +307,7 @@
                                           rows="6" 
                                           placeholder="Jelaskan secara detail kronologi dan alasan pengajuan keberatan Anda. Semakin lengkap penjelasan Anda, akan memudahkan proses penanganan keberatan."
                                           required>{{ old('uraian_keberatan') }}</textarea>
-                                <small class="form-text text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Jelaskan dengan lengkap dan jelas mengenai kasus keberatan Anda
-                                </small>
+                                
                                 @error('uraian_keberatan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

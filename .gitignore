@@ -17,3 +17,25 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+an
+# Compiled views cache
+/storage/framework/views/*.php
+/storage/framework/sessions/*
+/storage/framework/cache/*
+
+# Uploaded files
+/storage/app/public/*
+
+# Logs
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~

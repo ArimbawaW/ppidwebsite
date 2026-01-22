@@ -556,9 +556,9 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('profil.index') }}">Profil</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.struktur-organisasi') }}">Struktur Organisasi</a></li>
-                            <li><a class="dropdown-item" href="{{ route('profil.dasar-hukum') }}">Dasar Hukum</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.tugas-fungsi') }}">Tugas & Fungsi</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.visi-misi') }}">Visi & Misi</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profil.dasar-hukum') }}">Maklumat</a></li>
                         </ul>
                     </li>
 

@@ -22,8 +22,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen Standar Layanan</h2>
-        <p>Pengelolaan daftar standar layanan yang ditampilkan pada sistem</p>
+        <h2>Kelola Standar Layanan</h2>
     </div>
     <div>
         <a href="{{ route('admin.standar-layanan.create') }}" class="btn btn-primary">

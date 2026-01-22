@@ -22,7 +22,7 @@
 
         {{-- Informasi Berkala --}}
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm hover-card">
+            <div class="card h-100 border-0 shadow hover-card">
                 <div class="card-body text-center p-4">
                     <div class="icon-wrapper mb-3">
                         <i class="bi bi-calendar-check text-primary" style="font-size: 3rem;"></i>
@@ -33,36 +33,16 @@
                         setiap 6 (enam) bulan sekali.
                     </p>
                     <a href="{{ route('halaman-statis.show', 'informasi-berkala') }}"
-                       class="btn btn-outline-primary btn-sm">
+                       class="btn btn-primary btn-sm">
                         Lihat Dokumen <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        {{-- Informasi Setiap Saat --}}
+         {{-- Informasi Serta-Merta --}}
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm hover-card">
-                <div class="card-body text-center p-4">
-                    <div class="icon-wrapper mb-3">
-                        <i class="bi bi-clock-history text-success" style="font-size: 3rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-3">Informasi Setiap Saat</h5>
-                    <p class="text-muted small mb-4">
-                        Informasi yang wajib tersedia setiap saat dan dapat diakses oleh publik
-                        kapan pun dibutuhkan.
-                    </p>
-                    <a href="{{ route('halaman-statis.show', 'informasi-setiap-saat') }}"
-                       class="btn btn-outline-success btn-sm">
-                        Lihat Dokumen <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {{-- Informasi Serta-Merta --}}
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm hover-card">
+            <div class="card h-100 border-0 shadow hover-card">
                 <div class="card-body text-center p-4">
                     <div class="icon-wrapper mb-3">
                         <i class="bi bi-lightning-charge text-warning" style="font-size: 3rem;"></i>
@@ -73,7 +53,27 @@
                         mengancam hajat hidup orang banyak.
                     </p>
                     <a href="{{ route('halaman-statis.show', 'informasi-serta-merta') }}"
-                       class="btn btn-outline-warning btn-sm">
+                       class="btn btn-warning btn-sm">
+                        Lihat Dokumen <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Informasi Setiap Saat --}}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-wrapper mb-3">
+                        <i class="bi bi-clock-history text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Informasi Setiap Saat</h5>
+                    <p class="text-muted small mb-4">
+                        Informasi yang wajib tersedia setiap saat dan dapat diakses oleh publik
+                        kapan pun dibutuhkan.
+                    </p>
+                    <a href="{{ route('halaman-statis.show', 'informasi-setiap-saat') }}"
+                       class="btn btn-success btn-sm">
                         Lihat Dokumen <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>

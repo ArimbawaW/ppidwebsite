@@ -118,4 +118,33 @@ class Permohonan extends Model
     {
         return $query->where('status', 'ditolak');
     }
+
+    /**
+     * Relasi ke Keberatan
+     */
+    public function keberatan()
+    {
+        return $this->hasMany(Keberatan::class, 'permohonan_id');
+    }
+
+    /**
+     * Cek apakah ada keberatan yang masih aktif (pending atau diproses)
+     */
+    public function hasActiveKeberatan(): bool
+    {
+        return $this->keberatan()
+            ->whereIn('status', ['pending', 'diproses'])
+            ->exists();
+    }
+
+    /**
+     * Get keberatan aktif (pending atau diproses)
+     */
+    public function getActiveKeberatan()
+    {
+        return $this->keberatan()
+            ->whereIn('status', ['pending', 'diproses'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+    }
 }

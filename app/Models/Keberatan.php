@@ -70,4 +70,16 @@ class Keberatan extends Model
 
         return $labels[$this->alasan_keberatan] ?? $this->alasan_keberatan;
     }
+
+    // Accessor untuk Label Status
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            'pending' => 'Pending',
+            'diproses' => 'Sedang Diproses',
+            'selesai' => 'Selesai',
+            'ditolak' => 'Ditolak',
+            default => 'Unknown',
+        };
+    }
 }

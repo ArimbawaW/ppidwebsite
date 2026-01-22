@@ -90,7 +90,6 @@
 <div class="page-header">
     <div>
         <h2>Daftar Permohonan</h2>
-        <p>Manajemen dan pemantauan permohonan layanan</p>
     </div>
 </div>
 

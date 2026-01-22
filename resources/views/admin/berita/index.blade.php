@@ -72,8 +72,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen Berita</h2>
-        <p>Kelola berita, artikel, dan pengumuman</p>
+        <h2>Kelola Berita</h2>
     </div>
     <div>
         <a href="{{ route('admin.berita.create') }}" class="btn btn-primary">

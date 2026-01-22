@@ -2,6 +2,10 @@
 
 <?php $__env->startSection('title', $halaman->judul); ?>
 
+<?php
+    use Illuminate\Support\Facades\Storage;
+?>
+
 <?php $__env->startPush('styles'); ?>
 <style>
     /* HEADER - Warna Putih/Abu */
@@ -133,9 +137,14 @@
             
             <ol class="item-list">
                 <?php $__currentLoopData = $section['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <li class="<?php echo e($item['file_url'] ? '' : 'no-link'); ?>">
-                        <?php if($item['file_url']): ?>
-                            <a href="<?php echo e($item['file_url']); ?>" target="_blank">
+                    <?php
+                        $fileLink = !empty($item['file_path'])
+                            ? Storage::url($item['file_path'])
+                            : ($item['file_url'] ?? null);
+                    ?>
+                    <li class="<?php echo e($fileLink ? '' : 'no-link'); ?>">
+                        <?php if($fileLink): ?>
+                            <a href="<?php echo e($fileLink); ?>" target="_blank" rel="noopener">
                                 <i class="bi bi-file-earmark-pdf icon-file"></i>
                                 <?php echo e($item['text']); ?>
 

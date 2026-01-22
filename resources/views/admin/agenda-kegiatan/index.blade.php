@@ -61,11 +61,10 @@
 <div class="page-header">
     <div>
         <h2>Kelola Agenda Kegiatan</h2>
-        <p>Manajemen jadwal dan agenda kegiatan</p>
     </div>
     <div>
         <a href="{{ route('admin.agenda-kegiatan.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i>Tambah Agenda
+            <i class="bi bi-plus-circle me-1"></i> Tambah Agenda
         </a>
     </div>
 </div>

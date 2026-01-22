@@ -1,13 +1,6 @@
 {{-- resources/views/admin/keberatan/action.blade.php --}}
 <div class="btn-group btn-group-sm" role="group">
-    {{-- Quick View --}}
-    <button type="button" 
-            class="btn btn-info text-white" 
-            onclick="quickView({{ $item->id }})"
-            data-bs-toggle="tooltip" 
-            title="Lihat Cepat">
-        <i class="bi bi-eye"></i>
-    </button>
+   
     
     {{-- Detail --}}
     <a href="{{ route('admin.keberatan.show', $item->id) }}" 

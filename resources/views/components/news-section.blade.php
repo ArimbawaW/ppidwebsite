@@ -22,7 +22,13 @@
 
                 <div class="card-body">
                     <h5 class="fw-bold news-title">{{ $berita->judul }}</h5>
-                    <p>{{ Str::limit(strip_tags($berita->konten), 100) }}</p>
+                    
+                    <!-- Tanggal di bawah judul -->
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-calendar3"></i> 
+                        {{ \Carbon\Carbon::parse($berita->created_at)->locale('id')->isoFormat('D MMMM YYYY') }}
+                    </p>
+                    
                     <a href="{{ route('berita.show', $berita->slug) }}"
                        class="btn btn-sm btn-news">
                        Baca Selengkapnya

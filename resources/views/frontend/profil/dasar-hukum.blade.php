@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container my-5">
-    <h2 class="mb-4">Dasar Hukum</h2>
+    <h2 class="mb-4">Maklumat</h2>
     <div class="card">
         <div class="card-body">
             <ul>

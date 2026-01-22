@@ -4,32 +4,6 @@
 
 @push('styles')
 <style>
-    .kategori-option {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #e0e0e0;
-    }
-    
-    .kategori-option:hover {
-        border-color: #0e5b73;
-        background-color: #f0f8ff;
-    }
-    
-    .kategori-option.active {
-        border-color: #0e5b73;
-        background-color: #e6f3f8;
-    }
-    
-    .kategori-option.error {
-        border-color: #dc3545 !important;
-        background-color: #fff5f5;
-        animation: shake 0.5s;
-    }
-    
-    .kategori-option input[type="radio"] {
-        display: none;
-    }
-    
     .dynamic-fields {
         display: none;
         animation: fadeIn 0.5s;
@@ -44,12 +18,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
     
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-        20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-    
     .required-badge {
         background-color: #dc3545;
         color: white;
@@ -57,31 +25,6 @@
         padding: 2px 6px;
         border-radius: 3px;
         margin-left: 5px;
-    }
-    
-    .error-message-kategori {
-        display: none;
-        background-color: #dc3545;
-        color: white;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-top: 12px;
-        animation: slideDown 0.3s ease;
-    }
-    
-    .error-message-kategori.show {
-        display: block;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
 </style>
 @endpush
@@ -104,71 +47,29 @@
                                 <span class="required-badge">WAJIB</span>
                             </h5>
                             
-                            {{-- Hidden radio untuk trigger native validation --}}
-                            <input type="radio" 
-                                   name="kategori_pemohon" 
-                                   value="" 
-                                   id="kategori_validator" 
-                                   style="position: absolute; opacity: 0; pointer-events: none;"
-                                   required
-                                   data-error="Silakan pilih kategori pemohon terlebih dahulu!">
-                            
-                            <div class="row g-3" id="kategoriContainer">
-                                {{-- Perorangan --}}
-                                <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
-                                        <input type="radio" 
-                                               name="kategori_pemohon" 
-                                               value="perorangan" 
-                                               {{ old('kategori_pemohon') == 'perorangan' ? 'checked' : '' }}
-                                               class="kategori-radio">
-                                        <i class="bi bi-person-circle fs-1 d-block text-primary mb-2"></i>
-                                        <strong>Perorangan</strong>
-                                        <small class="d-block text-muted">Individu/Perseorangan</small>
-                                    </label>
-                                </div>
-                                
-                                {{-- Kelompok Orang --}}
-                                <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
-                                        <input type="radio" 
-                                               name="kategori_pemohon" 
-                                               value="kelompok" 
-                                               {{ old('kategori_pemohon') == 'kelompok' ? 'checked' : '' }}
-                                               class="kategori-radio">
-                                        <i class="bi bi-people-fill fs-1 d-block text-success mb-2"></i>
-                                        <strong>Kelompok Orang</strong>
-                                        <small class="d-block text-muted">Organisasi/Komunitas</small>
-                                    </label>
-                                </div>
-                                
-                                {{-- Badan Hukum --}}
-                                <div class="col-md-4">
-                                    <label class="kategori-option p-3 rounded text-center d-block {{ $errors->has('kategori_pemohon') ? 'error' : '' }}">
-                                        <input type="radio" 
-                                               name="kategori_pemohon" 
-                                               value="badan_hukum" 
-                                               {{ old('kategori_pemohon') == 'badan_hukum' ? 'checked' : '' }}
-                                               class="kategori-radio">
-                                        <i class="bi bi-building fs-1 d-block text-warning mb-2"></i>
-                                        <strong>Badan Hukum</strong>
-                                        <small class="d-block text-muted">Perusahaan/Lembaga</small>
-                                    </label>
-                                </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    Pilih Kategori Pemohon <span class="text-danger">*</span>
+                                </label>
+                                <select name="kategori_pemohon" 
+                                        id="kategoriPemohon"
+                                        class="form-select @error('kategori_pemohon') is-invalid @enderror" 
+                                        required>
+                                    <option value="">-- Pilih Kategori Pemohon --</option>
+                                    <option value="perorangan" {{ old('kategori_pemohon') == 'perorangan' ? 'selected' : '' }}>
+                                        Perorangan (Individu/Perseorangan)
+                                    </option>
+                                    <option value="kelompok" {{ old('kategori_pemohon') == 'kelompok' ? 'selected' : '' }}>
+                                        Kelompok Orang (Organisasi/Komunitas)
+                                    </option>
+                                    <option value="badan_hukum" {{ old('kategori_pemohon') == 'badan_hukum' ? 'selected' : '' }}>
+                                        Badan Hukum (Perusahaan/Lembaga)
+                                    </option>
+                                </select>
+                                @error('kategori_pemohon')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            
-                            {{-- Error Message untuk Kategori --}}
-                            <div class="error-message-kategori {{ $errors->has('kategori_pemohon') ? 'show' : '' }}" id="errorKategori">
-                                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                <strong>Silakan pilih kategori pemohon terlebih dahulu!</strong>
-                            </div>
-                            
-                            @error('kategori_pemohon')
-                                <div class="text-danger small mt-2">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ $message }}
-                                </div>
-                            @enderror
                         </div>
 
                         <hr class="my-4">
@@ -271,10 +172,6 @@
                                           class="form-control @error('rincian_informasi') is-invalid @enderror" 
                                           rows="4" 
                                           placeholder="Jelaskan secara detail dan spesifik informasi apa yang Anda butuhkan..." required>{{ old('rincian_informasi') }}</textarea>
-                                <small class="form-text text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Jelaskan informasi yang Anda butuhkan dengan jelas dan spesifik
-                                </small>
                                 @error('rincian_informasi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -289,10 +186,6 @@
                                           class="form-control @error('tujuan_penggunaan') is-invalid @enderror" 
                                           rows="4" 
                                           placeholder="Jelaskan untuk apa informasi ini akan digunakan..." required>{{ old('tujuan_penggunaan') }}</textarea>
-                                <small class="form-text text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Jelaskan tujuan dan penggunaan informasi yang dimohonkan
-                                </small>
                                 @error('tujuan_penggunaan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -537,20 +430,11 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const kategoriOptions = document.querySelectorAll('.kategori-option');
-    const kategoriRadios = document.querySelectorAll('.kategori-radio');
-    const kategoriValidator = document.getElementById('kategori_validator');
-    const formPermohonan = document.getElementById('formPermohonan');
-    const errorKategori = document.getElementById('errorKategori');
-    
-    // Set custom validation message
-    if (kategoriValidator) {
-        kategoriValidator.setCustomValidity('Silakan pilih kategori pemohon terlebih dahulu!');
-    }
+    const kategoriPemohon = document.getElementById('kategoriPemohon');
     
     // Function to show/hide dynamic fields
     function updateDynamicFields() {
-        const selectedKategori = document.querySelector('.kategori-radio:checked');
+        const selectedKategori = kategoriPemohon.value;
         
         // Hide all dynamic fields first
         document.querySelectorAll('.dynamic-fields').forEach(field => {
@@ -561,13 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         if (selectedKategori) {
-            const kategori = selectedKategori.value;
-            const targetFields = document.getElementById(`fields-${kategori}`);
-            
-            // Clear validator karena kategori sudah dipilih
-            if (kategoriValidator) {
-                kategoriValidator.setCustomValidity('');
-            }
+            const targetFields = document.getElementById(`fields-${selectedKategori}`);
             
             if (targetFields) {
                 targetFields.classList.add('show');
@@ -577,80 +455,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-            
-            // Hide error message when category is selected
-            errorKategori.classList.remove('show');
-            kategoriOptions.forEach(opt => opt.classList.remove('error'));
-        } else {
-            // Set validator sebagai invalid jika belum ada yang dipilih
-            if (kategoriValidator) {
-                kategoriValidator.setCustomValidity('Silakan pilih kategori pemohon terlebih dahulu!');
-                kategoriValidator.checked = false;
-            }
         }
     }
     
-    // Handle kategori selection visual feedback
-    kategoriOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            kategoriOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            
-            const radio = this.querySelector('.kategori-radio');
-            if (radio) {
-                radio.checked = true;
-                
-                // Trigger change event
-                radio.dispatchEvent(new Event('change'));
-                updateDynamicFields();
-            }
-        });
-    });
-    
-    // Handle radio change
-    kategoriRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            updateDynamicFields();
-        });
-    });
-    
-    // Form validation sebelum submit
-    formPermohonan.addEventListener('submit', function(e) {
-        const selectedKategori = document.querySelector('.kategori-radio:checked');
-        
-        if (!selectedKategori) {
-            // Trigger native browser validation
-            if (kategoriValidator) {
-                kategoriValidator.setCustomValidity('Silakan pilih kategori pemohon terlebih dahulu!');
-                kategoriValidator.reportValidity();
-            }
-            
-            // Show error styling
-            errorKategori.classList.add('show');
-            kategoriOptions.forEach(opt => opt.classList.add('error'));
-            
-            // Scroll to kategori
-            document.getElementById('kategoriContainer').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-            
-            e.preventDefault();
-            return false;
-        }
-    });
+    // Handle kategori change
+    kategoriPemohon.addEventListener('change', updateDynamicFields);
     
     // Initialize on page load (untuk handle old() values)
-    const checkedRadio = document.querySelector('.kategori-radio:checked');
-    if (checkedRadio) {
-        const parentLabel = checkedRadio.closest('.kategori-option');
-        if (parentLabel) {
-            parentLabel.classList.add('active');
-        }
-        updateDynamicFields();
-    } else {
-        updateDynamicFields();
-    }
+    updateDynamicFields();
 });
 </script>
 @endpush

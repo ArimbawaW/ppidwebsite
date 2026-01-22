@@ -31,6 +31,31 @@
 .table .fas {
     margin-right: 4px;
 }
+
+/* ===== SCROLL HORIZONTAL ===== */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Opsional: Custom scrollbar styling */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 </style>
 @endpush
 
@@ -39,13 +64,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen Keberatan</h2>
-        <p>Pengelolaan dan pemantauan data keberatan layanan informasi</p>
-    </div>
-    <div>
-        <button class="btn btn-outline-secondary" onclick="window.location.reload()">
-            <i class="fas fa-sync-alt me-1"></i> Refresh
-        </button>
+        <h2>Daftar Keberatan</h2>
     </div>
 </div>
 
@@ -77,7 +96,7 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle" id="keberatanTable">
+            <table class="table table-bordered table-hover align-middle" id="keberatanTable" style="white-space: nowrap;">
                 <thead class="table-light">
                     <tr>
                         <th class="text-center" width="50">No</th>
@@ -122,27 +141,18 @@ $(function () {
         serverSide: true,
         ajax: "{{ route('admin.keberatan.index') }}",
         order: [[6, 'desc']],
+        scrollX: true,
         columns: [
             { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
             { data: 'nomor_registrasi' },
             { data: 'nomor_registrasi_permohonan' },
             { data: 'nama_pemohon' },
             { data: 'alasan_keberatan' },
-            {
+            { 
                 data: 'status',
                 className: 'text-center',
-                render: function (data) {
-                    if (data === 'pending') {
-                        return '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>';
-                    }
-                    if (data === 'diproses') {
-                        return '<span class="badge badge-info"><i class="fas fa-spinner"></i> Diproses</span>';
-                    }
-                    if (data === 'selesai') {
-                        return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Selesai</span>';
-                    }
-                    return '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Ditolak</span>';
-                }
+                orderable: true,
+                searchable: true
             },
             { data: 'created_at' },
             {

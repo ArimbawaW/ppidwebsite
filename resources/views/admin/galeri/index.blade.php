@@ -67,12 +67,12 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen Galeri</h2>
-        <p>Kelola galeri foto dan dokumentasi</p>
+        <h2>Kelola Galeri</h2>
+       
     </div>
     <div>
         <a href="{{ route('admin.galeri.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i>Tambah Galeri
+            <i class="bi bi-plus-circle me-1"></i> Tambah Galeri
         </a>
     </div>
 </div>
@@ -200,7 +200,7 @@
             <i class="bi bi-images fs-1 text-muted d-block mb-3"></i>
             <p class="text-muted mb-3">Belum ada galeri foto.</p>
             <a href="{{ route('admin.galeri.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Tambah Galeri Pertama
+                <i class="bi bi-plus-circle me-1"></i> Tambah Galeri Pertama
             </a>
         </div>
 

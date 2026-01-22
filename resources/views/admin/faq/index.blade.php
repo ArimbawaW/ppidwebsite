@@ -24,8 +24,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h2>Manajemen FAQ</h2>
-        <p>Pertanyaan yang sering diajukan oleh pengguna</p>
+        <h2>Kelola FAQ</h2>
     </div>
     <div>
         <a href="{{ route('admin.faq.create') }}" class="btn btn-primary">

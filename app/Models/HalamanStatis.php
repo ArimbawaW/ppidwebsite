@@ -22,7 +22,7 @@ class HalamanStatis extends Model
     {
         return [
             'is_active' => 'boolean',
-            'konten' => 'array', // Auto cast JSON ke array
+            'konten' => 'array',
         ];
     }
 }

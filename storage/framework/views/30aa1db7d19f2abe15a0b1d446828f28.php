@@ -23,7 +23,14 @@
 
                 <div class="card-body">
                     <h5 class="fw-bold news-title"><?php echo e($berita->judul); ?></h5>
-                    <p><?php echo e(Str::limit(strip_tags($berita->konten), 100)); ?></p>
+                    
+                    <!-- Tanggal di bawah judul -->
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-calendar3"></i> 
+                        <?php echo e(\Carbon\Carbon::parse($berita->created_at)->locale('id')->isoFormat('D MMMM YYYY')); ?>
+
+                    </p>
+                    
                     <a href="<?php echo e(route('berita.show', $berita->slug)); ?>"
                        class="btn btn-sm btn-news">
                        Baca Selengkapnya

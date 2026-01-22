@@ -53,11 +53,10 @@
 <div class="page-header">
     <div>
         <h2>Kelola Halaman Statis</h2>
-        <p>Manajemen konten halaman statis website</p>
     </div>
     <div>
         <a href="{{ route('admin.halaman-statis.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i>Tambah Halaman
+            <i class="bi bi-plus-circle me-1"></i> Tambah Halaman
         </a>
     </div>
 </div>

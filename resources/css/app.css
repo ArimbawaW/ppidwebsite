@@ -30,3 +30,18 @@ body {
     background-color: #0b5ed7;
     border-color: #0a58ca;
 }
+
+/* Make placeholder text lighter (less prominent) */
+.form-control::placeholder {
+    color: #adb5bd;
+    opacity: 1; /* Firefox */
+}
+
+/* Legacy placeholder selectors (old Edge/IE) */
+.form-control:-ms-input-placeholder {
+    color: #adb5bd;
+}
+
+.form-control::-ms-input-placeholder {
+    color: #adb5bd;
+}
