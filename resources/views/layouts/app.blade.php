@@ -17,6 +17,72 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
 
     <style>
+
+/* =========================================================
+   NAVBAR CUSTOM - WARNA UTAMA
+   ========================================================= */
+
+.navbar-custom {
+    background-color: #1a6b8a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-custom::after {
+    background: #d5c58a; /* aksen emas tetap */
+}
+
+/* Brand text */
+.navbar-custom .navbar-brand div:first-child {
+    color: #ffffff !important;
+}
+
+.navbar-custom .navbar-brand div:last-child {
+    color: #e6f4f8 !important;
+}
+
+
+/* Nav links */
+.navbar-custom .nav-link {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+.navbar-custom .nav-link:hover {
+    background: #d5c58a !important;
+    color: #1a6b8a !important;
+}
+
+.navbar-custom .nav-link.active {
+    background: #d5c58a !important;
+    color: #1a6b8a !important;
+}
+
+/* Dropdown */
+.navbar-custom .dropdown-menu {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-custom .dropdown-item {
+    font-weight: 600;
+}
+
+.navbar-custom .dropdown-item:hover {
+    background: #1a6b8a;
+    color: #ffffff;
+}
+
+
+/* Toggler */
+.navbar-custom .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.navbar-custom .navbar-toggler-icon {
+    filter: invert(1);
+}
+
         /* ==== STICKY FOOTER ==== */
         html, body {
             height: 100%;
@@ -49,7 +115,7 @@
             margin-left: 0 !important;
         }
 
-        /* Agar navbar menempel kiri */
+        /* Agar navbar tidak menempel kiri */
         .navbar {
             padding-left: 0 !important;
             padding-right: 0 !important;
@@ -57,7 +123,7 @@
         }
 
         .navbar .container-fluid {
-            padding-left: 0 !important;
+            padding-left: 20px !important;
             padding-right: 20px !important;
         }
 
@@ -71,9 +137,29 @@
             background: #d5c58a;
         }
 
-        /* === PERGESERAN LOGO SEDIKIT KE KANAN === */
+        /* Logo tanpa margin berlebih */
         .navbar-brand img {
-            margin-left: 8px !important;
+            margin-left: 0 !important;
+        }
+
+        /* Nav link styling */
+        .nav-link {
+            color: #1a6b8a !important;
+            padding: 6px 14px !important;
+            margin: 0 2px;
+            font-weight: 600;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-custom .nav-link:hover {
+        background: #ffffff !important;
+         color: #1a6b8a !important;
+        }
+
+        .navbar-custom .nav-link.active {
+        background: #ffffff !important;
+        color: #1a6b8a !important;
         }
 
         /* === GALERI LIGHTBOX STYLE === */
@@ -122,9 +208,9 @@
             padding: 15px 20px;
         }
 
-        /* Navbar active state */
-        .nav-link.active {
-            color: #d5c58a !important;
+        /* Logo tanpa margin berlebih */
+        .navbar-brand img {
+            margin-left: 0 !important;
         }
 
         .ppid-link,
@@ -153,8 +239,8 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding-left: 0 !important;
-                padding-right: 12px !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
             }
 
             /* Logo tetap di kiri */
@@ -207,6 +293,34 @@
 
             .navbar-brand {
                 padding-right: 56px;
+            }
+
+            /* Responsive text size */
+            .navbar-brand > div > div:first-child {
+                font-size: 18px !important;
+            }
+            
+            .navbar-brand > div > div:last-child {
+                font-size: 9px !important;
+            }
+            
+            .navbar-brand img {
+                height: 40px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand > div > div:first-child {
+                font-size: 16px !important;
+            }
+            
+            .navbar-brand > div > div:last-child {
+                font-size: 8px !important;
+            }
+            
+            .navbar-brand img {
+                height: 35px !important;
+                margin-right: 8px !important;
             }
         }
 
@@ -504,6 +618,29 @@
                 gap: 10px;
             }
         }
+    @media (min-width: 992px) {
+    .navbar-custom .container-fluid {
+        padding-left: 48px !important;
+    }
+}
+@media (min-width: 992px) {
+    .navbar-custom .navbar-brand img {
+        height: 56px !important;
+        width: auto;
+    }
+
+    .navbar-custom .navbar-brand .brand-title {
+        font-size: 22px;
+        line-height: 1.1;
+        font-weight: 800;
+    }
+
+    .navbar-custom .navbar-brand .brand-subtitle {
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 700;
+    }
+}
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -512,25 +649,24 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #1a6b8a, #003344);">
+    <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
 
             <!-- LOGO + TEKS -->
-            <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="{{ route('home') }}">
-                <img src="{{ asset('images/LogoPKP.png') }}" alt="Logo PKP" height="40" class="me-2">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('home') }}">
+                <img src="{{ asset('images/LogoPKP.png') }}" alt="Logo PKP" height="50" class="me-3">
                 <div>
-                    <div style="font-size: 18px; line-height: 1.2; font-weight: 800; color: #d5c58a;">
+                    <div style="font-size: 22px; line-height: 1.2; font-weight: 800; color: #d5c58a;">
                         PPID
                     </div>
-                    <div style="font-size: 9px; font-weight: 800; line-height: 1.2;">
-                        KEMENTERIAN PERUMAHAN DAN KAWASAN PERMUKIMAN<br>
-                        REPUBLIK INDONESIA
+                    <div style="font-size: 11px; font-weight: 700; line-height: 1.2; color: #1a6b8a; margin-top: 2px;">
+                        KEMENTERIAN PERUMAHAN DAN KAWASAN PERMUKIMAN
                     </div>
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: white;">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: #1a6b8a;">
+                <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -538,7 +674,7 @@
 
                     <!-- Beranda -->
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->routeIs('home') ? 'active' : '' }}" 
+                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" 
                            href="{{ route('home') }}">
                             Beranda
                         </a>
@@ -546,7 +682,7 @@
 
                     <!-- Profil PPID -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white {{ request()->routeIs('profil.*') ? 'active' : '' }}" 
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('profil.*') ? 'active' : '' }}" 
                            href="#" 
                            id="profilDropdown" 
                            role="button" 
@@ -564,7 +700,7 @@
 
                     <!-- Regulasi -->
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->routeIs('regulasi.*') ? 'active' : '' }}" 
+                        <a class="nav-link {{ request()->routeIs('regulasi.*') ? 'active' : '' }}" 
                            href="{{ route('regulasi.index') }}">
                             Regulasi
                         </a>
@@ -572,7 +708,7 @@
 
                     <!-- Informasi Publik -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white {{ request()->routeIs('informasi-publik.*') || request()->routeIs('halaman-statis.*') ? 'active' : '' }}" 
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('informasi-publik.*') || request()->routeIs('halaman-statis.*') ? 'active' : '' }}" 
                            href="#" 
                            role="button" 
                            data-bs-toggle="dropdown">
@@ -587,7 +723,7 @@
 
                     <!-- Standar Layanan -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white {{ request()->routeIs('standar-layanan.*') ? 'active' : '' }}" 
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('standar-layanan.*') ? 'active' : '' }}" 
                            href="#" 
                            role="button" 
                            data-bs-toggle="dropdown">
@@ -614,7 +750,7 @@
 
                     <!-- FAQ -->
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->routeIs('faq.*') ? 'active' : '' }}" 
+                        <a class="nav-link {{ request()->routeIs('faq.*') ? 'active' : '' }}" 
                            href="{{ route('faq.index') }}">
                             FAQ
                         </a>
@@ -622,7 +758,7 @@
 
                     <!-- Berita -->
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->routeIs('berita.*') ? 'active' : '' }}" 
+                        <a class="nav-link {{ request()->routeIs('berita.*') ? 'active' : '' }}" 
                            href="{{ route('berita.index') }}">
                             Berita
                         </a>
@@ -630,7 +766,7 @@
 
                     <!-- Galeri -->
                     <li class="nav-item">
-                        <a class="nav-link text-white {{ request()->routeIs('galeri.*') ? 'active' : '' }}" 
+                        <a class="nav-link {{ request()->routeIs('galeri.*') ? 'active' : '' }}" 
                            href="{{ route('galeri.index') }}">
                             Galeri
                         </a>
@@ -742,7 +878,7 @@
         const lightbox = GLightbox({
             selector: '.glightbox',
             touchNavigation: true,
-            loop: true,
+            loop: true,<nav class="navbar navbar-expand-lg navbar-custom">
             autoplayVideos: true,
             closeButton: true,
             zoomable: true,

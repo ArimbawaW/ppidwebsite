@@ -19,24 +19,24 @@
 
                 <div class="row">
                     <!-- Kategori -->
-                    <div class="col-md-6 mb-3">
-                        <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
-                        <select name="kategori" id="kategori" 
-                                class="form-select @error('kategori') is-invalid @enderror" required>
-                            <option value="">-- Pilih Kategori --</option>
-                            <option value="Undang-Undang" {{ old('kategori', $regulasi->kategori) == 'Undang-Undang' ? 'selected' : '' }}>Undang-Undang</option>
-                            <option value="Peraturan Pemerintah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Pemerintah' ? 'selected' : '' }}>Peraturan Pemerintah</option>
-                            <option value="Peraturan Menteri" {{ old('kategori', $regulasi->kategori) == 'Peraturan Menteri' ? 'selected' : '' }}>Peraturan Menteri</option>
-                            <option value="Peraturan Daerah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Daerah' ? 'selected' : '' }}>Peraturan Daerah</option>
-                            <option value="Surat Edaran" {{ old('kategori', $regulasi->kategori) == 'Surat Edaran' ? 'selected' : '' }}>Surat Edaran</option>
-                            <option value="Keputusan" {{ old('kategori', $regulasi->kategori) == 'Keputusan' ? 'selected' : '' }}>Keputusan</option>
-                            <option value="Lainnya" {{ old('kategori', $regulasi->kategori) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                        </select>
-                        @error('kategori')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
+<div class="col-md-6 mb-3">
+    <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
+    <select name="kategori" id="kategori" 
+            class="form-select @error('kategori') is-invalid @enderror" required>
+        <option value="">-- Pilih Kategori --</option>
+        <option value="Undang-Undang" {{ old('kategori', $regulasi->kategori) == 'Undang-Undang' ? 'selected' : '' }}>Undang-Undang</option>
+        <option value="Peraturan Pemerintah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Pemerintah' ? 'selected' : '' }}>Peraturan Pemerintah</option>
+        <option value="Peraturan Presiden" {{ old('kategori', $regulasi->kategori) == 'Peraturan Presiden' ? 'selected' : '' }}>Peraturan Presiden</option>
+        <option value="Peraturan Menteri" {{ old('kategori', $regulasi->kategori) == 'Peraturan Menteri' ? 'selected' : '' }}>Peraturan Menteri</option>
+        <option value="Peraturan Daerah" {{ old('kategori', $regulasi->kategori) == 'Peraturan Daerah' ? 'selected' : '' }}>Peraturan Daerah</option>
+        <option value="Surat Edaran" {{ old('kategori', $regulasi->kategori) == 'Surat Edaran' ? 'selected' : '' }}>Surat Edaran</option>
+        <option value="Keputusan" {{ old('kategori', $regulasi->kategori) == 'Keputusan' ? 'selected' : '' }}>Keputusan</option>
+        <option value="Lainnya" {{ old('kategori', $regulasi->kategori) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+    </select>
+    @error('kategori')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
                     <!-- Nomor -->
                     <div class="col-md-6 mb-3">
                         <label for="nomor" class="form-label">Nomor Regulasi <span class="text-danger">*</span></label>
@@ -57,18 +57,6 @@
                                value="{{ old('judul', $regulasi->judul) }}" 
                                placeholder="Masukkan judul lengkap regulasi" required>
                         @error('judul')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Tahun -->
-                    <div class="col-md-4 mb-3">
-                        <label for="tahun" class="form-label">Tahun <span class="text-danger">*</span></label>
-                        <input type="number" name="tahun" id="tahun" 
-                               class="form-control @error('tahun') is-invalid @enderror" 
-                               value="{{ old('tahun', $regulasi->tahun) }}" 
-                               min="1900" max="2100" required>
-                        @error('tahun')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

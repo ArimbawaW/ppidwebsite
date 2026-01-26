@@ -69,13 +69,13 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select name="kategori" class="form-select">
-                        <option value="">Semua Kategori</option>
-                        @foreach(['Undang-Undang','Peraturan Pemerintah','Peraturan Menteri','Peraturan Daerah','Keputusan','Lainnya'] as $kat)
-                            <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>
-                                {{ $kat }}
-                            </option>
-                        @endforeach
+                   <select name="kategori" class="form-select">
+                    <option value="">Semua Kategori</option>
+                     @foreach(['Undang-Undang','Peraturan Pemerintah','Peraturan Presiden','Peraturan Menteri','Peraturan Daerah','Keputusan','Lainnya'] as $kat)
+                    <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>
+                 {{ $kat }}
+                        </option>
+                     @endforeach
                     </select>
                 </div>
 
@@ -107,7 +107,7 @@
                         <th width="15%" class="text-center">Kategori</th>
                         <th width="15%">Nomor</th>
                         <th width="30%">Judul</th>
-                        <th width="10%" class="text-center">Tahun</th>
+                        <th width="15%" class="text-center">Tanggal Terbit</th>
                         <th width="10%" class="text-center">Status</th>
                         <th width="15%">Aksi</th>
                     </tr>
@@ -118,16 +118,17 @@
                         <td>{{ $regulasi->firstItem() + $index }}</td>
 
                         <td class="text-center">
-                            @php
-                                $kategoriClass = match($reg->kategori) {
-                                    'Undang-Undang' => 'bg-primary',
-                                    'Peraturan Pemerintah' => 'bg-success',
-                                    'Peraturan Menteri' => 'bg-info',
-                                    'Peraturan Daerah' => 'bg-warning',
-                                    'Keputusan' => 'bg-danger',
-                                    default => 'bg-secondary'
-                                };
-                            @endphp
+                         @php
+                        $kategoriClass = match($reg->kategori) {
+                            'Undang-Undang' => 'bg-primary',
+                            'Peraturan Pemerintah' => 'bg-success',
+                            'Peraturan Presiden' => 'bg-danger',
+                            'Peraturan Menteri' => 'bg-info',
+                            'Peraturan Daerah' => 'bg-warning',
+                            'Keputusan' => 'bg-danger',
+                            default => 'bg-secondary'
+                            };
+                            @endphp 
                             <span class="badge {{ $kategoriClass }}">
                                 {{ $reg->kategori }}
                             </span>
@@ -137,7 +138,13 @@
 
                         <td>{{ Str::limit($reg->judul, 60) }}</td>
 
-                        <td class="text-center">{{ $reg->tahun ?? '-' }}</td>
+                        <td class="text-center">
+                         {{ $reg->tanggal_terbit 
+                        ? \Carbon\Carbon::parse($reg->tanggal_terbit)->format('d-m-Y') 
+                            : '-' 
+                        }}
+                        </td>
+
 
                         <td class="text-center">
                             @if($reg->is_active)

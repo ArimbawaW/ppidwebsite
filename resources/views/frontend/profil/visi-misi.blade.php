@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Struktur Organisasi - PPID')
+@section('title', 'Visi-Misi - PPID')
 
 @section('content')
 <div class="container my-5">

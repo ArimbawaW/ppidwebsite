@@ -9,11 +9,35 @@ use Illuminate\Support\Facades\Storage;
 
 class RegulasiController extends Controller
 {
-    public function index()
-    {
-        $regulasi = Regulasi::orderBy('tanggal_terbit', 'desc')->paginate(15);
-        return view('admin.regulasi.index', compact('regulasi'));
+    public function index(Request $request)
+{
+    $query = Regulasi::query();
+
+    // Filter pencarian judul / nomor
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('judul', 'like', '%' . $request->search . '%')
+              ->orWhere('nomor', 'like', '%' . $request->search . '%');
+        });
     }
+
+    // Filter kategori
+    if ($request->filled('kategori')) {
+        $query->where('kategori', $request->kategori);
+    }
+
+    // Filter status
+    if ($request->filled('status')) {
+        $query->where('is_active', $request->status === 'aktif');
+    }
+
+    $regulasi = $query
+        ->orderBy('tanggal_terbit', 'desc')
+        ->paginate(15)
+        ->withQueryString();
+
+    return view('admin.regulasi.index', compact('regulasi'));
+}
 
     public function create()
     {
@@ -23,10 +47,10 @@ class RegulasiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
+            'judul' => 'required|string',
             'nomor' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
+           'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Presiden,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
             'tanggal_terbit' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'status' => 'required|in:aktif,tidak_aktif',
@@ -56,11 +80,10 @@ class RegulasiController extends Controller
     public function update(Request $request, Regulasi $regulasi)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
+            'judul' => 'required|string',
             'nomor' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
-            'tanggal_terbit' => 'nullable|date',
+            'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Presiden,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
             'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'status' => 'required|in:aktif,tidak_aktif',
         ]);

@@ -73,7 +73,7 @@ class HalamanStatisController extends Controller
         ]);
 
         $oldFilePaths = $this->extractFilePaths($halamanStatis->konten ?? []);
-        $konten = $this->buildKonten($request, $halamanStatis->konten ?? []);
+        $konten = $this->buildKontenUpdate($request, $halamanStatis->konten ?? []);
         $newFilePaths = $this->extractFilePaths($konten);
         $pathsToDelete = array_diff($oldFilePaths, $newFilePaths);
 
@@ -106,12 +106,11 @@ class HalamanStatisController extends Controller
     }
 
     /**
-     * Susun konten halaman beserta file upload per item.
+     * Susun konten halaman beserta file upload per item (untuk Create)
      */
-    private function buildKonten(Request $request, array $existingKonten = []): array
+    private function buildKonten(Request $request): array
     {
         $konten = [];
-        $existingFiles = $request->input('existing_files', []);
 
         if ($request->has('sections')) {
             foreach ($request->sections as $index => $section) {
@@ -119,19 +118,63 @@ class HalamanStatisController extends Controller
 
                 if (isset($request->items[$index])) {
                     foreach ($request->items[$index] as $itemIndex => $itemText) {
-                        $filePath = $existingFiles[$index][$itemIndex] ?? null;
+                        $filePath = null;
 
                         if ($request->hasFile("files.$index.$itemIndex")) {
                             $filePath = $this->handleFileUpload(
                                 $request->file("files.$index.$itemIndex"),
-                                'halaman-statis',
-                                $filePath
+                                'halaman-statis'
                             );
                         }
 
                         $items[] = [
                             'text' => $itemText,
                             'file_url' => $request->file_urls[$index][$itemIndex] ?? null,
+                            'file_path' => $filePath,
+                        ];
+                    }
+                }
+
+                $konten[] = [
+                    'section' => $section,
+                    'items' => $items,
+                ];
+            }
+        }
+
+        return $konten;
+    }
+
+    /**
+     * Susun konten halaman beserta file upload per item (untuk Update)
+     * Method terpisah agar lebih jelas handling existing files
+     */
+    private function buildKontenUpdate(Request $request, array $existingKonten = []): array
+    {
+        $konten = [];
+        $existingFiles = $request->input('existing_files', []);
+
+        if ($request->has('sections')) {
+            foreach ($request->sections as $sectionIndex => $section) {
+                $items = [];
+
+                if (isset($request->items[$sectionIndex])) {
+                    foreach ($request->items[$sectionIndex] as $itemIndex => $itemText) {
+                        // Ambil existing file path jika ada
+                        $filePath = $existingFiles[$sectionIndex][$itemIndex] ?? null;
+
+                        // Jika ada file baru yang diupload, replace existing
+                        if ($request->hasFile("files.$sectionIndex.$itemIndex")) {
+                            $filePath = $this->handleFileUpload(
+                                $request->file("files.$sectionIndex.$itemIndex"),
+                                'halaman-statis',
+                                $filePath // Pass existing path untuk dihapus
+                            );
+                        }
+
+                        $items[] = [
+                            'text' => $itemText,
+                            'file_url' => $request->input("file_urls.$sectionIndex.$itemIndex") ?? null,
                             'file_path' => $filePath,
                         ];
                     }
