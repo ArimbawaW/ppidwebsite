@@ -50,7 +50,7 @@
 
             {{-- Logo Area --}}
             <div class="logo-area">
-                <img src="{{ asset('images/logoppid.png') }}" alt="Logo PPID">
+                <img src="{{ asset('build/assets/logoppid.png') }}" alt="Logo PPID">
             </div>
 
             <div class="menu-title">Menu Utama</div>
@@ -84,13 +84,16 @@
                         <i class="bi bi-newspaper"></i> Berita
                     </a>
                 </li>
-
-                
-
+                <li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('admin.banner-slider.*') ? 'active' : '' }}"
+       href="{{ route('admin.banner-slider.index') }}">
+        <i class="bi bi-images"></i> Banner Slider
+    </a>
+</li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.halaman-statis.*') ? 'active' : '' }}"
                        href="{{ route('admin.halaman-statis.index') }}">
-                        <i class="bi bi-file-earmark-text"></i> Halaman Statis
+                        <i class="bi bi-file-earmark-text"></i> Informasi Publik
                     </a>
                 </li>
 

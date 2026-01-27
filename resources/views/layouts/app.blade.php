@@ -12,6 +12,7 @@
 
     <!-- Google Fonts Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/agenda.css') }}">    
 
     <!-- GLightbox CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -800,12 +801,10 @@
         @yield('content')
     </main>
 
-    <!-- FOOTER REDESIGN -->
-    <footer>
+  <footer>
         <div class="footer-container">
             <div class="footer-grid">
                 
-                <!-- Logo & Brand -->
                 <div class="footer-logo-section">
                     <img src="{{ asset('images/LogoPKP.png') }}" alt="Logo PKP">
                     <div class="footer-brand-text">
@@ -818,7 +817,6 @@
                     </div>
                 </div>
 
-                <!-- Address & Visitor Counter -->
                 <div class="footer-address">
                     <h3>Alamat</h3>
                     <p>
@@ -842,7 +840,6 @@
                     </div>
                 </div>
 
-                <!-- Contact -->
                 <div class="footer-contact">
                     <h3>Hubungi Kami:</h3>
                     
@@ -852,19 +849,16 @@
                     </a>
 
                     <div class="social-media">
-                        <a href="#" class="social-link" title="Website">
+                        <a href="https://pkp.go.id" target="_blank" class="social-link" title="Website">
                             <i class="bi bi-globe"></i>
                         </a>
                         <a href="https://www.instagram.com/ppid.kemenpkp/" target="_blank" class="social-link" title="Instagram">
                             <i class="bi bi-instagram"></i>
                         </a>
-                        <a href="https://www.youtube.com/@KementerianPKP" class="social-link" title="YouTube">
+                        <a href="https://www.youtube.com/@KementerianPKP" target="_blank" class="social-link" title="YouTube">
                             <i class="bi bi-youtube"></i>
                         </a>
-                        <a href="#" class="social-link" title="TikTok">
-                            <i class="bi bi-tiktok"></i>
-                        </a>
-                    </div>
+                        </div>
                 </div>
 
             </div>

@@ -2,16 +2,32 @@
 
 @section('title', 'Dashboard - PPID Admin')
 
+@push('styles')
+<style>
+    .stat-card {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 5px solid;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 600;
+    }
+</style>
+@endpush
+
 @section('content')
 
 {{-- PAGE HEADER --}}
-<div class="page-header">
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2>Dashboard</h2>
-        <p>Selamat datang di Panel Admin PPID Kementerian PKP</p>
+        <h2 class="fw-bold">Dashboard</h2>
+        <p class="text-muted">Selamat datang di Panel Admin PPID Kementerian PKP</p>
     </div>
-    <div>
-        <span class="text-muted">
+    <div class="text-end">
+        <span class="badge bg-light text-dark border">
             <i class="bi bi-calendar3 me-1"></i>
             {{ now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
         </span>
@@ -24,11 +40,11 @@
         <div class="stat-card" style="border-left-color: #ffc107;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <p class="mb-1" style="font-size: 14px; color: #6c757d; font-weight: 600;">Permohonan Pending</p>
-                    <h3 style="color: #ffc107;">{{ $stats['permohonan_pending'] }}</h3>
+                    <p class="mb-1 text-muted small fw-bold">PERLU VERIFIKASI</p>
+                    <h3 class="fw-bold" style="color: #ffc107;">{{ $stats['permohonan_pending'] ?? 0 }}</h3>
                 </div>
-                <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px;">
-                    <i class="bi bi-envelope" style="font-size: 24px; color: #ffc107;"></i>
+                <div style="background: rgba(255, 193, 7, 0.1); padding: 12px; border-radius: 10px;">
+                    <i class="bi bi-envelope-exclamation" style="font-size: 24px; color: #ffc107;"></i>
                 </div>
             </div>
         </div>
@@ -38,11 +54,11 @@
         <div class="stat-card" style="border-left-color: #0dcaf0;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <p class="mb-1" style="font-size: 14px; color: #6c757d; font-weight: 600;">Keberatan Pending</p>
-                    <h3 style="color: #0dcaf0;">{{ $stats['keberatan_pending'] }}</h3>
+                    <p class="mb-1 text-muted small fw-bold">KEBERATAN PENDING</p>
+                    <h3 class="fw-bold" style="color: #0dcaf0;">{{ $stats['keberatan_pending'] ?? 0 }}</h3>
                 </div>
-                <div style="background: rgba(13, 202, 240, 0.1); padding: 15px; border-radius: 10px;">
-                    <i class="bi bi-exclamation-circle" style="font-size: 24px; color: #0dcaf0;"></i>
+                <div style="background: rgba(13, 202, 240, 0.1); padding: 12px; border-radius: 10px;">
+                    <i class="bi bi-exclamation-octagon" style="font-size: 24px; color: #0dcaf0;"></i>
                 </div>
             </div>
         </div>
@@ -52,35 +68,45 @@
         <div class="stat-card" style="border-left-color: #198754;">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <p class="mb-1" style="font-size: 14px; color: #6c757d; font-weight: 600;">Total Berita</p>
-                    <h3 style="color: #198754;">{{ $stats['berita_total'] }}</h3>
+                    <p class="mb-1 text-muted small fw-bold">TOTAL BERITA</p>
+                    <h3 class="fw-bold" style="color: #198754;">{{ $stats['berita_total'] ?? 0 }}</h3>
                 </div>
-                <div style="background: rgba(25, 135, 84, 0.1); padding: 15px; border-radius: 10px;">
+                <div style="background: rgba(25, 135, 84, 0.1); padding: 12px; border-radius: 10px;">
                     <i class="bi bi-newspaper" style="font-size: 24px; color: #198754;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    
+    <div class="col-md-3 mb-3">
+        <div class="stat-card" style="border-left-color: #6f42c1;">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="mb-1 text-muted small fw-bold">TOTAL PERMOHONAN</p>
+                    <h3 class="fw-bold" style="color: #6f42c1;">{{ $stats['total_permohonan'] ?? 0 }}</h3>
+                </div>
+                <div style="background: rgba(111, 66, 193, 0.1); padding: 12px; border-radius: 10px;">
+                    <i class="bi bi-files" style="font-size: 24px; color: #6f42c1;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- RECENT DATA --}}
 <div class="row">
-    
     {{-- Permohonan Terbaru --}}
     <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-envelope me-2"></i>
-                    Permohonan Terbaru
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-clock-history me-2 text-primary"></i>Permohonan Terbaru
                 </h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>No. Registrasi</th>
                                 <th>Nama</th>
@@ -91,40 +117,37 @@
                         <tbody>
                             @forelse($permohonanTerbaru as $item)
                             <tr>
-                                <td><strong>{{ $item->nomor_registrasi }}</strong></td>
-                                <td>{{ Str::limit($item->nama ?? '-', 20) }}</td>
                                 <td>
-                                    @if($item->status === 'pending')
-                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    <a href="{{ route('admin.permohonan.show', $item) }}" class="fw-bold text-decoration-none">
+                                        {{ $item->nomor_registrasi }}
+                                    </a>
+                                </td>
+                                <td>{{ Str::limit($item->nama, 15) }}</td>
+                                <td>
+                                    @if($item->status === 'perlu_verifikasi')
+                                        <span class="badge bg-warning text-dark">Verifikasi</span>
                                     @elseif($item->status === 'diproses')
-                                        <span class="badge bg-info">Diproses</span>
-                                    @elseif($item->status === 'disetujui')
-                                        <span class="badge bg-success">Disetujui</span>
+                                        <span class="badge bg-info text-white">Diproses</span>
+                                    @elseif(str_contains($item->status, 'dikabulkan'))
+                                        <span class="badge bg-success">Dikabulkan</span>
                                     @elseif($item->status === 'ditolak')
                                         <span class="badge bg-danger">Ditolak</span>
                                     @else
-                                        <span class="badge bg-secondary">{{ ucfirst($item->status) }}</span>
+                                        <span class="badge bg-secondary">{{ $item->status }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
-                                </td>
+                                <td><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    <i class="bi bi-inbox fs-3"></i>
-                                    <p class="mb-0 mt-2">Tidak ada data</p>
-                                </td>
+                                <td colspan="4" class="text-center py-4 text-muted">Belum ada permohonan masuk</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center mt-3">
-                    <a href="{{ route('admin.permohonan.index') }}" class="btn btn-primary btn-sm">
-                        Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
+                <div class="d-grid mt-3">
+                    <a href="{{ route('admin.permohonan.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
                 </div>
             </div>
         </div>
@@ -132,17 +155,16 @@
 
     {{-- Keberatan Terbaru --}}
     <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-exclamation-circle me-2"></i>
-                    Keberatan Terbaru
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Keberatan Terbaru
                 </h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>No. Registrasi</th>
                                 <th>Nama</th>
@@ -153,79 +175,64 @@
                         <tbody>
                             @forelse($keberatanTerbaru as $item)
                             <tr>
-                                <td><strong>{{ $item->nomor_registrasi }}</strong></td>
-                                <td>{{ Str::limit($item->nama_pemohon ?? '-', 20) }}</td>
+                                <td><span class="fw-bold">{{ $item->nomor_registrasi }}</span></td>
+                                <td>{{ Str::limit($item->nama_pemohon ?? '-', 15) }}</td>
                                 <td>
                                     @if($item->status === 'pending')
                                         <span class="badge bg-warning text-dark">Pending</span>
-                                    @elseif($item->status === 'diproses')
-                                        <span class="badge bg-info">Diproses</span>
                                     @elseif($item->status === 'selesai')
                                         <span class="badge bg-success">Selesai</span>
-                                    @elseif($item->status === 'ditolak')
-                                        <span class="badge bg-danger">Ditolak</span>
                                     @else
-                                        <span class="badge bg-secondary">{{ ucfirst($item->status) }}</span>
+                                        <span class="badge bg-secondary">{{ $item->status }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
-                                </td>
+                                <td><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    <i class="bi bi-inbox fs-3"></i>
-                                    <p class="mb-0 mt-2">Tidak ada data</p>
-                                </td>
+                                <td colspan="4" class="text-center py-4 text-muted">Tidak ada keberatan baru</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center mt-3">
-                    <a href="{{ route('admin.keberatan.index') }}" class="btn btn-primary btn-sm">
-                        Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
+                <div class="d-grid mt-3">
+                    <a href="{{ route('admin.keberatan.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 {{-- QUICK ACTIONS --}}
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">
-            <i class="bi bi-lightning me-2"></i>
-            Quick Actions
-        </h5>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i>Aksi Cepat</h5>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('admin.berita.create') }}" class="btn btn-outline-primary w-100 py-3">
-                    <i class="bi bi-plus-circle fs-4 d-block mb-2"></i>
-                    <span class="fw-semibold">Tambah Berita</span>
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <a href="{{ route('admin.berita.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-newspaper fs-3 mb-2 text-primary"></i>
+                    <span class="small fw-bold">Tambah Berita</span>
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('admin.informasi-publik.create') }}" class="btn btn-outline-success w-100 py-3">
-                    <i class="bi bi-file-earmark-plus fs-4 d-block mb-2"></i>
-                    <span class="fw-semibold">Tambah Informasi</span>
+            <div class="col-6 col-md-3">
+                <a href="{{ route('admin.informasi-publik.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-file-earmark-text fs-3 mb-2 text-success"></i>
+                    <span class="small fw-bold">Tambah Info</span>
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('admin.galeri.create') }}" class="btn btn-outline-info w-100 py-3">
-                    <i class="bi bi-image fs-4 d-block mb-2"></i>
-                    <span class="fw-semibold">Upload Galeri</span>
+            <div class="col-6 col-md-3">
+                <a href="{{ route('admin.galeri.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-images fs-3 mb-2 text-info"></i>
+                    <span class="small fw-bold">Upload Galeri</span>
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('admin.agenda-kegiatan.create') }}" class="btn btn-outline-warning w-100 py-3">
-                    <i class="bi bi-calendar-plus fs-4 d-block mb-2"></i>
-                    <span class="fw-semibold">Tambah Agenda</span>
+            <div class="col-6 col-md-3">
+                <a href="{{ route('admin.agenda-kegiatan.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-calendar-event fs-3 mb-2 text-warning"></i>
+                    <span class="small fw-bold">Tambah Agenda</span>
                 </a>
             </div>
         </div>

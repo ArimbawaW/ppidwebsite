@@ -128,7 +128,7 @@ class PermohonanController extends Controller
                 'rincian_informasi' => $validated['rincian_informasi'],
                 'tujuan_penggunaan' => $validated['tujuan_penggunaan'],
                 'persetujuan_terms' => true,
-                'status' => 'pending',
+                'status' => 'perlu_verifikasi',
             ];
 
             // Upload file berdasarkan kategori
@@ -188,6 +188,8 @@ class PermohonanController extends Controller
                     'nomor_registrasi' => $permohonan->nomor_registrasi,
                     'kategori' => $permohonan->kategori_pemohon,
                     'nama' => $permohonan->nama
+                    
+                    
                 ]);
                 
             } catch (Exception $e) {
@@ -220,11 +222,11 @@ class PermohonanController extends Controller
             }
 
             $pemohonContent =
-                "Halo {$permohonan->nama},\n\n" .
-                "Permohonan informasi Anda telah kami terima.\n" .
-                "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
-                "Status awal: Pending\n\n" .
-                "Simpan nomor registrasi ini untuk mengecek status permohonan Anda.";
+             "Halo {$permohonan->nama},\n\n" .
+            "Permohonan informasi Anda telah kami terima.\n" .
+            "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
+            "Status awal: Menunggu Verifikasi\n\n" .
+            "Simpan nomor registrasi ini untuk mengecek status permohonan Anda.";
 
             if (!$mailer->send($permohonan->email, 'Nomor Registrasi Permohonan Informasi - PPID', $pemohonContent)) {
                 Log::error('Email ke pemohon gagal dikirim (Graph).');

@@ -11,7 +11,6 @@
             {{-- Header --}}
             <div class="text-center mb-5">
                 <h2 class="fw-bold mb-3">Formulir Pengajuan Keberatan</h2>
-               
             </div>
 
             {{-- Alert Success --}}
@@ -22,16 +21,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
-
-            {{-- Alert Error --}}
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
+            
             {{-- Form --}}
             <div class="card shadow-sm">
                 <div class="card-body p-4">
@@ -108,6 +98,27 @@
                                     @enderror
                                 </div>
 
+                                {{-- Email (BARU DITAMBAHKAN) --}}
+                                <div class="col-md-12 mb-3">
+                                    <label for="email" class="form-label fw-bold">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control @error('email') is-invalid @enderror" 
+                                           id="email" 
+                                           name="email" 
+                                           value="{{ old('email') }}" 
+                                           placeholder="Contoh: email@example.com"
+                                           required>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Email harus sama dengan yang digunakan saat mengajukan permohonan
+                                    </small>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 {{-- Alamat --}}
                                 <div class="col-md-8 mb-3">
                                     <label for="alamat" class="form-label fw-bold">
@@ -171,7 +182,6 @@
                                 <i class="bi bi-3-circle-fill me-2"></i>Rincian Informasi
                             </h5>
 
-                            {{-- Informasi yang Diminta --}}
                             <div class="mb-3">
                                 <label for="informasi_diminta" class="form-label fw-bold">
                                     Informasi yang Diminta <span class="text-danger">*</span>
@@ -187,7 +197,6 @@
                                 @enderror
                             </div>
 
-                            {{-- Tujuan Penggunaan --}}
                             <div class="mb-3">
                                 <label for="tujuan_penggunaan" class="form-label fw-bold">
                                     Tujuan Penggunaan Informasi <span class="text-danger">*</span>
@@ -219,66 +228,31 @@
 
                                 <div class="list-group">
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="penolakan_pasal_17"
-                                               {{ old('alasan_keberatan') == 'penolakan_pasal_17' ? 'checked' : '' }}
-                                               required>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="penolakan_pasal_17" {{ old('alasan_keberatan') == 'penolakan_pasal_17' ? 'checked' : '' }} required>
                                         <strong>a.</strong> Penolakan berdasarkan alasan sebagaimana dimaksud dalam Pasal 17 UU KIP
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="tidak_disediakan_berkala"
-                                               {{ old('alasan_keberatan') == 'tidak_disediakan_berkala' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="tidak_disediakan_berkala" {{ old('alasan_keberatan') == 'tidak_disediakan_berkala' ? 'checked' : '' }}>
                                         <strong>b.</strong> Tidak disediakan informasi berkala
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="tidak_ditanggapi"
-                                               {{ old('alasan_keberatan') == 'tidak_ditanggapi' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="tidak_ditanggapi" {{ old('alasan_keberatan') == 'tidak_ditanggapi' ? 'checked' : '' }}>
                                         <strong>c.</strong> Tidak ditanggapinya permintaan informasi
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="tidak_sesuai_permintaan"
-                                               {{ old('alasan_keberatan') == 'tidak_sesuai_permintaan' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="tidak_sesuai_permintaan" {{ old('alasan_keberatan') == 'tidak_sesuai_permintaan' ? 'checked' : '' }}>
                                         <strong>d.</strong> Permintaan informasi tidak ditanggapi sebagaimana yang diminta
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="tidak_dipenuhi"
-                                               {{ old('alasan_keberatan') == 'tidak_dipenuhi' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="tidak_dipenuhi" {{ old('alasan_keberatan') == 'tidak_dipenuhi' ? 'checked' : '' }}>
                                         <strong>e.</strong> Tidak dipenuhinya permintaan informasi
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="biaya_tidak_wajar"
-                                               {{ old('alasan_keberatan') == 'biaya_tidak_wajar' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="biaya_tidak_wajar" {{ old('alasan_keberatan') == 'biaya_tidak_wajar' ? 'checked' : '' }}>
                                         <strong>f.</strong> Pengenaan biaya yang tidak wajar
                                     </label>
-                                    
                                     <label class="list-group-item">
-                                        <input class="form-check-input me-3" 
-                                               type="radio" 
-                                               name="alasan_keberatan" 
-                                               value="melebihi_jangka_waktu"
-                                               {{ old('alasan_keberatan') == 'melebihi_jangka_waktu' ? 'checked' : '' }}>
+                                        <input class="form-check-input me-3" type="radio" name="alasan_keberatan" value="melebihi_jangka_waktu" {{ old('alasan_keberatan') == 'melebihi_jangka_waktu' ? 'checked' : '' }}>
                                         <strong>g.</strong> Penyampaian informasi yang melebihi jangka waktu yang diatur dalam UU KIP
                                     </label>
                                 </div>
@@ -305,7 +279,7 @@
                                           id="uraian_keberatan" 
                                           name="uraian_keberatan" 
                                           rows="6" 
-                                          placeholder="Jelaskan secara detail kronologi dan alasan pengajuan keberatan Anda. Semakin lengkap penjelasan Anda, akan memudahkan proses penanganan keberatan."
+                                          placeholder="Jelaskan secara detail kronologi dan alasan pengajuan keberatan Anda."
                                           required>{{ old('uraian_keberatan') }}</textarea>
                                 
                                 @error('uraian_keberatan')
@@ -325,7 +299,6 @@
                                 <i class="bi bi-arrow-left me-2"></i>Kembali
                             </a>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -354,22 +327,9 @@
 
 @push('styles')
 <style>
-.list-group-item {
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.list-group-item:hover {
-    background-color: #f8f9fa;
-}
-
-.list-group-item input[type="radio"]:checked ~ * {
-    font-weight: 600;
-}
-
-.list-group-item:has(input[type="radio"]:checked) {
-    background-color: #e7f3ff;
-    border-color: #0d6efd;
-}
+.list-group-item { cursor: pointer; transition: all 0.3s; }
+.list-group-item:hover { background-color: #f8f9fa; }
+.list-group-item input[type="radio"]:checked ~ * { font-weight: 600; }
+.list-group-item:has(input[type="radio"]:checked) { background-color: #e7f3ff; border-color: #0d6efd; }
 </style>
 @endpush

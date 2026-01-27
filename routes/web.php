@@ -20,6 +20,7 @@ use App\Http\Controllers\Frontend\BeritaController;
 use App\Http\Controllers\Frontend\GaleriController;
 use App\Http\Controllers\Frontend\KontakController;
 use App\Http\Controllers\Frontend\RegulasiController;
+use App\Http\Controllers\Frontend\AgendaKegiatanController;
 use App\Http\Controllers\Frontend\StandarLayananController;
 use App\Http\Controllers\Frontend\FaqController;
 
@@ -28,6 +29,7 @@ use App\Http\Controllers\Frontend\FaqController;
 | ADMIN CONTROLLERS
 |--------------------------------------------------------------------------
 */
+use App\Http\Controllers\Admin\BannerManagementController;
 use App\Http\Controllers\Admin\HalamanStatisController as AdminHalamanStatisController;
 use App\Http\Controllers\Admin\RegulasiController as AdminRegulasiController;
 use App\Http\Controllers\Admin\StandarLayananController as AdminStandarLayananController;
@@ -103,6 +105,13 @@ Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/under-construction', function () {
+    return view('under-construction');
+})->name('under.construction');
+
+Route::get('/agenda-kegiatan', [AgendaKegiatanController::class, 'index'])
+    ->name('frontend.agenda-kegiatan.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -221,4 +230,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     */
     Route::resource('faq',
         AdminFaqController::class);
+
+    /*
+    |----------------------------------------------------------------------
+    | BANNER SLIDER (ADMIN) - TAMBAHKAN DI SINI!
+    |----------------------------------------------------------------------
+    */
+    Route::resource('banner-slider', BannerManagementController::class);
+    Route::post('banner-slider/{bannerSlider}/toggle-status', 
+        [BannerManagementController::class, 'toggleStatus'])
+        ->name('banner-slider.toggle-status');
 });

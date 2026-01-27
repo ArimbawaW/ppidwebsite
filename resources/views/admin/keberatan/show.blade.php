@@ -74,22 +74,27 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <table class="table table-borderless table-sm mb-0">
-                    <tr>
-                        <td width="160"><strong>Nama</strong></td>
-                        <td>:</td>
-                        <td>{{ $keberatan->nama_pemohon }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Nomor Kontak</strong></td>
-                        <td>:</td>
-                        <td>{{ $keberatan->nomor_kontak }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pekerjaan</strong></td>
-                        <td>:</td>
-                        <td>{{ $keberatan->pekerjaan }}</td>
-                    </tr>
-                </table>
+    <tr>
+        <td width="160"><strong>Nama</strong></td>
+        <td>:</td>
+        <td>{{ $keberatan->nama_pemohon }}</td>
+    </tr>
+    <tr>
+        <td><strong>Email</strong></td>
+        <td>:</td>
+        <td>{{ $keberatan->email }}</td>
+    </tr>
+    <tr>
+        <td><strong>Nomor Kontak</strong></td>
+        <td>:</td>
+        <td>{{ $keberatan->nomor_kontak }}</td>
+    </tr>
+    <tr>
+        <td><strong>Pekerjaan</strong></td>
+        <td>:</td>
+        <td>{{ $keberatan->pekerjaan }}</td>
+    </tr>
+</table>
             </div>
 
             <div class="col-md-6">

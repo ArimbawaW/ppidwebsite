@@ -19,12 +19,13 @@ class KeberatanController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
+        // 1. Validasi input
         $validated = $request->validate([
             'nomor_registrasi_permohonan' => 'required|string|max:255',
             'nama_pemohon'                => 'required|string|max:255',
             'alamat'                      => 'required|string',
             'nomor_kontak'                => 'required|string|max:20',
+            'email'                       => 'required|email|max:255', // Validasi email baru
             'pekerjaan'                   => 'required|string|max:255',
             'kartu_identitas'             => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'informasi_diminta'           => 'required|string',
@@ -33,7 +34,7 @@ class KeberatanController extends Controller
             'uraian_keberatan'            => 'required|string',
         ]);
 
-        // Validasi Nomor Registrasi Permohonan
+        // 2. Validasi Nomor Registrasi Permohonan
         $permohonan = Permohonan::where('nomor_registrasi', $validated['nomor_registrasi_permohonan'])->first();
         
         if (!$permohonan) {
@@ -42,21 +43,26 @@ class KeberatanController extends Controller
                 ->with('error', 'Nomor registrasi permohonan tidak ditemukan. Silakan periksa kembali.');
         }
 
-        // Cek apakah sudah ada keberatan yang masih aktif (pending atau diproses)
+        // 3. Validasi Email Harus Sama dengan Permohonan Asal
+        if (strtolower(trim($permohonan->email)) !== strtolower(trim($validated['email']))) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Email yang Anda masukkan tidak sesuai dengan email yang terdaftar pada permohonan tersebut. Silakan gunakan email yang sama saat mengajukan permohonan.');
+        }
+
+        // 4. Cek apakah sudah ada keberatan yang masih aktif
         if ($permohonan->hasActiveKeberatan()) {
             $activeKeberatan = $permohonan->getActiveKeberatan();
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Anda masih memiliki keberatan yang sedang diproses untuk permohonan ini. Nomor Registrasi Keberatan: ' . $activeKeberatan->nomor_registrasi . ' (Status: ' . $activeKeberatan->status_label . '). Silakan tunggu hingga keberatan sebelumnya selesai diproses oleh admin.');
+                ->with('error', 'Anda masih memiliki keberatan yang sedang diproses. No. Registrasi: ' . $activeKeberatan->nomor_registrasi . ' (Status: ' . $activeKeberatan->status_label . ').');
         }
 
-        // Generate Nomor Registrasi Keberatan
+        // 5. Proses Data & File
         $nomorRegistrasi = Keberatan::generateNomorRegistrasi();
-
-        // Upload Kartu Identitas
         $kartuIdentitasPath = $request->file('kartu_identitas')->store('keberatan/identitas', 'public');
 
-        // Simpan ke Database
+        // 6. Simpan ke Database
         $keberatan = Keberatan::create([
             'nomor_registrasi'             => $nomorRegistrasi,
             'nomor_registrasi_permohonan'  => $validated['nomor_registrasi_permohonan'],
@@ -64,6 +70,7 @@ class KeberatanController extends Controller
             'nama_pemohon'                 => $validated['nama_pemohon'],
             'alamat'                       => $validated['alamat'],
             'nomor_kontak'                 => $validated['nomor_kontak'],
+            'email'                        => $validated['email'], // Simpan email
             'pekerjaan'                    => $validated['pekerjaan'],
             'kartu_identitas_path'         => $kartuIdentitasPath,
             'informasi_diminta'            => $validated['informasi_diminta'],
@@ -73,37 +80,32 @@ class KeberatanController extends Controller
             'status'                       => 'pending',
         ]);
 
+        // 7. Kirim Notifikasi Email
         $mailer = app(GraphMailService::class);
         
-        // Email ke Admin
-        $adminContent =
-            "Keberatan baru diterima:\n\n" .
+        // Notifikasi ke Admin
+        $adminContent = "Keberatan baru diterima:\n\n" .
             "Nomor Registrasi Keberatan : {$keberatan->nomor_registrasi}\n" .
             "Nomor Registrasi Permohonan : {$keberatan->nomor_registrasi_permohonan}\n" .
             "Nama Pemohon                : {$keberatan->nama_pemohon}\n" .
+            "Email                       : {$keberatan->email}\n" .
             "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}";
 
         if (!$mailer->send(config('mail.from.address'), 'Keberatan Baru - PPID', $adminContent)) {
-            Log::error('Email admin keberatan gagal dikirim (Graph).');
+            Log::error('Email admin keberatan gagal dikirim.');
         }
 
-        // Email ke Pemohon
-        // Ambil email dari permohonan terkait
-        $permohonan = $keberatan->permohonan;
-        if ($permohonan && $permohonan->email) {
-            $pemohonContent =
-                "Halo {$keberatan->nama_pemohon},\n\n" .
+        // Notifikasi ke Pemohon
+        if ($keberatan->email) {
+            $pemohonContent = "Halo {$keberatan->nama_pemohon},\n\n" .
                 "Keberatan Anda telah kami terima.\n" .
                 "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
                 "Nomor Registrasi Permohonan: {$keberatan->nomor_registrasi_permohonan}\n" .
-                "Status awal: Pending\n\n" .
-                "Simpan nomor registrasi ini untuk mengecek status keberatan Anda.";
+                "Status: Pending\n\n" .
+                "Simpan nomor registrasi ini untuk mengecek status keberatan Anda secara berkala.";
 
-            if (!$mailer->send($permohonan->email, 'Nomor Registrasi Keberatan - PPID', $pemohonContent)) {
-                Log::error('Email ke pemohon keberatan gagal dikirim (Graph).', [
-                    'keberatan_id' => $keberatan->id,
-                    'email' => $permohonan->email,
-                ]);
+            if (!$mailer->send($keberatan->email, 'Nomor Registrasi Keberatan - PPID', $pemohonContent)) {
+                Log::error('Email ke pemohon keberatan gagal dikirim.', ['email' => $keberatan->email]);
             }
         }
 
@@ -119,10 +121,7 @@ class KeberatanController extends Controller
 
     public function cekProses(Request $request)
     {
-        $request->validate([
-            'nomor_registrasi' => 'required|string'
-        ]);
-
+        $request->validate(['nomor_registrasi' => 'required|string']);
         $keberatan = Keberatan::where('nomor_registrasi', $request->nomor_registrasi)->first();
 
         if (!$keberatan) {

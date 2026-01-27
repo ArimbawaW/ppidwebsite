@@ -69,23 +69,43 @@ class Permohonan extends Model
     public function getStatusColorAttribute()
     {
         return match($this->status) {
-            'pending' => 'warning',
+            'perlu_verifikasi' => 'warning',
             'diproses' => 'info',
-            'disetujui' => 'success',
+            'ditunda' => 'secondary',
+            'dikabulkan_seluruhnya' => 'success',
+            'dikabulkan_sebagian' => 'success',
             'ditolak' => 'danger',
             default => 'secondary',
         };
     }
 
     /**
-     * Get status label
+     * Get status label (Admin View)
      */
     public function getStatusLabelAttribute()
     {
         return match($this->status) {
-            'pending' => 'Pending',
+            'perlu_verifikasi' => 'Perlu Verifikasi',
             'diproses' => 'Sedang Diproses',
-            'disetujui' => 'Disetujui',
+            'ditunda' => 'Ditunda',
+            'dikabulkan_seluruhnya' => 'Dikabulkan Seluruhnya',
+            'dikabulkan_sebagian' => 'Dikabulkan Sebagian',
+            'ditolak' => 'Ditolak',
+            default => 'Unknown',
+        };
+    }
+
+    /**
+     * Get status label for public/user view
+     */
+    public function getStatusLabelPublicAttribute()
+    {
+        return match($this->status) {
+            'perlu_verifikasi' => 'Menunggu Verifikasi',
+            'diproses' => 'Sedang Diproses',
+            'ditunda' => 'Ditunda',
+            'dikabulkan_seluruhnya' => 'Disetujui',
+            'dikabulkan_sebagian' => 'Disetujui',
             'ditolak' => 'Ditolak',
             default => 'Unknown',
         };
@@ -99,9 +119,9 @@ class Permohonan extends Model
         return $query->where('status', $status);
     }
 
-    public function scopePending($query)
+    public function scopePerluVerifikasi($query)
     {
-        return $query->where('status', 'pending');
+        return $query->where('status', 'perlu_verifikasi');
     }
 
     public function scopeDiproses($query)
@@ -109,9 +129,19 @@ class Permohonan extends Model
         return $query->where('status', 'diproses');
     }
 
-    public function scopeDisetujui($query)
+    public function scopeDitunda($query)
     {
-        return $query->where('status', 'disetujui');
+        return $query->where('status', 'ditunda');
+    }
+
+    public function scopeDikabulkanSeluruhnya($query)
+    {
+        return $query->where('status', 'dikabulkan_seluruhnya');
+    }
+
+    public function scopeDikabulkanSebagian($query)
+    {
+        return $query->where('status', 'dikabulkan_sebagian');
     }
 
     public function scopeDitolak($query)

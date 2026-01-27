@@ -24,11 +24,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Slug <span class="text-danger">*</span></label>
-                            <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" 
-                                   value="{{ old('slug', $halamanStatis->slug) }}" required>
-                            <small class="text-muted">Contoh: informasi-berkala, informasi-setiap-saat</small>
-                            @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <label class="form-label fw-bold">Slug</label>
+                            <input type="text" class="form-control" 
+                                   value="{{ $halamanStatis->slug }}" 
+                                   disabled 
+                                   readonly>
+                            <!-- Hidden input untuk slug yang tidak bisa diubah -->
+                            <input type="hidden" name="slug" value="{{ $halamanStatis->slug }}">
+                            <small class="text-muted"><i class="bi bi-lock-fill"></i> Slug tidak dapat diubah</small>
                         </div>
                     </div>
 

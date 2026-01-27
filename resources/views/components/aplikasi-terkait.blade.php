@@ -35,7 +35,7 @@
 
             {{-- FASILITAS PEMBIAYAAN PERUMAHAN PERKOTAAN --}}
             <div class="col-6 col-md-4 col-lg-2">
-                <a href="#" target="_blank" class="aplikasi-card">
+                <a href="{{ route('under.construction') }}" class="aplikasi-card">
                     <div class="aplikasi-icon-wrapper">
                         <img src="{{ asset('images/fasilitas.png') }}" alt="Fasilitas Pembiayaan" class="aplikasi-icon">
                     </div>

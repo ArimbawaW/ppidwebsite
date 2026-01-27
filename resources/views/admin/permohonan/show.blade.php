@@ -189,23 +189,31 @@
                             </div>
                         </div>
                         <div class="col-md-4 text-right">
-                            @if($permohonan->status === 'pending')
-                                <span class="badge badge-warning badge-lg">
-                                    <i class="fas fa-clock"></i> Pending
-                                </span>
-                            @elseif($permohonan->status === 'diproses')
-                                <span class="badge badge-info badge-lg">
-                                    <i class="fas fa-spinner fa-spin"></i> Sedang Diproses
-                                </span>
-                            @elseif($permohonan->status === 'disetujui')
-                                <span class="badge badge-success badge-lg">
-                                    <i class="fas fa-check-circle"></i> Disetujui
-                                </span>
-                            @else
-                                <span class="badge badge-danger badge-lg">
-                                    <i class="fas fa-times-circle"></i> Ditolak
-                                </span>
-                            @endif
+                            @if($permohonan->status === 'perlu_verifikasi')
+    <span class="badge badge-warning badge-lg">
+        <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
+    </span>
+@elseif($permohonan->status === 'diproses')
+    <span class="badge badge-info badge-lg">
+        <i class="fas fa-spinner fa-spin"></i> Sedang Diproses
+    </span>
+@elseif($permohonan->status === 'ditunda')
+    <span class="badge badge-secondary badge-lg">
+        <i class="fas fa-pause-circle"></i> Ditunda
+    </span>
+@elseif($permohonan->status === 'dikabulkan_seluruhnya')
+    <span class="badge badge-success badge-lg">
+        <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
+    </span>
+@elseif($permohonan->status === 'dikabulkan_sebagian')
+    <span class="badge badge-success badge-lg">
+        <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
+    </span>
+@else
+    <span class="badge badge-danger badge-lg">
+        <i class="fas fa-times-circle"></i> Ditolak
+    </span>
+@endif
                         </div>
                     </div>
                 </div>
@@ -496,20 +504,26 @@
                                 <label class="font-weight-bold">
                                     Status <span class="text-danger">*</span>
                                 </label>
-                                <select name="status" class="form-control @error('status') is-invalid @enderror" required>
-                                    <option value="pending" {{ $permohonan->status === 'pending' ? 'selected' : '' }}>
-                                        ⏳ Pending
-                                    </option>
-                                    <option value="diproses" {{ $permohonan->status === 'diproses' ? 'selected' : '' }}>
-                                        🔄 Sedang Diproses
-                                    </option>
-                                    <option value="disetujui" {{ $permohonan->status === 'disetujui' ? 'selected' : '' }}>
-                                        ✅ Disetujui
-                                    </option>
-                                    <option value="ditolak" {{ $permohonan->status === 'ditolak' ? 'selected' : '' }}>
-                                        ❌ Ditolak
-                                    </option>
-                                </select>
+                               <select name="status" class="form-control @error('status') is-invalid @enderror" required>
+    <option value="perlu_verifikasi" {{ $permohonan->status === 'perlu_verifikasi' ? 'selected' : '' }}>
+        ⚠️ Perlu Verifikasi
+    </option>
+    <option value="diproses" {{ $permohonan->status === 'diproses' ? 'selected' : '' }}>
+        🔄 Sedang Diproses
+    </option>
+    <option value="ditunda" {{ $permohonan->status === 'ditunda' ? 'selected' : '' }}>
+        ⏸️ Ditunda
+    </option>
+    <option value="dikabulkan_seluruhnya" {{ $permohonan->status === 'dikabulkan_seluruhnya' ? 'selected' : '' }}>
+        ✅ Dikabulkan Seluruhnya
+    </option>
+    <option value="dikabulkan_sebagian" {{ $permohonan->status === 'dikabulkan_sebagian' ? 'selected' : '' }}>
+        ✔️ Dikabulkan Sebagian
+    </option>
+    <option value="ditolak" {{ $permohonan->status === 'ditolak' ? 'selected' : '' }}>
+        ❌ Ditolak
+    </option>
+</select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -518,23 +532,31 @@
                             <div class="col-md-6 mb-3">
                                 <label class="font-weight-bold">Status Saat Ini</label>
                                 <div class="form-control-plaintext">
-                                    @if($permohonan->status === 'pending')
-                                        <span class="badge badge-warning badge-lg">
-                                            <i class="fas fa-clock"></i> Pending
-                                        </span>
-                                    @elseif($permohonan->status === 'diproses')
-                                        <span class="badge badge-info badge-lg">
-                                            <i class="fas fa-spinner fa-spin"></i> Diproses
-                                        </span>
-                                    @elseif($permohonan->status === 'disetujui')
-                                        <span class="badge badge-success badge-lg">
-                                            <i class="fas fa-check-circle"></i> Disetujui
-                                        </span>
-                                    @else
-                                        <span class="badge badge-danger badge-lg">
-                                            <i class="fas fa-times-circle"></i> Ditolak
-                                        </span>
-                                    @endif
+                                   @if($permohonan->status === 'perlu_verifikasi')
+    <span class="badge badge-warning badge-lg">
+        <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
+    </span>
+@elseif($permohonan->status === 'diproses')
+    <span class="badge badge-info badge-lg">
+        <i class="fas fa-spinner fa-spin"></i> Diproses
+    </span>
+@elseif($permohonan->status === 'ditunda')
+    <span class="badge badge-secondary badge-lg">
+        <i class="fas fa-pause-circle"></i> Ditunda
+    </span>
+@elseif($permohonan->status === 'dikabulkan_seluruhnya')
+    <span class="badge badge-success badge-lg">
+        <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
+    </span>
+@elseif($permohonan->status === 'dikabulkan_sebagian')
+    <span class="badge badge-success badge-lg">
+        <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
+    </span>
+@else
+    <span class="badge badge-danger badge-lg">
+        <i class="fas fa-times-circle"></i> Ditolak
+    </span>
+@endif
                                 </div>
                             </div>
                         </div>

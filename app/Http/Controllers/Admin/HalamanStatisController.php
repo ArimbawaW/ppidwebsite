@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HalamanStatis;
 use App\Traits\HandlesFileUploads;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; // Pastikan ini diimport jika delete ada di trait
 
 class HalamanStatisController extends Controller
 {
@@ -27,14 +28,13 @@ class HalamanStatisController extends Controller
         $validated = $request->validate([
             'slug' => 'required|string|unique:halaman_statis,slug',
             'judul' => 'required|string|max:255',
-            'is_active' => 'boolean',
             'sections' => 'required|array',
             'sections.*' => 'required|string',
             'items' => 'required|array',
             'items.*.*' => 'required|string',
-            'file_urls' => 'array',
+            'file_urls' => 'nullable|array',
             'file_urls.*.*' => 'nullable|url',
-            'files' => 'array',
+            'files' => 'nullable|array',
             'files.*.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png|max:5120',
         ]);
 
@@ -44,7 +44,7 @@ class HalamanStatisController extends Controller
             'slug' => $validated['slug'],
             'judul' => $validated['judul'],
             'konten' => $konten,
-            'is_active' => $request->has('is_active'),
+            'is_active' => $request->boolean('is_active'), // Lebih aman menggunakan boolean()
         ]);
 
         return redirect()->route('admin.halaman-statis.index')
@@ -53,39 +53,40 @@ class HalamanStatisController extends Controller
 
     public function edit(HalamanStatis $halamanStatis)
     {
+        // Pastikan konten adalah array jika di cast di Model
         return view('admin.halaman-statis.edit', compact('halamanStatis'));
     }
 
     public function update(Request $request, HalamanStatis $halamanStatis)
     {
-        $validated = $request->validate([
-            'slug' => 'required|string|unique:halaman_statis,slug,' . $halamanStatis->id,
+        $request->validate([
             'judul' => 'required|string|max:255',
-            'is_active' => 'boolean',
             'sections' => 'required|array',
             'sections.*' => 'required|string',
             'items' => 'required|array',
             'items.*.*' => 'required|string',
-            'file_urls' => 'array',
-            'file_urls.*.*' => 'nullable|url',
-            'files' => 'array',
+            'file_urls' => 'nullable|array',
+            'files' => 'nullable|array',
             'files.*.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png|max:5120',
         ]);
 
-        $oldFilePaths = $this->extractFilePaths($halamanStatis->konten ?? []);
-        $konten = $this->buildKontenUpdate($request, $halamanStatis->konten ?? []);
+        $oldKonten = is_array($halamanStatis->konten) ? $halamanStatis->konten : [];
+        $oldFilePaths = $this->extractFilePaths($oldKonten);
+        
+        $konten = $this->buildKontenUpdate($request, $oldKonten);
+        
         $newFilePaths = $this->extractFilePaths($konten);
         $pathsToDelete = array_diff($oldFilePaths, $newFilePaths);
 
         $halamanStatis->update([
-            'slug' => $validated['slug'],
-            'judul' => $validated['judul'],
+            'judul' => $request->judul,
             'konten' => $konten,
-            'is_active' => $request->has('is_active'),
+            'is_active' => $request->boolean('is_active'),
         ]);
 
+        // Hapus file fisik yang sudah tidak terpakai
         foreach ($pathsToDelete as $path) {
-            $this->deleteFile($path);
+            $this->deleteFile($path); 
         }
 
         return redirect()->route('admin.halaman-statis.index')
@@ -94,7 +95,9 @@ class HalamanStatisController extends Controller
 
     public function destroy(HalamanStatis $halamanStatis)
     {
-        $pathsToDelete = $this->extractFilePaths($halamanStatis->konten ?? []);
+        $konten = is_array($halamanStatis->konten) ? $halamanStatis->konten : [];
+        $pathsToDelete = $this->extractFilePaths($konten);
+        
         $halamanStatis->delete();
 
         foreach ($pathsToDelete as $path) {
@@ -105,21 +108,15 @@ class HalamanStatisController extends Controller
             ->with('success', 'Halaman statis berhasil dihapus');
     }
 
-    /**
-     * Susun konten halaman beserta file upload per item (untuk Create)
-     */
     private function buildKonten(Request $request): array
     {
         $konten = [];
-
         if ($request->has('sections')) {
             foreach ($request->sections as $index => $section) {
                 $items = [];
-
                 if (isset($request->items[$index])) {
                     foreach ($request->items[$index] as $itemIndex => $itemText) {
                         $filePath = null;
-
                         if ($request->hasFile("files.$index.$itemIndex")) {
                             $filePath = $this->handleFileUpload(
                                 $request->file("files.$index.$itemIndex"),
@@ -134,41 +131,31 @@ class HalamanStatisController extends Controller
                         ];
                     }
                 }
-
-                $konten[] = [
-                    'section' => $section,
-                    'items' => $items,
-                ];
+                $konten[] = ['section' => $section, 'items' => $items];
             }
         }
-
         return $konten;
     }
 
-    /**
-     * Susun konten halaman beserta file upload per item (untuk Update)
-     * Method terpisah agar lebih jelas handling existing files
-     */
     private function buildKontenUpdate(Request $request, array $existingKonten = []): array
     {
         $konten = [];
+        // existing_files dikirim dari hidden input di form edit
         $existingFiles = $request->input('existing_files', []);
 
         if ($request->has('sections')) {
             foreach ($request->sections as $sectionIndex => $section) {
                 $items = [];
-
                 if (isset($request->items[$sectionIndex])) {
                     foreach ($request->items[$sectionIndex] as $itemIndex => $itemText) {
-                        // Ambil existing file path jika ada
                         $filePath = $existingFiles[$sectionIndex][$itemIndex] ?? null;
 
-                        // Jika ada file baru yang diupload, replace existing
                         if ($request->hasFile("files.$sectionIndex.$itemIndex")) {
+                            // Upload baru dan hapus file lama jika ada
                             $filePath = $this->handleFileUpload(
                                 $request->file("files.$sectionIndex.$itemIndex"),
                                 'halaman-statis',
-                                $filePath // Pass existing path untuk dihapus
+                                $filePath 
                             );
                         }
 
@@ -179,36 +166,24 @@ class HalamanStatisController extends Controller
                         ];
                     }
                 }
-
-                $konten[] = [
-                    'section' => $section,
-                    'items' => $items,
-                ];
+                $konten[] = ['section' => $section, 'items' => $items];
             }
         }
-
         return $konten;
     }
 
-    /**
-     * Ambil daftar path file dari struktur konten untuk kebutuhan pembersihan.
-     */
     private function extractFilePaths(array $konten): array
     {
         $paths = [];
-
         foreach ($konten as $section) {
-            if (!isset($section['items'])) {
-                continue;
-            }
-
-            foreach ($section['items'] as $item) {
-                if (!empty($item['file_path'])) {
-                    $paths[] = $item['file_path'];
+            if (isset($section['items']) && is_array($section['items'])) {
+                foreach ($section['items'] as $item) {
+                    if (!empty($item['file_path'])) {
+                        $paths[] = $item['file_path'];
+                    }
                 }
             }
         }
-
         return $paths;
     }
 }

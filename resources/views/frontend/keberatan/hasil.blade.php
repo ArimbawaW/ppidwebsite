@@ -26,10 +26,15 @@
             <hr>
 
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <p><strong>Nama Pemohon:</strong></p>
-                    <p class="text-muted">{{ $keberatan->nama_pemohon }}</p>
+                 <div class="col-md-6">
+                <p><strong>Nama Pemohon:</strong></p>
+                <p class="text-muted">{{ $keberatan->nama_pemohon }}</p>
                 </div>
+                <div class="col-md-6">
+                <p><strong>Email:</strong></p>
+            <p class="text-muted">{{ $keberatan->email }}</p>
+            </div>
+            </div>
                 <div class="col-md-6">
                     <p><strong>Tanggal Pengajuan:</strong></p>
                     <p class="text-muted">{{ $keberatan->created_at->format('d M Y H:i') }} WIB</p>

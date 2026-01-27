@@ -41,6 +41,13 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.banner-slider.*') ? 'active' : '' }}"
+                href="{{ route('admin.banner-slider.index') }}">
+                <i class="bi bi-images"></i> Banner Slider
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.informasi-publik.*') ? 'active' : '' }}"
                href="{{ route('admin.informasi-publik.index') }}">
                 <i class="bi bi-info-circle"></i> Informasi Publik

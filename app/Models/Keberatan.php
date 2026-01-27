@@ -10,22 +10,23 @@ class Keberatan extends Model
 
     protected $table = 'keberatan';
 
-    protected $fillable = [
-        'nomor_registrasi',
-        'nomor_registrasi_permohonan',
-        'permohonan_id',
-        'nama_pemohon',
-        'alamat',
-        'nomor_kontak',
-        'pekerjaan',
-        'kartu_identitas_path',
-        'informasi_diminta',
-        'tujuan_penggunaan',
-        'alasan_keberatan',
-        'uraian_keberatan',
-        'status',
-        'keterangan',
-    ];
+   protected $fillable = [
+    'nomor_registrasi',
+    'nomor_registrasi_permohonan',
+    'permohonan_id',
+    'nama_pemohon',
+    'alamat',
+    'nomor_kontak',
+    'email', 
+    'pekerjaan',
+    'kartu_identitas_path',
+    'informasi_diminta',
+    'tujuan_penggunaan',
+    'alasan_keberatan',
+    'uraian_keberatan',
+    'status',
+    'keterangan',
+];
 
     protected function casts(): array
     {

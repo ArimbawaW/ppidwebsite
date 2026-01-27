@@ -13,11 +13,12 @@ class PermohonanController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * Perbaikan: Menggunakan get() agar DataTables JS bisa memproses pagination.
      */
     public function index()
     {
-        $permohonan = Permohonan::orderBy('created_at', 'desc')
-            ->paginate(10);
+        // Jangan gunakan paginate(10) jika menggunakan DataTables client-side
+        $permohonan = Permohonan::orderBy('created_at', 'desc')->get();
         
         return view('admin.permohonan.index', compact('permohonan'));
     }
@@ -60,16 +61,15 @@ class PermohonanController extends Controller
     public function updateStatus(Request $request, Permohonan $permohonan)
     {
         $request->validate([
-            'status' => 'required|in:pending,diproses,disetujui,ditolak',
+            'status' => 'required|in:perlu_verifikasi,diproses,ditunda,dikabulkan_seluruhnya,dikabulkan_sebagian,ditolak',
             'catatan_admin' => 'nullable|string|max:1000'
         ]);
 
-        $oldStatus = $permohonan->status;
         $oldStatusLabel = $permohonan->status_label;
         $permohonan->status = $request->status;
         $permohonan->catatan_admin = $request->catatan_admin;
         
-        if ($request->status === 'disetujui' || $request->status === 'ditolak') {
+        if (in_array($request->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak'])) {
             $permohonan->tanggal_selesai = now();
         }
         
@@ -77,21 +77,25 @@ class PermohonanController extends Controller
 
         // Kirim email pemberitahuan perubahan status ke pemohon
         if ($permohonan->email) {
-            $mailer = app(GraphMailService::class);
-            $content =
-                "Halo {$permohonan->nama},\n\n" .
-                "Status permohonan informasi Anda telah berubah.\n" .
-                "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
-                "Status sebelumnya: {$oldStatusLabel}\n" .
-                "Status sekarang: {$permohonan->status_label}\n" .
-                ($permohonan->catatan_admin ? "Catatan: {$permohonan->catatan_admin}\n" : '') .
-                "\nAnda dapat mengecek status melalui halaman cek status permohonan.";
+            try {
+                $mailer = app(GraphMailService::class);
+                $content =
+                    "Halo {$permohonan->nama},\n\n" .
+                    "Status permohonan informasi Anda telah berubah.\n" .
+                    "Nomor Registrasi: {$permohonan->nomor_registrasi}\n" .
+                    "Status sebelumnya: {$oldStatusLabel}\n" .
+                    "Status sekarang: {$permohonan->status_label_public}\n" .
+                    ($permohonan->catatan_admin ? "Catatan: {$permohonan->catatan_admin}\n" : '') .
+                    "\nAnda dapat mengecek status melalui halaman cek status permohonan.";
 
-            if (!$mailer->send($permohonan->email, 'Pembaruan Status Permohonan Informasi - PPID', $content)) {
-                Log::error('Gagal mengirim email status permohonan (Graph).', [
-                    'permohonan_id' => $permohonan->id,
-                    'email' => $permohonan->email,
-                ]);
+                if (!$mailer->send($permohonan->email, 'Pembaruan Status Permohonan Informasi - PPID', $content)) {
+                    Log::error('Gagal mengirim email status permohonan (Graph).', [
+                        'permohonan_id' => $permohonan->id,
+                        'email' => $permohonan->email,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error saat mengirim email: ' . $e->getMessage());
             }
         }
 
@@ -104,7 +108,6 @@ class PermohonanController extends Controller
      */
     public function destroy(Permohonan $permohonan)
     {
-        // Hapus file-file yang ada
         $files = [
             $permohonan->file_identitas_path,
             $permohonan->file_surat_kuasa_path,
@@ -153,9 +156,11 @@ class PermohonanController extends Controller
     {
         $stats = [
             'total' => Permohonan::count(),
-            'pending' => Permohonan::where('status', 'pending')->count(),
+            'perlu_verifikasi' => Permohonan::where('status', 'perlu_verifikasi')->count(),
             'diproses' => Permohonan::where('status', 'diproses')->count(),
-            'disetujui' => Permohonan::where('status', 'disetujui')->count(),
+            'ditunda' => Permohonan::where('status', 'ditunda')->count(),
+            'dikabulkan_seluruhnya' => Permohonan::where('status', 'dikabulkan_seluruhnya')->count(),
+            'dikabulkan_sebagian' => Permohonan::where('status', 'dikabulkan_sebagian')->count(),
             'ditolak' => Permohonan::where('status', 'ditolak')->count(),
         ];
 

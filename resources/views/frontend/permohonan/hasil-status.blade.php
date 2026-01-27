@@ -11,28 +11,23 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4 text-center" style="background: linear-gradient(135deg, #0e5b73 0%, #1a8aa6 100%);">
                     <div class="mb-3">
-                        @if($permohonan->status === 'pending')
-                            <i class="fas fa-clock fa-4x text-white mb-3"></i>
-                        @elseif($permohonan->status === 'diproses')
-                            <i class="fas fa-spinner fa-spin fa-4x text-white mb-3"></i>
-                        @elseif($permohonan->status === 'disetujui')
-                            <i class="fas fa-check-circle fa-4x text-white mb-3"></i>
-                        @else
-                            <i class="fas fa-times-circle fa-4x text-white mb-3"></i>
-                        @endif
-                    </div>
-                    <h3 class="text-white fw-bold mb-2">Status Permohonan</h3>
-                    <h2 class="text-white fw-bold mb-0">
-                        @if($permohonan->status === 'pending')
-                            PENDING
-                        @elseif($permohonan->status === 'diproses')
-                            SEDANG DIPROSES
-                        @elseif($permohonan->status === 'disetujui')
-                            DISETUJUI
-                        @else
-                            DITOLAK
-                        @endif
-                    </h2>
+    @if($permohonan->status === 'perlu_verifikasi')
+        <i class="fas fa-hourglass-half fa-4x text-white mb-3"></i>
+    @elseif($permohonan->status === 'diproses')
+        <i class="fas fa-spinner fa-spin fa-4x text-white mb-3"></i>
+    @elseif($permohonan->status === 'ditunda')
+        <i class="fas fa-pause-circle fa-4x text-white mb-3"></i>
+    @elseif(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']))
+        <i class="fas fa-check-circle fa-4x text-white mb-3"></i>
+    @else
+        <i class="fas fa-times-circle fa-4x text-white mb-3"></i>
+    @endif
+</div>
+<h3 class="text-white fw-bold mb-2">Status Permohonan</h3>
+<h2 class="text-white fw-bold mb-0">
+    {{ strtoupper($permohonan->status_label_public) }}
+</h2>
+                          
                 </div>
             </div>
 
@@ -129,40 +124,60 @@
                     </h5>
                 </div>
                 <div class="card-body p-4">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <i class="fas fa-check-circle text-success"></i>
-                            <div class="ms-3">
-                                <strong>Permohonan Diterima</strong>
-                                <p class="text-muted small mb-0">
-                                    {{ $permohonan->created_at->format('d F Y, H:i') }} WIB
-                                </p>
-                            </div>
-                        </div>
+                       <div class="timeline">
+    <div class="timeline-item">
+        <i class="fas fa-check-circle text-success"></i>
+        <div class="ms-3">
+            <strong>Permohonan Diterima</strong>
+            <p class="text-muted small mb-0">
+                {{ $permohonan->created_at->format('d F Y, H:i') }} WIB
+            </p>
+        </div>
+    </div>
 
-                        @if(in_array($permohonan->status, ['diproses', 'disetujui', 'ditolak']))
-                        <div class="timeline-item">
-                            <i class="fas fa-{{ $permohonan->status === 'diproses' ? 'spinner fa-spin' : 'check-circle' }} text-info"></i>
-                            <div class="ms-3">
-                                <strong>Sedang Diproses</strong>
-                                <p class="text-muted small mb-0">Permohonan sedang ditinjau oleh admin</p>
-                            </div>
-                        </div>
-                        @endif
+    @if($permohonan->status !== 'perlu_verifikasi')
+    <div class="timeline-item">
+        <i class="fas fa-check-circle text-success"></i>
+        <div class="ms-3">
+            <strong>Menunggu Verifikasi</strong>
+            <p class="text-muted small mb-0">Permohonan sedang ditinjau oleh admin</p>
+        </div>
+    </div>
+    @endif
 
-                        @if(in_array($permohonan->status, ['disetujui', 'ditolak']))
-                        <div class="timeline-item">
-                            <i class="fas fa-{{ $permohonan->status === 'disetujui' ? 'check-circle text-success' : 'times-circle text-danger' }}"></i>
-                            <div class="ms-3">
-                                <strong>{{ $permohonan->status === 'disetujui' ? 'Disetujui' : 'Ditolak' }}</strong>
-                                <p class="text-muted small mb-0">
-                                    {{ $permohonan->tanggal_selesai ? $permohonan->tanggal_selesai->format('d F Y, H:i') : '' }} WIB
-                                </p>
-                            </div>
-                        </div>
-                        @endif
+    @if(in_array($permohonan->status, ['diproses', 'ditunda', 'dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
+    <div class="timeline-item">
+        <i class="fas fa-{{ $permohonan->status === 'diproses' ? 'spinner fa-spin' : 'check-circle' }} text-info"></i>
+        <div class="ms-3">
+            <strong>Sedang Diproses</strong>
+            <p class="text-muted small mb-0">Permohonan sedang diproses oleh admin</p>
+        </div>
+    </div>
+    @endif
+
+    @if($permohonan->status === 'ditunda')
+    <div class="timeline-item">
+        <i class="fas fa-pause-circle text-secondary"></i>
+        <div class="ms-3">
+            <strong>Ditunda</strong>
+            <p class="text-muted small mb-0">Permohonan sementara ditunda</p>
+        </div>
+    </div>
+    @endif
+
+    @if(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
+    <div class="timeline-item">
+        <i class="fas fa-{{ in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']) ? 'check-circle text-success' : 'times-circle text-danger' }}"></i>
+        <div class="ms-3">
+            <strong>{{ $permohonan->status_label_public }}</strong>
+            <p class="text-muted small mb-0">
+                {{ $permohonan->tanggal_selesai ? $permohonan->tanggal_selesai->format('d F Y, H:i') : '' }} WIB
+            </p>
+        </div>
+    </div>
+    @endif
+</div>
                     </div>
-                </div>
             </div>
 
             <!-- Action Buttons -->
