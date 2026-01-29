@@ -13,11 +13,9 @@ class PermohonanController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * Perbaikan: Menggunakan get() agar DataTables JS bisa memproses pagination.
      */
     public function index()
     {
-        // Jangan gunakan paginate(10) jika menggunakan DataTables client-side
         $permohonan = Permohonan::orderBy('created_at', 'desc')->get();
         
         return view('admin.permohonan.index', compact('permohonan'));
@@ -45,10 +43,22 @@ class PermohonanController extends Controller
     public function update(Request $request, Permohonan $permohonan)
     {
         $request->validate([
-            'catatan_admin' => 'nullable|string|max:1000'
+            'catatan_admin' => 'nullable|string|max:1000',
+            'kategori_informasi' => 'nullable|in:informasi_berkala,informasi_setiap_saat,informasi_serta_merta,informasi_dikecualikan',
+            'jenis_permohonan_informasi' => 'nullable|string|max:100',
+            'jenis_permohonan_lainnya' => 'nullable|string|max:500',
+            'status_informasi' => 'nullable|in:ya,dibawah_penguasaan,tidak_dibawah_penguasaan,belum_didokumentasikan',
+            'bentuk_informasi' => 'nullable|in:softcopy,hardcopy,softcopy_hardcopy',
+            'jenis_permintaan' => 'nullable|in:melihat_mengetahui,meminta_salinan,melihat_dan_salinan',
         ]);
 
         $permohonan->catatan_admin = $request->catatan_admin;
+        $permohonan->kategori_informasi = $request->kategori_informasi;
+        $permohonan->jenis_permohonan_informasi = $request->jenis_permohonan_informasi;
+        $permohonan->jenis_permohonan_lainnya = $request->jenis_permohonan_lainnya;
+        $permohonan->status_informasi = $request->status_informasi;
+        $permohonan->bentuk_informasi = $request->bentuk_informasi;
+        $permohonan->jenis_permintaan = $request->jenis_permintaan;
         $permohonan->save();
 
         return redirect()->route('admin.permohonan.show', $permohonan)
@@ -62,12 +72,24 @@ class PermohonanController extends Controller
     {
         $request->validate([
             'status' => 'required|in:perlu_verifikasi,diproses,ditunda,dikabulkan_seluruhnya,dikabulkan_sebagian,ditolak',
-            'catatan_admin' => 'nullable|string|max:1000'
+            'catatan_admin' => 'nullable|string|max:1000',
+            'kategori_informasi' => 'nullable|in:informasi_berkala,informasi_setiap_saat,informasi_serta_merta,informasi_dikecualikan',
+            'jenis_permohonan_informasi' => 'nullable|string|max:100',
+            'jenis_permohonan_lainnya' => 'nullable|string|max:500',
+            'status_informasi' => 'nullable|in:ya,dibawah_penguasaan,tidak_dibawah_penguasaan,belum_didokumentasikan',
+            'bentuk_informasi' => 'nullable|in:softcopy,hardcopy,softcopy_hardcopy',
+            'jenis_permintaan' => 'nullable|in:melihat_mengetahui,meminta_salinan,melihat_dan_salinan',
         ]);
 
         $oldStatusLabel = $permohonan->status_label;
         $permohonan->status = $request->status;
         $permohonan->catatan_admin = $request->catatan_admin;
+        $permohonan->kategori_informasi = $request->kategori_informasi;
+        $permohonan->jenis_permohonan_informasi = $request->jenis_permohonan_informasi;
+        $permohonan->jenis_permohonan_lainnya = $request->jenis_permohonan_lainnya;
+        $permohonan->status_informasi = $request->status_informasi;
+        $permohonan->bentuk_informasi = $request->bentuk_informasi;
+        $permohonan->jenis_permintaan = $request->jenis_permintaan;
         
         if (in_array($request->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak'])) {
             $permohonan->tanggal_selesai = now();

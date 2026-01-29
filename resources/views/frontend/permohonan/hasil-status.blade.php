@@ -7,31 +7,30 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             
-            <!-- Header dengan Status Badge -->
+            {{-- Header dengan Status Badge --}}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4 text-center" style="background: linear-gradient(135deg, #0e5b73 0%, #1a8aa6 100%);">
                     <div class="mb-3">
-    @if($permohonan->status === 'perlu_verifikasi')
-        <i class="fas fa-hourglass-half fa-4x text-white mb-3"></i>
-    @elseif($permohonan->status === 'diproses')
-        <i class="fas fa-spinner fa-spin fa-4x text-white mb-3"></i>
-    @elseif($permohonan->status === 'ditunda')
-        <i class="fas fa-pause-circle fa-4x text-white mb-3"></i>
-    @elseif(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']))
-        <i class="fas fa-check-circle fa-4x text-white mb-3"></i>
-    @else
-        <i class="fas fa-times-circle fa-4x text-white mb-3"></i>
-    @endif
-</div>
-<h3 class="text-white fw-bold mb-2">Status Permohonan</h3>
-<h2 class="text-white fw-bold mb-0">
-    {{ strtoupper($permohonan->status_label_public) }}
-</h2>
-                          
+                        @if($permohonan->status === 'perlu_verifikasi')
+                            <i class="fas fa-hourglass-half fa-4x text-white mb-3"></i>
+                        @elseif($permohonan->status === 'diproses')
+                            <i class="fas fa-spinner fa-spin fa-4x text-white mb-3"></i>
+                        @elseif($permohonan->status === 'ditunda')
+                            <i class="fas fa-pause-circle fa-4x text-white mb-3"></i>
+                        @elseif(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']))
+                            <i class="fas fa-check-circle fa-4x text-white mb-3"></i>
+                        @else
+                            <i class="fas fa-times-circle fa-4x text-white mb-3"></i>
+                        @endif
+                    </div>
+                    <h3 class="text-white fw-bold mb-2">Status Permohonan</h3>
+                    <h2 class="text-white fw-bold mb-0">
+                        {{ strtoupper($permohonan->status_label_public) }}
+                    </h2>
                 </div>
             </div>
 
-            <!-- Detail Permohonan -->
+            {{-- Detail Permohonan --}}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header" style="background:#0e5b73;">
                     <h5 class="mb-0 text-white">
@@ -48,11 +47,17 @@
                             <th class="text-muted">Kategori Pemohon</th>
                             <td>
                                 @if($permohonan->kategori_pemohon === 'perorangan')
-                                    <span class="badge bg-primary">Perorangan</span>
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-user me-1"></i> Perorangan
+                                    </span>
                                 @elseif($permohonan->kategori_pemohon === 'kelompok')
-                                    <span class="badge bg-success">Kelompok Orang</span>
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-users me-1"></i> Kelompok Orang
+                                    </span>
                                 @else
-                                    <span class="badge bg-warning text-dark">Badan Hukum</span>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-building me-1"></i> Badan Hukum
+                                    </span>
                                 @endif
                             </td>
                         </tr>
@@ -84,7 +89,7 @@
                 </div>
             </div>
 
-            <!-- Rincian Informasi -->
+            {{-- Rincian Informasi --}}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header" style="background:#0e5b73;">
                     <h5 class="mb-0 text-white">
@@ -93,30 +98,34 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="mb-3">
-                        <strong class="text-primary">Informasi yang Diminta:</strong>
-                        <p class="mb-0 mt-2 text-muted">{{ $permohonan->rincian_informasi }}</p>
+                        <strong class="text-primary">
+                            <i class="fas fa-info-circle me-1"></i> Informasi yang Diminta:
+                        </strong>
+                        <p class="mb-0 mt-2 text-muted" style="white-space: pre-line;">{{ $permohonan->rincian_informasi }}</p>
                     </div>
                     <hr>
                     <div>
-                        <strong class="text-primary">Tujuan Penggunaan:</strong>
-                        <p class="mb-0 mt-2 text-muted">{{ $permohonan->tujuan_penggunaan }}</p>
+                        <strong class="text-primary">
+                            <i class="fas fa-bullseye me-1"></i> Tujuan Penggunaan:
+                        </strong>
+                        <p class="mb-0 mt-2 text-muted" style="white-space: pre-line;">{{ $permohonan->tujuan_penggunaan }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Catatan Admin (Jika Ada) -->
+            {{-- Catatan Admin (Jika Ada) --}}
             @if($permohonan->catatan_admin)
             <div class="card border-0 shadow-sm mb-4 border-start border-warning border-5">
                 <div class="card-body p-4">
                     <h5 class="fw-bold text-warning mb-3">
                         <i class="fas fa-comment-dots"></i> Catatan dari Admin
                     </h5>
-                    <p class="mb-0">{{ $permohonan->catatan_admin }}</p>
+                    <p class="mb-0" style="white-space: pre-line;">{{ $permohonan->catatan_admin }}</p>
                 </div>
             </div>
             @endif
 
-            <!-- Timeline Status -->
+            {{-- Timeline Status --}}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header" style="background:#0e5b73;">
                     <h5 class="mb-0 text-white">
@@ -124,63 +133,83 @@
                     </h5>
                 </div>
                 <div class="card-body p-4">
-                       <div class="timeline">
-    <div class="timeline-item">
-        <i class="fas fa-check-circle text-success"></i>
-        <div class="ms-3">
-            <strong>Permohonan Diterima</strong>
-            <p class="text-muted small mb-0">
-                {{ $permohonan->created_at->format('d F Y, H:i') }} WIB
-            </p>
-        </div>
-    </div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <div class="ms-3">
+                                <strong>Permohonan Diterima</strong>
+                                <p class="text-muted small mb-0">
+                                    {{ $permohonan->created_at->format('d F Y, H:i') }} WIB
+                                </p>
+                            </div>
+                        </div>
 
-    @if($permohonan->status !== 'perlu_verifikasi')
-    <div class="timeline-item">
-        <i class="fas fa-check-circle text-success"></i>
-        <div class="ms-3">
-            <strong>Menunggu Verifikasi</strong>
-            <p class="text-muted small mb-0">Permohonan sedang ditinjau oleh admin</p>
-        </div>
-    </div>
-    @endif
+                        @if($permohonan->status !== 'perlu_verifikasi')
+                        <div class="timeline-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <div class="ms-3">
+                                <strong>Verifikasi Selesai</strong>
+                                <p class="text-muted small mb-0">Permohonan telah diverifikasi oleh admin</p>
+                            </div>
+                        </div>
+                        @endif
 
-    @if(in_array($permohonan->status, ['diproses', 'ditunda', 'dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
-    <div class="timeline-item">
-        <i class="fas fa-{{ $permohonan->status === 'diproses' ? 'spinner fa-spin' : 'check-circle' }} text-info"></i>
-        <div class="ms-3">
-            <strong>Sedang Diproses</strong>
-            <p class="text-muted small mb-0">Permohonan sedang diproses oleh admin</p>
-        </div>
-    </div>
-    @endif
+                        @if(in_array($permohonan->status, ['diproses', 'ditunda', 'dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
+                        <div class="timeline-item">
+                            <i class="fas fa-{{ $permohonan->status === 'diproses' ? 'spinner fa-spin' : 'check-circle' }} text-info"></i>
+                            <div class="ms-3">
+                                <strong>Sedang Diproses</strong>
+                                <p class="text-muted small mb-0">Permohonan sedang diproses oleh tim PPID</p>
+                            </div>
+                        </div>
+                        @endif
 
-    @if($permohonan->status === 'ditunda')
-    <div class="timeline-item">
-        <i class="fas fa-pause-circle text-secondary"></i>
-        <div class="ms-3">
-            <strong>Ditunda</strong>
-            <p class="text-muted small mb-0">Permohonan sementara ditunda</p>
-        </div>
-    </div>
-    @endif
+                        @if($permohonan->status === 'ditunda')
+                        <div class="timeline-item">
+                            <i class="fas fa-pause-circle text-secondary"></i>
+                            <div class="ms-3">
+                                <strong>Ditunda Sementara</strong>
+                                <p class="text-muted small mb-0">Permohonan sementara ditunda</p>
+                            </div>
+                        </div>
+                        @endif
 
-    @if(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
-    <div class="timeline-item">
-        <i class="fas fa-{{ in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']) ? 'check-circle text-success' : 'times-circle text-danger' }}"></i>
-        <div class="ms-3">
-            <strong>{{ $permohonan->status_label_public }}</strong>
-            <p class="text-muted small mb-0">
-                {{ $permohonan->tanggal_selesai ? $permohonan->tanggal_selesai->format('d F Y, H:i') : '' }} WIB
-            </p>
-        </div>
-    </div>
-    @endif
-</div>
+                        @if(in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian', 'ditolak']))
+                        <div class="timeline-item">
+                            <i class="fas fa-{{ in_array($permohonan->status, ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']) ? 'check-circle text-success' : 'times-circle text-danger' }}"></i>
+                            <div class="ms-3">
+                                <strong>{{ $permohonan->status_label_public }}</strong>
+                                <p class="text-muted small mb-0">
+                                    {{ $permohonan->tanggal_selesai ? $permohonan->tanggal_selesai->format('d F Y, H:i') . ' WIB' : '' }}
+                                </p>
+                            </div>
+                        </div>
+                        @endif
                     </div>
+                </div>
             </div>
 
-            <!-- Action Buttons -->
+            {{-- Info Keberatan --}}
+            @if(in_array($permohonan->status, ['ditolak', 'dikabulkan_sebagian']))
+            <div class="card border-0 shadow-sm mb-4 bg-light">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold text-primary mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Tidak Puas dengan Keputusan?
+                    </h6>
+                    <p class="mb-3">
+                        Jika Anda tidak puas dengan keputusan permohonan informasi ini, 
+                        Anda dapat mengajukan keberatan sesuai dengan UU No. 14 Tahun 2008 tentang Keterbukaan Informasi Publik.
+                    </p>
+                    <a href="{{ route('keberatan.index') }}" class="btn btn-warning">
+                        <i class="fas fa-file-signature me-2"></i>
+                        Ajukan Keberatan
+                    </a>
+                </div>
+            </div>
+            @endif
+
+            {{-- Action Buttons --}}
             <div class="text-center">
                 <a href="{{ route('permohonan.cek-status') }}" class="btn btn-secondary btn-lg me-2">
                     <i class="fas fa-arrow-left"></i> Cek Lagi
@@ -193,6 +222,7 @@
     </div>
 </div>
 
+@push('styles')
 <style>
 .timeline {
     position: relative;
@@ -231,5 +261,14 @@
 .border-start {
     border-left-width: 5px !important;
 }
+
+.card {
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
 </style>
+@endpush
 @endsection

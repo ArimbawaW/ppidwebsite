@@ -59,15 +59,9 @@
                     </div>
                     @endif
 
-                    {{-- STATUS --}}
+                    {{-- ✅ UPDATED: Menggunakan accessor status_badge --}}
                     <span class="agenda-badge-modern">
-                        @if($item->status == 'upcoming')
-                            Akan Berlangsung
-                        @elseif($item->status == 'ongoing')
-                            Sedang Berlangsung
-                        @else
-                            Selesai
-                        @endif
+                        {{ $item->status_badge }}
                     </span>
                 </div>
 
@@ -131,6 +125,13 @@
                 <p style="white-space: pre-line;">
                     {{ $item->deskripsi ?? 'Tidak ada deskripsi.' }}
                 </p>
+
+                {{-- ✅ UPDATED: Menggunakan accessor status_badge_class dan status_badge --}}
+                <div class="mt-3">
+                    <span class="badge {{ $item->status_badge_class }}">
+                        {{ $item->status_badge }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>

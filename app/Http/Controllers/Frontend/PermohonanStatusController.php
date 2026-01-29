@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PermohonanStatusController extends Controller
 {
     /**
-     * Tampilkan form cek status
+     * Display the check status form
      */
     public function index()
     {
@@ -17,26 +17,34 @@ class PermohonanStatusController extends Controller
     }
 
     /**
-     * Proses pengecekan status permohonan
+     * Check permohonan status with email validation
      */
     public function cek(Request $request)
     {
-        $request->validate([
-            'nomor_registrasi' => 'required|string'
+        $validated = $request->validate([
+            'nomor_registrasi' => 'required|string',
+            'email' => 'required|email',
+        ], [
+            'nomor_registrasi.required' => 'Nomor registrasi wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
         ]);
 
-        $permohonan = Permohonan::where(
-            'nomor_registrasi',
-            $request->nomor_registrasi
-        )->first();
+        $permohonan = Permohonan::where('nomor_registrasi', $validated['nomor_registrasi'])->first();
 
         if (!$permohonan) {
-            return redirect()->back()
+            return back()
                 ->withInput()
-                ->with('error', 'Nomor registrasi tidak ditemukan.');
+                ->with('error', 'Nomor registrasi tidak ditemukan. Silakan periksa kembali.');
         }
 
-        // View hasil status (sesuai update)
+        // Validasi email harus sesuai
+        if (strtolower(trim($permohonan->email)) !== strtolower(trim($validated['email']))) {
+            return back()
+                ->withInput()
+                ->with('error', 'Email yang Anda masukkan tidak sesuai dengan email yang terdaftar pada permohonan ini. Silakan gunakan email yang sama saat mengajukan permohonan.');
+        }
+
         return view('frontend.permohonan.hasil-status', compact('permohonan'));
     }
 }

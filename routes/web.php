@@ -77,6 +77,7 @@ Route::get('/keberatan', [KeberatanController::class, 'index'])->name('keberatan
 Route::post('/keberatan', [KeberatanController::class, 'store'])->name('keberatan.store');
 Route::get('/keberatan/cek', [KeberatanController::class, 'cek'])->name('keberatan.cek');
 Route::post('/keberatan/cek', [KeberatanController::class, 'cekProses'])->name('keberatan.cek.proses');
+Route::post('/keberatan/{id}/tanggapan', [KeberatanController::class, 'submitTanggapan'])->name('keberatan.submit-tanggapan');
 
 // Berita
 Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
@@ -154,6 +155,36 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         App\Http\Controllers\Admin\KeberatanController::class)
         ->except(['create', 'store']);
 
+        /*|----------------------------------------------------------------------
+| REKAP DATA - PERMOHONAN
+|----------------------------------------------------------------------
+*/
+Route::prefix('rekap/permohonan')->name('rekap.permohonan.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\RekapPermohonanController::class, 'index'])
+        ->name('index');
+    Route::post('/preview', [App\Http\Controllers\Admin\RekapPermohonanController::class, 'preview'])
+        ->name('preview');
+    Route::post('/export', [App\Http\Controllers\Admin\RekapPermohonanController::class, 'export'])
+        ->name('export');
+});
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/rekap/permohonan', [PermohonanRekapController::class, 'index'])
+        ->name('rekap.permohonan');
+});
+
+/*
+|----------------------------------------------------------------------
+| REKAP DATA - KEBERATAN
+|----------------------------------------------------------------------
+*/
+Route::prefix('rekap/keberatan')->name('rekap.keberatan.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\RekapKeberatanController::class, 'index'])
+        ->name('index');
+    Route::post('/preview', [App\Http\Controllers\Admin\RekapKeberatanController::class, 'preview'])
+        ->name('preview');
+    Route::post('/export', [App\Http\Controllers\Admin\RekapKeberatanController::class, 'export'])
+        ->name('export');
+});
     /*
     |----------------------------------------------------------------------
     | BERITA
@@ -233,11 +264,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     /*
     |----------------------------------------------------------------------
-    | BANNER SLIDER (ADMIN) - TAMBAHKAN DI SINI!
+    | BANNER SLIDER (ADMIN)
     |----------------------------------------------------------------------
     */
     Route::resource('banner-slider', BannerManagementController::class);
     Route::post('banner-slider/{bannerSlider}/toggle-status', 
         [BannerManagementController::class, 'toggleStatus'])
         ->name('banner-slider.toggle-status');
+        
 });

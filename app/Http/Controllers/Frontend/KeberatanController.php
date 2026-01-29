@@ -25,7 +25,7 @@ class KeberatanController extends Controller
             'nama_pemohon'                => 'required|string|max:255',
             'alamat'                      => 'required|string',
             'nomor_kontak'                => 'required|string|max:20',
-            'email'                       => 'required|email|max:255', // Validasi email baru
+            'email'                       => 'required|email|max:255',
             'pekerjaan'                   => 'required|string|max:255',
             'kartu_identitas'             => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'informasi_diminta'           => 'required|string',
@@ -70,7 +70,7 @@ class KeberatanController extends Controller
             'nama_pemohon'                 => $validated['nama_pemohon'],
             'alamat'                       => $validated['alamat'],
             'nomor_kontak'                 => $validated['nomor_kontak'],
-            'email'                        => $validated['email'], // Simpan email
+            'email'                        => $validated['email'],
             'pekerjaan'                    => $validated['pekerjaan'],
             'kartu_identitas_path'         => $kartuIdentitasPath,
             'informasi_diminta'            => $validated['informasi_diminta'],
@@ -121,13 +121,73 @@ class KeberatanController extends Controller
 
     public function cekProses(Request $request)
     {
-        $request->validate(['nomor_registrasi' => 'required|string']);
-        $keberatan = Keberatan::where('nomor_registrasi', $request->nomor_registrasi)->first();
+        $validated = $request->validate([
+            'nomor_registrasi' => 'required|string',
+            'email' => 'required|email',
+        ], [
+            'nomor_registrasi.required' => 'Nomor registrasi keberatan wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+        ]);
+
+        $keberatan = Keberatan::where('nomor_registrasi', $validated['nomor_registrasi'])->first();
 
         if (!$keberatan) {
-            return back()->with('error', 'Nomor registrasi tidak ditemukan.');
+            return back()
+                ->withInput()
+                ->with('error', 'Nomor registrasi keberatan tidak ditemukan. Silakan periksa kembali.');
+        }
+
+        // Validasi email harus sesuai
+        if (strtolower(trim($keberatan->email)) !== strtolower(trim($validated['email']))) {
+            return back()
+                ->withInput()
+                ->with('error', 'Email yang Anda masukkan tidak sesuai dengan email yang terdaftar pada keberatan ini.');
         }
 
         return view('frontend.keberatan.hasil', compact('keberatan'));
+    }
+
+    public function submitTanggapan(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'tanggapan_pemohon' => 'required|string|min:10',
+            'email' => 'required|email',
+        ], [
+            'tanggapan_pemohon.required' => 'Tanggapan wajib diisi.',
+            'tanggapan_pemohon.min' => 'Tanggapan minimal 10 karakter.',
+            'email.required' => 'Email wajib diisi untuk verifikasi.',
+            'email.email' => 'Format email tidak valid.',
+        ]);
+
+        $keberatan = Keberatan::findOrFail($id);
+
+        // Validasi email harus sesuai
+        if (strtolower(trim($keberatan->email)) !== strtolower(trim($validated['email']))) {
+            return back()
+                ->withInput()
+                ->with('error', 'Email yang Anda masukkan tidak sesuai. Anda tidak memiliki akses untuk memberikan tanggapan pada keberatan ini.');
+        }
+
+        // Update tanggapan pemohon
+        $keberatan->tanggapan_pemohon = $validated['tanggapan_pemohon'];
+        $keberatan->save();
+
+        // Kirim notifikasi ke admin
+        $mailer = app(GraphMailService::class);
+        $adminContent =
+            "Pemohon telah memberikan tanggapan pada keberatan:\n\n" .
+            "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
+            "Nama Pemohon: {$keberatan->nama_pemohon}\n" .
+            "Email: {$keberatan->email}\n\n" .
+            "Tanggapan Pemohon:\n{$validated['tanggapan_pemohon']}";
+
+        if (!$mailer->send(config('mail.from.address'), 'Tanggapan Baru pada Keberatan - PPID', $adminContent)) {
+            Log::error('Email notifikasi tanggapan pemohon gagal dikirim.');
+        }
+
+        return redirect()
+            ->route('keberatan.cek')
+            ->with('success', 'Tanggapan Anda berhasil dikirim. Terima kasih atas partisipasi Anda.');
     }
 }

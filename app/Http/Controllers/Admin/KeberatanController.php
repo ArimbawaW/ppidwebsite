@@ -73,6 +73,15 @@ class KeberatanController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:pending,diproses,selesai,ditolak',
             'keterangan' => 'nullable|string',
+            
+            // Validasi untuk kolom tambahan (tanggapan_pemohon tidak divalidasi karena diisi user)
+            'tanggapan_atasan_ppid' => 'nullable|string',
+            'nomor_surat_tanggapan' => 'nullable|string|max:100',
+            'tanggal_surat_tanggapan' => 'nullable|date',
+            'nama_atasan_ppid' => 'nullable|string|max:255',
+            'jabatan_atasan_ppid' => 'nullable|string|max:255',
+            'keputusan_mediasi' => 'nullable|string',
+            'putusan_pengadilan' => 'nullable|string',
         ]);
 
         $keberatan = Keberatan::with('permohonan')->findOrFail($id);

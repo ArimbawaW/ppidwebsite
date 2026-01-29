@@ -39,6 +39,13 @@ class Permohonan extends Model
         // Admin fields
         'catatan_admin',
         'tanggal_selesai',
+        // Admin input fields
+        'kategori_informasi',
+        'jenis_permohonan_informasi',
+        'jenis_permohonan_lainnya',
+        'status_informasi',
+        'bentuk_informasi',
+        'jenis_permintaan',
     ];
 
     protected $casts = [
@@ -47,8 +54,6 @@ class Permohonan extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    // TIDAK ADA relasi user() karena sistem publik
 
     /**
      * Get kategori label
@@ -60,6 +65,89 @@ class Permohonan extends Model
             'kelompok' => 'Kelompok Orang',
             'badan_hukum' => 'Badan Hukum',
             default => $this->kategori_pemohon,
+        };
+    }
+
+    /**
+     * Get kategori informasi label
+     */
+    public function getKategoriInformasiLabelAttribute()
+    {
+        return match($this->kategori_informasi) {
+            'informasi_berkala' => 'Informasi Berkala',
+            'informasi_setiap_saat' => 'Informasi Setiap Saat',
+            'informasi_serta_merta' => 'Informasi Serta Merta',
+            'informasi_dikecualikan' => 'Informasi Dikecualikan',
+            default => '-',
+        };
+    }
+
+    /**
+     * Get jenis permohonan informasi label
+     */
+    public function getJenisPermohonanInformasiLabelAttribute()
+    {
+        $labels = [
+            'aplikasi_sistem_informasi' => 'Aplikasi/Sistem Informasi',
+            'kemitraan_kerja_sama' => 'Kemitraan/Kerja Sama',
+            'jabatan_fungsional' => 'Jabatan Fungsional',
+            'kebijakan_regulasi' => 'Kebijakan/Regulasi',
+            'konsultasi_teknis' => 'Konsultasi Teknis',
+            'perizinan' => 'Perizinan',
+            'bsps' => 'BSPS',
+            'rumah_susun' => 'Rumah Susun',
+            'rumah_khusus' => 'Rumah Khusus',
+            'pembiayaan_perumahan' => 'Pembiayaan Perumahan (FLPP & SBUM)',
+            'bantuan_permukiman' => 'Bantuan Permukiman',
+            'kpp_kur_perumahan' => 'KPP/KUR Perumahan',
+            'pelayanan_publik' => 'Pelayanan Publik',
+            'lain_lain' => 'Lain-lain',
+        ];
+
+        if ($this->jenis_permohonan_informasi === 'lain_lain' && $this->jenis_permohonan_lainnya) {
+            return 'Lain-lain: ' . $this->jenis_permohonan_lainnya;
+        }
+
+        return $labels[$this->jenis_permohonan_informasi] ?? '-';
+    }
+
+    /**
+     * Get status informasi label
+     */
+    public function getStatusInformasiLabelAttribute()
+    {
+        return match($this->status_informasi) {
+            'ya' => 'Ya',
+            'dibawah_penguasaan' => 'Di Bawah Penguasaan',
+            'tidak_dibawah_penguasaan' => 'Tidak Di Bawah Penguasaan',
+            'belum_didokumentasikan' => 'Belum Didokumentasikan',
+            default => '-',
+        };
+    }
+
+    /**
+     * Get bentuk informasi label
+     */
+    public function getBentukInformasiLabelAttribute()
+    {
+        return match($this->bentuk_informasi) {
+            'softcopy' => 'Softcopy',
+            'hardcopy' => 'Hardcopy',
+            'softcopy_hardcopy' => 'Softcopy & Hardcopy',
+            default => '-',
+        };
+    }
+
+    /**
+     * Get jenis permintaan label
+     */
+    public function getJenisPermintaanLabelAttribute()
+    {
+        return match($this->jenis_permintaan) {
+            'melihat_mengetahui' => 'Melihat/Mengetahui',
+            'meminta_salinan' => 'Meminta Salinan',
+            'melihat_dan_salinan' => 'Melihat/Mengetahui & Meminta Salinan',
+            default => '-',
         };
     }
 

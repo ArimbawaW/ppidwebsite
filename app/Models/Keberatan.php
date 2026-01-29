@@ -26,6 +26,15 @@ class Keberatan extends Model
     'uraian_keberatan',
     'status',
     'keterangan',
+    // Kolom tambahan untuk detail keberatan
+    'tanggapan_atasan_ppid',
+    'nomor_surat_tanggapan',
+    'tanggal_surat_tanggapan',
+    'nama_atasan_ppid',
+    'jabatan_atasan_ppid',
+    'tanggapan_pemohon',
+    'keputusan_mediasi',
+    'putusan_pengadilan',
 ];
 
     protected function casts(): array
@@ -33,6 +42,7 @@ class Keberatan extends Model
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'tanggal_surat_tanggapan' => 'date',
         ];
     }
 

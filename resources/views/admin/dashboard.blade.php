@@ -15,6 +15,7 @@
         padding: 0.5em 0.75em;
         font-weight: 600;
     }
+    
 </style>
 @endpush
 
@@ -105,24 +106,24 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>No. Registrasi</th>
-                                <th>Nama</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
+                                <th class="text-nowrap" width="35%">No. Registrasi</th>
+                                <th class="text-nowrap" width="22%">Nama</th>
+                                <th class="text-nowrap" width="23%">Status</th>
+                                <th class="text-nowrap" width="20%">Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($permohonanTerbaru as $item)
                             <tr>
-                                <td>
-                                    <a href="{{ route('admin.permohonan.show', $item) }}" class="fw-bold text-decoration-none">
+                                <td class="text-nowrap">
+                                    <a href="{{ route('admin.permohonan.show', $item) }}" class="fw-bold text-decoration-none small">
                                         {{ $item->nomor_registrasi }}
                                     </a>
                                 </td>
-                                <td>{{ Str::limit($item->nama, 15) }}</td>
+                                <td>{{ Str::limit($item->nama, 12) }}</td>
                                 <td>
                                     @if($item->status === 'perlu_verifikasi')
                                         <span class="badge bg-warning text-dark">Verifikasi</span>
@@ -136,7 +137,7 @@
                                         <span class="badge bg-secondary">{{ $item->status }}</span>
                                     @endif
                                 </td>
-                                <td><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
+                                <td class="text-nowrap"><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
                             </tr>
                             @empty
                             <tr>
@@ -166,10 +167,10 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>No. Registrasi</th>
-                                <th>Nama</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
+                                <th style="min-width: 180px;">No. Registrasi</th>
+                                <th style="min-width: 100px;">Nama</th>
+                                <th style="min-width: 100px;">Status</th>
+                                <th style="min-width: 90px;">Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -186,7 +187,7 @@
                                         <span class="badge bg-secondary">{{ $item->status }}</span>
                                     @endif
                                 </td>
-                                <td><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
+                                <td><small class="text-muted text-nowrap">{{ $item->created_at->format('d/m/y') }}</small></td>
                             </tr>
                             @empty
                             <tr>

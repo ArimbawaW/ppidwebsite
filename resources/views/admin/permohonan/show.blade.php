@@ -15,6 +15,7 @@
         white-space: nowrap !important;
         vertical-align: baseline !important;
         border-radius: 0.25rem !important;
+        margin: 0.15rem !important;
     }
 
     .badge-lg {
@@ -125,6 +126,10 @@
         background-color: #28a745 !important;
     }
 
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+
     /* Button styles */
     .btn {
         display: inline-flex !important;
@@ -143,6 +148,12 @@
 
     .shadow-sm {
         box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
+    }
+
+    /* Lainnya field styling */
+    #lainnya_field {
+        margin-top: 10px;
+        display: none;
     }
 </style>
 @endpush
@@ -190,30 +201,30 @@
                         </div>
                         <div class="col-md-4 text-right">
                             @if($permohonan->status === 'perlu_verifikasi')
-    <span class="badge badge-warning badge-lg">
-        <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
-    </span>
-@elseif($permohonan->status === 'diproses')
-    <span class="badge badge-info badge-lg">
-        <i class="fas fa-spinner fa-spin"></i> Sedang Diproses
-    </span>
-@elseif($permohonan->status === 'ditunda')
-    <span class="badge badge-secondary badge-lg">
-        <i class="fas fa-pause-circle"></i> Ditunda
-    </span>
-@elseif($permohonan->status === 'dikabulkan_seluruhnya')
-    <span class="badge badge-success badge-lg">
-        <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
-    </span>
-@elseif($permohonan->status === 'dikabulkan_sebagian')
-    <span class="badge badge-success badge-lg">
-        <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
-    </span>
-@else
-    <span class="badge badge-danger badge-lg">
-        <i class="fas fa-times-circle"></i> Ditolak
-    </span>
-@endif
+                                <span class="badge badge-warning badge-lg">
+                                    <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
+                                </span>
+                            @elseif($permohonan->status === 'diproses')
+                                <span class="badge badge-info badge-lg">
+                                    <i class="fas fa-spinner fa-spin"></i> Sedang Diproses
+                                </span>
+                            @elseif($permohonan->status === 'ditunda')
+                                <span class="badge badge-secondary badge-lg">
+                                    <i class="fas fa-pause-circle"></i> Ditunda
+                                </span>
+                            @elseif($permohonan->status === 'dikabulkan_seluruhnya')
+                                <span class="badge badge-success badge-lg">
+                                    <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
+                                </span>
+                            @elseif($permohonan->status === 'dikabulkan_sebagian')
+                                <span class="badge badge-success badge-lg">
+                                    <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
+                                </span>
+                            @else
+                                <span class="badge badge-danger badge-lg">
+                                    <i class="fas fa-times-circle"></i> Ditolak
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -486,44 +497,133 @@
         </div>
     </div>
 
-    <!-- Update Status -->
+    <!-- Kategori & Status Informasi (Input Admin) -->
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-purple text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-tags"></i> Kategorisasi Informasi (Diisi Admin)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if($permohonan->kategori_informasi || $permohonan->jenis_permohonan_informasi || $permohonan->status_informasi || $permohonan->bentuk_informasi || $permohonan->jenis_permintaan)
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong class="text-primary">
+                                    <i class="fas fa-layer-group"></i> Kategori Informasi:
+                                </strong>
+                                <p class="mb-0 mt-1">
+                                    @if($permohonan->kategori_informasi)
+                                        <span class="badge badge-info">{{ $permohonan->kategori_informasi_label }}</span>
+                                    @else
+                                        <span class="text-muted">Belum diisi</span>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong class="text-primary">
+                                    <i class="fas fa-clipboard-list"></i> Jenis Permohonan Informasi:
+                                </strong>
+                                <p class="mb-0 mt-1">
+                                    @if($permohonan->jenis_permohonan_informasi)
+                                        <span class="badge badge-primary">{{ $permohonan->jenis_permohonan_informasi_label }}</span>
+                                    @else
+                                        <span class="text-muted">Belum diisi</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong class="text-primary">
+                                    <i class="fas fa-info-circle"></i> Status Informasi:
+                                </strong>
+                                <p class="mb-0 mt-1">
+                                    @if($permohonan->status_informasi)
+                                        <span class="badge badge-success">{{ $permohonan->status_informasi_label }}</span>
+                                    @else
+                                        <span class="text-muted">Belum diisi</span>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong class="text-primary">
+                                    <i class="fas fa-file-pdf"></i> Bentuk Informasi:
+                                </strong>
+                                <p class="mb-0 mt-1">
+                                    @if($permohonan->bentuk_informasi)
+                                        <span class="badge badge-warning">{{ $permohonan->bentuk_informasi_label }}</span>
+                                    @else
+                                        <span class="text-muted">Belum diisi</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <strong class="text-primary">
+                                    <i class="fas fa-hand-pointer"></i> Jenis Permintaan:
+                                </strong>
+                                <p class="mb-0 mt-1">
+                                    @if($permohonan->jenis_permintaan)
+                                        <span class="badge badge-secondary">{{ $permohonan->jenis_permintaan_label }}</span>
+                                    @else
+                                        <span class="text-muted">Belum diisi</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-exclamation-circle fa-3x mb-3 d-block"></i>
+                            <p class="mb-0">Kategorisasi belum diisi. Silakan isi pada form di bawah.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Status & Kategorisasi -->
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 bg-success text-white">
                     <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-edit"></i> Update Status Permohonan
+                        <i class="fas fa-edit"></i> Update Status & Kategorisasi Permohonan
                     </h6>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.permohonan.updateStatus', $permohonan) }}" method="POST">
                         @csrf
                         
+                        <!-- Status Permohonan -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="font-weight-bold">
-                                    Status <span class="text-danger">*</span>
+                                    Status Permohonan <span class="text-danger">*</span>
                                 </label>
-                               <select name="status" class="form-control @error('status') is-invalid @enderror" required>
-    <option value="perlu_verifikasi" {{ $permohonan->status === 'perlu_verifikasi' ? 'selected' : '' }}>
-        ⚠️ Perlu Verifikasi
-    </option>
-    <option value="diproses" {{ $permohonan->status === 'diproses' ? 'selected' : '' }}>
-        🔄 Sedang Diproses
-    </option>
-    <option value="ditunda" {{ $permohonan->status === 'ditunda' ? 'selected' : '' }}>
-        ⏸️ Ditunda
-    </option>
-    <option value="dikabulkan_seluruhnya" {{ $permohonan->status === 'dikabulkan_seluruhnya' ? 'selected' : '' }}>
-        ✅ Dikabulkan Seluruhnya
-    </option>
-    <option value="dikabulkan_sebagian" {{ $permohonan->status === 'dikabulkan_sebagian' ? 'selected' : '' }}>
-        ✔️ Dikabulkan Sebagian
-    </option>
-    <option value="ditolak" {{ $permohonan->status === 'ditolak' ? 'selected' : '' }}>
-        ❌ Ditolak
-    </option>
-</select>
+                                <select name="status" class="form-control @error('status') is-invalid @enderror" required>
+                                    <option value="perlu_verifikasi" {{ $permohonan->status === 'perlu_verifikasi' ? 'selected' : '' }}>
+                                        ⚠️ Perlu Verifikasi
+                                    </option>
+                                    <option value="diproses" {{ $permohonan->status === 'diproses' ? 'selected' : '' }}>
+                                        🔄 Sedang Diproses
+                                    </option>
+                                    <option value="ditunda" {{ $permohonan->status === 'ditunda' ? 'selected' : '' }}>
+                                        ⏸️ Ditunda
+                                    </option>
+                                    <option value="dikabulkan_seluruhnya" {{ $permohonan->status === 'dikabulkan_seluruhnya' ? 'selected' : '' }}>
+                                        ✅ Dikabulkan Seluruhnya
+                                    </option>
+                                    <option value="dikabulkan_sebagian" {{ $permohonan->status === 'dikabulkan_sebagian' ? 'selected' : '' }}>
+                                        ✔️ Dikabulkan Sebagian
+                                    </option>
+                                    <option value="ditolak" {{ $permohonan->status === 'ditolak' ? 'selected' : '' }}>
+                                        ❌ Ditolak
+                                    </option>
+                                </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -532,35 +632,145 @@
                             <div class="col-md-6 mb-3">
                                 <label class="font-weight-bold">Status Saat Ini</label>
                                 <div class="form-control-plaintext">
-                                   @if($permohonan->status === 'perlu_verifikasi')
-    <span class="badge badge-warning badge-lg">
-        <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
-    </span>
-@elseif($permohonan->status === 'diproses')
-    <span class="badge badge-info badge-lg">
-        <i class="fas fa-spinner fa-spin"></i> Diproses
-    </span>
-@elseif($permohonan->status === 'ditunda')
-    <span class="badge badge-secondary badge-lg">
-        <i class="fas fa-pause-circle"></i> Ditunda
-    </span>
-@elseif($permohonan->status === 'dikabulkan_seluruhnya')
-    <span class="badge badge-success badge-lg">
-        <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
-    </span>
-@elseif($permohonan->status === 'dikabulkan_sebagian')
-    <span class="badge badge-success badge-lg">
-        <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
-    </span>
-@else
-    <span class="badge badge-danger badge-lg">
-        <i class="fas fa-times-circle"></i> Ditolak
-    </span>
-@endif
+                                    @if($permohonan->status === 'perlu_verifikasi')
+                                        <span class="badge badge-warning badge-lg">
+                                            <i class="fas fa-exclamation-circle"></i> Perlu Verifikasi
+                                        </span>
+                                    @elseif($permohonan->status === 'diproses')
+                                        <span class="badge badge-info badge-lg">
+                                            <i class="fas fa-spinner fa-spin"></i> Diproses
+                                        </span>
+                                    @elseif($permohonan->status === 'ditunda')
+                                        <span class="badge badge-secondary badge-lg">
+                                            <i class="fas fa-pause-circle"></i> Ditunda
+                                        </span>
+                                    @elseif($permohonan->status === 'dikabulkan_seluruhnya')
+                                        <span class="badge badge-success badge-lg">
+                                            <i class="fas fa-check-circle"></i> Dikabulkan Seluruhnya
+                                        </span>
+                                    @elseif($permohonan->status === 'dikabulkan_sebagian')
+                                        <span class="badge badge-success badge-lg">
+                                            <i class="fas fa-check-circle"></i> Dikabulkan Sebagian
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger badge-lg">
+                                            <i class="fas fa-times-circle"></i> Ditolak
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Kategorisasi Admin -->
+                        <hr class="my-4">
+                        <h5 class="text-primary mb-3">
+                            <i class="fas fa-tags"></i> Kategorisasi Informasi
+                        </h5>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">
+                                    <i class="fas fa-layer-group"></i> Kategori Informasi
+                                </label>
+                                <select name="kategori_informasi" class="form-control @error('kategori_informasi') is-invalid @enderror">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="informasi_berkala" {{ old('kategori_informasi', $permohonan->kategori_informasi) === 'informasi_berkala' ? 'selected' : '' }}>Informasi Berkala</option>
+                                    <option value="informasi_setiap_saat" {{ old('kategori_informasi', $permohonan->kategori_informasi) === 'informasi_setiap_saat' ? 'selected' : '' }}>Informasi Setiap Saat</option>
+                                    <option value="informasi_serta_merta" {{ old('kategori_informasi', $permohonan->kategori_informasi) === 'informasi_serta_merta' ? 'selected' : '' }}>Informasi Serta Merta</option>
+                                    <option value="informasi_dikecualikan" {{ old('kategori_informasi', $permohonan->kategori_informasi) === 'informasi_dikecualikan' ? 'selected' : '' }}>Informasi Dikecualikan</option>
+                                </select>
+                                @error('kategori_informasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">
+                                    <i class="fas fa-clipboard-list"></i> Jenis Permohonan Informasi
+                                </label>
+                                <select name="jenis_permohonan_informasi" id="jenis_permohonan_informasi" class="form-control @error('jenis_permohonan_informasi') is-invalid @enderror">
+                                    <option value="">-- Pilih Jenis Permohonan --</option>
+                                    <option value="aplikasi_sistem_informasi" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'aplikasi_sistem_informasi' ? 'selected' : '' }}>Aplikasi/Sistem Informasi</option>
+                                    <option value="kemitraan_kerja_sama" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'kemitraan_kerja_sama' ? 'selected' : '' }}>Kemitraan/Kerja Sama</option>
+                                    <option value="jabatan_fungsional" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'jabatan_fungsional' ? 'selected' : '' }}>Jabatan Fungsional</option>
+                                    <option value="kebijakan_regulasi" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'kebijakan_regulasi' ? 'selected' : '' }}>Kebijakan/Regulasi</option>
+                                    <option value="konsultasi_teknis" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'konsultasi_teknis' ? 'selected' : '' }}>Konsultasi Teknis</option>
+                                    <option value="perizinan" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'perizinan' ? 'selected' : '' }}>Perizinan</option>
+                                    <option value="bsps" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'bsps' ? 'selected' : '' }}>BSPS</option>
+                                    <option value="rumah_susun" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'rumah_susun' ? 'selected' : '' }}>Rumah Susun</option>
+                                    <option value="rumah_khusus" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'rumah_khusus' ? 'selected' : '' }}>Rumah Khusus</option>
+                                    <option value="pembiayaan_perumahan" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'pembiayaan_perumahan' ? 'selected' : '' }}>Pembiayaan Perumahan (FLPP & SBUM)</option>
+                                    <option value="bantuan_permukiman" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'bantuan_permukiman' ? 'selected' : '' }}>Bantuan Permukiman</option>
+                                    <option value="kpp_kur_perumahan" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'kpp_kur_perumahan' ? 'selected' : '' }}>KPP/KUR Perumahan</option>
+                                    <option value="pelayanan_publik" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'pelayanan_publik' ? 'selected' : '' }}>Pelayanan Publik</option>
+                                    <option value="lain_lain" {{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'lain_lain' ? 'selected' : '' }}>Lain-lain</option>
+                                </select>
+                                @error('jenis_permohonan_informasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+
+                                <!-- Field Lainnya -->
+                                <div id="lainnya_field" style="{{ old('jenis_permohonan_informasi', $permohonan->jenis_permohonan_informasi) === 'lain_lain' ? 'display: block;' : 'display: none;' }}">
+                                    <input type="text" name="jenis_permohonan_lainnya" class="form-control mt-2 @error('jenis_permohonan_lainnya') is-invalid @enderror" placeholder="Sebutkan jenis lainnya..." value="{{ old('jenis_permohonan_lainnya', $permohonan->jenis_permohonan_lainnya) }}">
+                                    @error('jenis_permohonan_lainnya')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">
+                                    <i class="fas fa-info-circle"></i> Status Informasi
+                                </label>
+                                <select name="status_informasi" class="form-control @error('status_informasi') is-invalid @enderror">
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="ya" {{ old('status_informasi', $permohonan->status_informasi) === 'ya' ? 'selected' : '' }}>Ya</option>
+                                    <option value="dibawah_penguasaan" {{ old('status_informasi', $permohonan->status_informasi) === 'dibawah_penguasaan' ? 'selected' : '' }}>Di Bawah Penguasaan</option>
+                                    <option value="tidak_dibawah_penguasaan" {{ old('status_informasi', $permohonan->status_informasi) === 'tidak_dibawah_penguasaan' ? 'selected' : '' }}>Tidak Di Bawah Penguasaan</option>
+                                    <option value="belum_didokumentasikan" {{ old('status_informasi', $permohonan->status_informasi) === 'belum_didokumentasikan' ? 'selected' : '' }}>Belum Didokumentasikan</option>
+                                </select>
+                                @error('status_informasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">
+                                    <i class="fas fa-file-pdf"></i> Bentuk Informasi yang Dikuasai
+                                </label>
+                                <select name="bentuk_informasi" class="form-control @error('bentuk_informasi') is-invalid @enderror">
+                                    <option value="">-- Pilih Bentuk Informasi --</option>
+                                    <option value="softcopy" {{ old('bentuk_informasi', $permohonan->bentuk_informasi) === 'softcopy' ? 'selected' : '' }}>Softcopy</option>
+                                    <option value="hardcopy" {{ old('bentuk_informasi', $permohonan->bentuk_informasi) === 'hardcopy' ? 'selected' : '' }}>Hardcopy</option>
+                                    <option value="softcopy_hardcopy" {{ old('bentuk_informasi', $permohonan->bentuk_informasi) === 'softcopy_hardcopy' ? 'selected' : '' }}>Softcopy & Hardcopy</option>
+                                </select>
+                                @error('bentuk_informasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="font-weight-bold">
+                                    <i class="fas fa-hand-pointer"></i> Jenis Permintaan
+                                </label>
+                                <select name="jenis_permintaan" class="form-control @error('jenis_permintaan') is-invalid @enderror">
+                                    <option value="">-- Pilih Jenis Permintaan --</option>
+                                    <option value="melihat_mengetahui" {{ old('jenis_permintaan', $permohonan->jenis_permintaan) === 'melihat_mengetahui' ? 'selected' : '' }}>Melihat/Mengetahui</option>
+                                    <option value="meminta_salinan" {{ old('jenis_permintaan', $permohonan->jenis_permintaan) === 'meminta_salinan' ? 'selected' : '' }}>Meminta Salinan</option>
+                                    <option value="melihat_dan_salinan" {{ old('jenis_permintaan', $permohonan->jenis_permintaan) === 'melihat_dan_salinan' ? 'selected' : '' }}>Melihat/Mengetahui & Meminta Salinan</option>
+                                </select>
+                                @error('jenis_permintaan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Catatan Admin -->
+                        <hr class="my-4">
                         <div class="mb-3">
                             <label class="font-weight-bold">
                                 <i class="fas fa-sticky-note"></i> Catatan Admin
@@ -584,7 +794,7 @@
                                 Terakhir diupdate: {{ $permohonan->updated_at->format('d F Y, H:i') }} WIB
                             </div>
                             <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-save"></i> Update Status
+                                <i class="fas fa-save"></i> Update Status & Kategorisasi
                             </button>
                         </div>
                     </form>
@@ -620,6 +830,16 @@
         setTimeout(function() {
             $('.alert').fadeOut('slow');
         }, 5000);
+        
+        // Show/hide lainnya field
+        $('#jenis_permohonan_informasi').on('change', function() {
+            if ($(this).val() === 'lain_lain') {
+                $('#lainnya_field').slideDown();
+            } else {
+                $('#lainnya_field').slideUp();
+                $('input[name="jenis_permohonan_lainnya"]').val('');
+            }
+        });
         
         // Konfirmasi sebelum update
         $('form').on('submit', function(e) {

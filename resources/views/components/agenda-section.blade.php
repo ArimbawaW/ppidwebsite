@@ -61,14 +61,9 @@
                         </div>
                         @endif
 
+                        {{-- ✅ UPDATED: Menggunakan accessor status_badge --}}
                         <span class="agenda-badge mt-2 d-inline-block">
-                            @if($agenda->status == 'upcoming')
-                                Akan Berlangsung
-                            @elseif($agenda->status == 'ongoing')
-                                Sedang Berlangsung
-                            @else
-                                Selesai
-                            @endif
+                            {{ $agenda->status_badge }}
                         </span>
                     </div>
 
@@ -142,6 +137,13 @@
                 @else
                     <p class="text-muted fst-italic">Tidak ada deskripsi.</p>
                 @endif
+
+                {{-- ✅ UPDATED: Menggunakan accessor status_badge_class dan status_badge --}}
+                <div class="mt-3">
+                    <span class="badge {{ $agenda->status_badge_class }}">
+                        {{ $agenda->status_badge }}
+                    </span>
+                </div>
             </div>
 
             <div class="modal-footer">

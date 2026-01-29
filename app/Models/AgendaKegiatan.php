@@ -69,4 +69,56 @@ class AgendaKegiatan extends Model
         return $query->whereYear('tanggal', now()->year)
                      ->whereMonth('tanggal', now()->month);
     }
+
+    // ========== ACCESSOR STATUS DINAMIS ==========
+    
+    /**
+     * Accessor untuk status dinamis berdasarkan tanggal
+     * Status akan otomatis berubah sesuai tanggal saat ini
+     */
+    public function getStatusDinamisAttribute(): string
+    {
+        $now = now()->startOfDay();
+        $tanggal = $this->tanggal->startOfDay();
+        
+        if ($tanggal->isFuture()) {
+            return 'upcoming';
+        } elseif ($tanggal->isToday()) {
+            return 'ongoing';
+        } else {
+            return 'completed';
+        }
+    }
+
+    /**
+     * Accessor untuk text badge status
+     * Mengembalikan text yang user-friendly
+     */
+    public function getStatusBadgeAttribute(): string
+    {
+        $status = $this->status_dinamis;
+        
+        return match($status) {
+            'upcoming' => 'Akan Datang',
+            'ongoing' => 'Sedang Berlangsung',
+            'completed' => 'Selesai',
+            default => 'Tidak Diketahui'
+        };
+    }
+
+    /**
+     * Accessor untuk class badge Bootstrap
+     * Mengembalikan class CSS sesuai status
+     */
+    public function getStatusBadgeClassAttribute(): string
+    {
+        $status = $this->status_dinamis;
+        
+        return match($status) {
+            'upcoming' => 'bg-primary',
+            'ongoing' => 'bg-success',
+            'completed' => 'bg-secondary',
+            default => 'bg-dark'
+        };
+    }
 }
