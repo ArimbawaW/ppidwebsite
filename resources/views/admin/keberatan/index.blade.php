@@ -4,184 +4,551 @@
 
 @push('styles')
 <style>
-/* ===== STANDAR TABEL ADMIN (SAMA DENGAN PERMOHONAN) ===== */
-.table .badge {
-    display: inline-block;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    line-height: 1;
-    border-radius: 0.25rem;
-}
+    /* === COMPACT TABLE MODE === */
+    .table thead th {
+        font-size: 0.6rem !important;
+        padding: 0.4rem 0.5rem !important;
+        letter-spacing: 0.04em;
+        background-color: #f8f9fa;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #6c757d;
+        border-top: none;
+        line-height: 1.2;
+    }
 
-.badge-success { background-color: #198754; color: #fff; }
-.badge-warning { background-color: #ffc107; color: #212529; }
-.badge-danger  { background-color: #dc3545; color: #fff; }
-.badge-info    { background-color: #0dcaf0; color: #fff; }
+    .table tbody td {
+        font-size: 0.7rem !important;
+        padding: 0.3rem 0.5rem !important;
+        line-height: 1.25;
+        vertical-align: middle;
+    }
 
-.table-hover tbody tr:hover {
-    background-color: #f8f9fa;
-}
+    /* Reduce row height */
+    .table tr {
+        height: auto !important;
+    }
 
-.btn-group-custom {
-    display: inline-flex;
-    gap: 4px;
-}
+    /* Compact badge */
+    .status-badge {
+        font-size: 0.58rem !important;
+        padding: 0.3em 0.6em !important;
+        min-width: 85px;
+        max-width: 120px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
 
-.table .fas {
-    margin-right: 4px;
-}
+    /* Compact soft badge */
+    .badge-soft-primary {
+        font-size: 0.62rem;
+        padding: 0.25em 0.45em;
+        background-color: #eef2ff;
+        color: #4338ca;
+        border: 1px solid #e0e7ff;
+        border-radius: 6px;
+        display: inline-block;
+    }
 
-/* ===== SCROLL HORIZONTAL ===== */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
+    /* Compact action button */
+    .btn-action {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+    }
 
-/* Opsional: Custom scrollbar styling */
-.table-responsive::-webkit-scrollbar {
-    height: 8px;
-}
+    .btn-action:hover {
+        transform: translateY(-1px);
+    }
 
-.table-responsive::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
+    /* Compact text wrapping */
+    .wrap-text {
+        max-width: 180px;
+        font-size: 0.7rem;
+        line-height: 1.25;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
 
-.table-responsive::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
+    /* Compact date cell */
+    .date-cell {
+        font-size: 0.68rem;
+        line-height: 1.15;
+    }
 
-.table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
+    .date-cell .small {
+        font-size: 0.62rem;
+    }
+
+    /* Compact Indikator Waktu */
+    .waktu-indikator {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 100px;
+    }
+
+    .waktu-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 0.3em 0.55em;
+        font-size: 0.62rem;
+        font-weight: 600;
+        border-radius: 5px;
+        white-space: nowrap;
+    }
+
+    .waktu-badge i {
+        font-size: 0.75rem;
+    }
+
+    /* Warna Indikator */
+    .waktu-badge.aman {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .waktu-badge.perhatian {
+        background-color: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .waktu-badge.urgent {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .waktu-badge.terlambat {
+        background-color: #7f1d1d;
+        color: #ffffff;
+        border: 1px solid #991b1b;
+        animation: pulse-red 2s infinite;
+    }
+
+    .waktu-badge.selesai {
+        background-color: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #d1fae5;
+    }
+
+    @keyframes pulse-red {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+
+    .sisa-hari-text {
+        font-size: 0.6rem;
+        color: #6b7280;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    /* Compact Progress Bar */
+    .mini-progress {
+        width: 100%;
+        height: 3px;
+        background-color: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .mini-progress-bar {
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+
+    .mini-progress-bar.aman { background-color: #10b981; }
+    .mini-progress-bar.perhatian { background-color: #f59e0b; }
+    .mini-progress-bar.urgent { background-color: #ef4444; }
+
+    /* Compact Filter Stats */
+    .filter-stats {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        flex: 1;
+        min-width: 140px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .stat-card.aman {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+    }
+
+    .stat-card.perhatian {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+    }
+
+    .stat-card.urgent {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+    }
+
+    .stat-card h3 {
+        font-size: 1.75rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .stat-card p {
+        margin: 3px 0 0 0;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Fix DataTables select styling */
+    div.dataTables_wrapper div.dataTables_length select {
+        width: auto !important;
+        height: 28px;
+        font-size: 0.7rem;
+        padding: 0.25rem 1.75rem 0.25rem 0.5rem;
+        display: inline-block !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 12px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter input {
+        height: 28px;
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    /* Fix font rendering */
+    .dataTables_wrapper {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    }
+
+    .dataTables_info,
+    .dataTables_paginate {
+        font-size: 0.7rem;
+    }
+
+    .page-link {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    /* Reduce card padding */
+    .card-body {
+        padding: 0.5rem !important;
+    }
+
+    /* ===== FORCE STATUS COLOR SYSTEM ===== */
+    .status-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50rem !important;
+        font-weight: 800 !important;
+        border: none !important;
+    }
+
+    /* FORCE COLORS */
+    .status-vibrant-warning { background: #FFB300 !important; color: #000 !important; }
+    .status-vibrant-info { background: #00B0FF !important; color: #fff !important; }
+    .status-vibrant-success { background: #00E676 !important; color: #000 !important; }
+    .status-vibrant-danger { background: #FF1744 !important; color: #fff !important; }
+
+    /* Bootstrap badge override */
+    .badge.status-badge {
+        background-image: none !important;
+    }
+
+    /* Compact link */
+    .registrasi-link {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.72rem;
+    }
+    .registrasi-link:hover { text-decoration: underline; }
+
+    /* Compact identitas */
+    .identitas-cell .fw-bold {
+        font-size: 0.72rem;
+        margin-bottom: 2px;
+    }
+
+    .identitas-cell .small {
+        font-size: 0.65rem;
+    }
 </style>
 @endpush
 
 @section('content')
-
-<!-- PAGE HEADER -->
-<div class="page-header">
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div>
-        <h2>Daftar Keberatan</h2>
+        <h3 class="fw-bold mb-1" style="font-size: 1.5rem;">Daftar Keberatan</h3>
+        <p class="text-muted mb-0" style="font-size: 0.8rem;">Manajemen dan penanganan keberatan pemohon informasi publik.</p>
+    </div>
+
+    <a href="{{ route('admin.rekap.keberatan.index') }}"
+       class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2 shadow-sm">
+        <i class="bi bi-clipboard-data"></i>
+        Rekap
+    </a>
+</div>
+
+{{-- Statistik Indikator Waktu Keberatan --}}
+@php
+    $countAman = 0;
+    $countPerhatian = 0;
+    $countUrgent = 0;
+    
+    foreach($keberatan as $item) {
+        $indikator = $item->indikator_waktu;
+        $label = strtolower($indikator['label']);
+        
+        if ($label === 'aman') {
+            $countAman++;
+        } elseif ($label === 'perhatian') {
+            $countPerhatian++;
+        } elseif ($label === 'urgent' || $label === 'terlambat') {
+            $countUrgent++;
+        }
+    }
+@endphp
+
+<div class="filter-stats">
+    <div class="stat-card aman" onclick="filterByIndikator('aman')">
+        <h3>{{ $countAman }}</h3>
+        <p><i class="bi bi-check-circle"></i> Aman (H1-H14)</p>
+    </div>
+    <div class="stat-card perhatian" onclick="filterByIndikator('perhatian')">
+        <h3>{{ $countPerhatian }}</h3>
+        <p><i class="bi bi-exclamation-triangle"></i> Perhatian (H15-H21)</p>
+    </div>
+    <div class="stat-card urgent" onclick="filterByIndikator('urgent')">
+        <h3>{{ $countUrgent }}</h3>
+        <p><i class="bi bi-exclamation-circle"></i> Urgent (H22-H30)</p>
     </div>
 </div>
 
-{{-- ALERT --}}
 @if(session('success'))
-<div class="alert alert-success alert-dismissible fade show">
-    <i class="fas fa-check-circle me-2"></i>
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="alert alert-success border-0 shadow-sm d-flex align-items-center py-2" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <div style="font-size: 0.85rem;">{{ session('success') }}</div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
 
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
-
-<!-- MAIN CARD -->
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">
-            <i class="fas fa-database me-2"></i>
-            Data Keberatan
-        </h5>
-    </div>
-
-    <div class="card-body">
+<div class="card shadow-sm">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle" id="keberatanTable" style="white-space: nowrap;">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0" id="keberatanTable">
+                <thead>
                     <tr>
-                        <th class="text-center" width="50">No</th>
-                        <th width="160">No. Registrasi</th>
-                        <th width="200">No. Permohonan</th>
-                        <th width="150">Nama Pemohon</th>
-                        <th width="180">Alasan Keberatan</th>
-                        <th class="text-center" width="120">Status</th>
-                        <th width="150">Tanggal</th>
-                        <th class="text-center" width="120">Aksi</th>
+                        <th class="text-center" style="width: 35px;">No</th>
+                        <th style="width: 140px;">No. Registrasi</th>
+                        <th class="text-center" style="width: 110px;">Indikator Waktu</th>
+                        <th style="width: 150px;">No. Permohonan</th>
+                        <th style="width: 170px;">Identitas Pemohon</th>
+                        <th style="width: 200px;">Alasan Keberatan</th>
+                        <th class="text-center" style="width: 100px;">Status</th>
+                        <th style="width: 90px;">Waktu Masuk</th>
+                        <th class="text-center" style="width: 80px;">Aksi</th>
                     </tr>
                 </thead>
+                <tbody>
+                @forelse($keberatan as $index => $item)
+                    @php
+                        $indikator = $item->indikator_waktu;
+                        $statusMap = [
+                            'pending' => 'status-vibrant-warning',
+                            'diproses' => 'status-vibrant-info',
+                            'dikabulkan' => 'status-vibrant-success',
+                            'ditolak' => 'status-vibrant-danger',
+                        ];
+                        $class = $statusMap[$item->status] ?? 'bg-secondary text-white';
+                    @endphp
+                    <tr data-indikator="{{ strtolower($indikator['label']) }}">
+                        <td class="text-center text-muted">{{ $index + 1 }}</td>
+                        <td>
+                            <a href="{{ route('admin.keberatan.show', $item) }}" class="registrasi-link">
+                                {{ $item->nomor_registrasi }}
+                            </a>
+                        </td>
+                        
+                        {{-- KOLOM INDIKATOR WAKTU --}}
+                        <td>
+                            <div class="waktu-indikator">
+                                <span class="waktu-badge {{ strtolower($indikator['label']) }}">
+                                    <i class="bi bi-{{ $indikator['icon'] }}"></i>
+                                    {{ $indikator['label'] }}
+                                </span>
+                                
+                                @if($item->tanggal_selesai)
+                                    <span class="sisa-hari-text">
+                                        ✓ {{ $indikator['hari_terpakai'] }} hari
+                                    </span>
+                                @elseif(isset($indikator['terlambat']) && $indikator['terlambat'])
+                                    <span class="sisa-hari-text text-danger fw-bold">
+                                        +{{ $indikator['hari_keterlambatan'] }}h
+                                    </span>
+                                @else
+                                    <span class="sisa-hari-text">
+                                        Sisa: {{ $indikator['sisa_hari'] }}h
+                                    </span>
+                                    <div class="mini-progress">
+                                        <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 
+                                             style="width: {{ $indikator['persentase'] }}%"></div>
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge-soft-primary small">
+                                {{ $item->permohonan ? $item->permohonan->nomor_registrasi : '-' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="identitas-cell">
+                                <div class="fw-bold text-dark">{{ $item->nama_pemohon }}</div>
+                                <div class="small text-muted text-truncate" style="max-width: 160px;">
+                                    <i class="bi bi-envelope me-1"></i>{{ $item->email }}
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="wrap-text" title="{{ $item->alasan_keberatan }}">
+                                {{ $item->alasan_keberatan }}
+                            </div>
+                        </td>
+
+                        <td class="text-center">
+                            <span class="badge status-badge {{ $class }}">
+                                <i class="bi bi-{{ $item->status === 'pending' ? 'exclamation-circle-fill' : ($item->status === 'diproses' ? 'arrow-repeat' : ($item->status === 'dikabulkan' ? 'check-circle-fill' : 'x-octagon-fill')) }} me-1"></i>
+                                {{ strtoupper($item->status) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="date-cell">
+                                <div class="fw-bold">{{ $item->created_at?->format('d/m/Y') ?? '-' }}</div>
+                                <div class="text-muted small">{{ $item->created_at?->format('H:i') ?? '' }}</div>
+                            </div>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{{ route('admin.keberatan.show', $item) }}" class="btn btn-sm btn-info btn-action" title="Detail">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger btn-action" onclick="confirmDelete({{ $item->id }})" title="Hapus">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <form id="delete-form-{{ $item->id }}" action="{{ route('admin.keberatan.destroy', $item) }}" method="POST" class="d-none">
+                                @csrf @method('DELETE')
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+                            <p class="text-muted mt-2 mb-0">Tidak ada data keberatan</p>
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
             </table>
         </div>
     </div>
 </div>
-
-<!-- MODAL QUICK VIEW -->
-<div class="modal fade" id="quickViewModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Keberatan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="quickViewContent">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
 <script>
-$(function () {
+$(document).ready(function () {
     $('#keberatanTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('admin.keberatan.index') }}",
-        order: [[6, 'desc']],
-        scrollX: true,
-        columns: [
-            { data: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
-            { data: 'nomor_registrasi' },
-            { data: 'nomor_registrasi_permohonan' },
-            { data: 'nama_pemohon' },
-            { data: 'alasan_keberatan' },
-            { 
-                data: 'status',
-                className: 'text-center',
-                orderable: true,
-                searchable: true
-            },
-            { data: 'created_at' },
-            {
-                data: 'action',
-                className: 'text-center',
-                orderable: false,
-                searchable: false
-            }
-        ],
+        pageLength: 25,
+        responsive: true,
+        order: [[0, 'asc']], // Urutkan berdasarkan indikator waktu (urgent di atas)
         language: {
-            search: "Cari:",
-            lengthMenu: "Tampilkan _MENU_ data",
-            info: "Menampilkan _START_–_END_ dari _TOTAL_ data",
-            zeroRecords: "Tidak ada data keberatan",
+            processing: "Memproses...",
+            search: "",
+            searchPlaceholder: "Cari...",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ entri",
+            infoEmpty: "Menampilkan 0 - 0 dari 0 entri",
+            infoFiltered: "(dari _MAX_ total)",
+            loadingRecords: "Memuat data...",
+            zeroRecords: "Tidak ada data",
+            emptyTable: "Tidak ada data tersedia",
             paginate: {
-                previous: "Sebelumnya",
-                next: "Selanjutnya"
+                first: "‹‹",
+                previous: "‹",
+                next: "›",
+                last: "››"
             }
-        }
+        },
+        dom: "<'row px-2 py-2'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row px-2 py-2'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
     });
+
+    $('.dataTables_filter input').addClass('form-control-sm');
+    $('.dataTables_length select').addClass('form-select-sm');
 });
 
-function quickView(id) {
-    $('#quickViewModal').modal('show');
-    $('#quickViewContent').load('/admin/keberatan/' + id + '/quick-view');
+function filterByIndikator(tipe) {
+    const table = $('#keberatanTable').DataTable();
+    
+    if (tipe === 'aman') {
+        table.column(2).search('^aman$', true, false).draw();
+    } else if (tipe === 'perhatian') {
+        table.column(2).search('perhatian', true, false).draw();
+    } else if (tipe === 'urgent') {
+        table.column(2).search('urgent|terlambat', true, false).draw();
+    }
 }
 
 function confirmDelete(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus keberatan ini?')) {
+    if (confirm('Apakah Anda yakin ingin menghapus data keberatan ini?')) {
         document.getElementById('delete-form-' + id).submit();
     }
 }

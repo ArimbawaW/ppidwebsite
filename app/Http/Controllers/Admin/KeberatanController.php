@@ -1,136 +1,146 @@
 <?php
-// app/Http/Controllers/Admin/KeberatanController.php
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Keberatan;
-use App\Services\GraphMailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Yajra\DataTables\Facades\DataTables;
 
 class KeberatanController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        if ($request->ajax()) {
-            $keberatan = Keberatan::with('permohonan')->select('keberatan.*');
-            
-            return DataTables::of($keberatan)
-                ->addIndexColumn()
-                ->addColumn('alasan_keberatan', function ($item) {
-                    $labels = [
-                        'penolakan_pasal_17' => 'Penolakan Pasal 17',
-                        'tidak_disediakan_berkala' => 'Tidak Disediakan Berkala',
-                        'tidak_ditanggapi' => 'Tidak Ditanggapi',
-                        'tidak_sesuai_permintaan' => 'Tidak Sesuai Permintaan',
-                        'tidak_dipenuhi' => 'Tidak Dipenuhi',
-                        'biaya_tidak_wajar' => 'Biaya Tidak Wajar',
-                        'melebihi_jangka_waktu' => 'Melebihi Jangka Waktu',
-                    ];
-                    
-                    $label = $labels[$item->alasan_keberatan] ?? $item->alasan_keberatan;
-                    return '<span class="badge bg-secondary">' . $label . '</span>';
-                })
-                ->addColumn('status', function ($item) {
-                    $badges = [
-                        'pending' => '<span class="badge badge-warning">Pending</span>',
-                        'diproses' => '<span class="badge badge-info">Diproses</span>',
-                        'selesai' => '<span class="badge badge-success">Selesai</span>',
-                        'ditolak' => '<span class="badge badge-danger">Ditolak</span>',
-                    ];
-                    
-                    return $badges[$item->status] ?? '<span class="badge badge-secondary">' . ucfirst($item->status) . '</span>';
-                })
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->format('d M Y H:i');
-                })
-                ->addColumn('action', function ($item) {
-                    return view('admin.keberatan.action', compact('item'))->render();
-                })
-                ->rawColumns(['alasan_keberatan', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('admin.keberatan.index');
+        // Load semua keberatan dengan relasi permohonan
+        $keberatan = Keberatan::with('permohonan')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('admin.keberatan.index', compact('keberatan'));
     }
 
-    public function show($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Keberatan $keberatan)
     {
-        $keberatan = Keberatan::with('permohonan')->findOrFail($id);
+        $keberatan->load('permohonan');
+        
         return view('admin.keberatan.show', compact('keberatan'));
     }
 
-    public function quickView($id)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Keberatan $keberatan)
     {
-        $keberatan = Keberatan::with('permohonan')->findOrFail($id);
-        return view('admin.keberatan.quick-view', compact('keberatan'));
+        $keberatan->load('permohonan');
+        
+        return view('admin.keberatan.edit', compact('keberatan'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Keberatan $keberatan)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,diproses,selesai,ditolak',
-            'keterangan' => 'nullable|string',
-            
-            // Validasi untuk kolom tambahan (tanggapan_pemohon tidak divalidasi karena diisi user)
-            'tanggapan_atasan_ppid' => 'nullable|string',
-            'nomor_surat_tanggapan' => 'nullable|string|max:100',
-            'tanggal_surat_tanggapan' => 'nullable|date',
-            'nama_atasan_ppid' => 'nullable|string|max:255',
-            'jabatan_atasan_ppid' => 'nullable|string|max:255',
-            'keputusan_mediasi' => 'nullable|string',
-            'putusan_pengadilan' => 'nullable|string',
+        $request->validate([
+            'status' => 'required|in:pending,diproses,dikabulkan,ditolak',
+            'tanggapan_ppid' => 'nullable|string',
         ]);
 
-        $keberatan = Keberatan::with('permohonan')->findOrFail($id);
         $oldStatus = $keberatan->status;
-        $oldStatusLabel = $keberatan->status_label;
-        
-        $keberatan->update($validated);
-        
-        // Refresh untuk mendapatkan status_label yang baru
-        $keberatan->refresh();
 
-        // Kirim email pemberitahuan perubahan status ke pemohon
-        $permohonan = $keberatan->permohonan;
-        if ($permohonan && $permohonan->email) {
-            $mailer = app(GraphMailService::class);
-            $content =
-                "Halo {$keberatan->nama_pemohon},\n\n" .
-                "Status keberatan Anda telah berubah.\n" .
-                "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
-                "Nomor Registrasi Permohonan: {$keberatan->nomor_registrasi_permohonan}\n" .
-                "Status sebelumnya: {$oldStatusLabel}\n" .
-                "Status sekarang: {$keberatan->status_label}\n" .
-                ($keberatan->keterangan ? "Keterangan: {$keberatan->keterangan}\n" : '') .
-                "\nAnda dapat mengecek status melalui halaman cek status keberatan.";
+        $keberatan->status = $request->status;
+        $keberatan->tanggapan_ppid = $request->tanggapan_ppid;
+        
+        // Set tanggal selesai jika status dikabulkan atau ditolak
+        if (in_array($request->status, ['dikabulkan', 'ditolak'])) {
+            $keberatan->tanggal_selesai = now();
+        }
+        
+        $keberatan->save();
 
-            if (!$mailer->send($permohonan->email, 'Pembaruan Status Keberatan - PPID', $content)) {
-                Log::error('Gagal mengirim email status keberatan (Graph).', [
-                    'keberatan_id' => $keberatan->id,
-                    'email' => $permohonan->email,
-                ]);
+        // Kirim email notifikasi jika status berubah
+        if ($oldStatus !== $request->status && $keberatan->email) {
+            try {
+                $this->sendStatusChangeEmail($keberatan);
+            } catch (\Exception $e) {
+                Log::error('Error mengirim email keberatan: ' . $e->getMessage());
             }
         }
 
-        return redirect()->route('admin.keberatan.index')
-            ->with('success', 'Status keberatan berhasil diperbarui.');
+        return redirect()->route('admin.keberatan.show', $keberatan)
+            ->with('success', 'Keberatan berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Keberatan $keberatan)
     {
-        $keberatan = Keberatan::findOrFail($id);
-        
-        // Hapus file kartu identitas jika ada
-        if ($keberatan->kartu_identitas_path) {
-            \Storage::disk('public')->delete($keberatan->kartu_identitas_path);
+        // Hapus file dokumen pendukung jika ada
+        if ($keberatan->file_pendukung_path && Storage::disk('public')->exists($keberatan->file_pendukung_path)) {
+            Storage::disk('public')->delete($keberatan->file_pendukung_path);
         }
         
         $keberatan->delete();
 
         return redirect()->route('admin.keberatan.index')
             ->with('success', 'Keberatan berhasil dihapus.');
+    }
+
+    /**
+     * Display statistics
+     */
+    public function statistics()
+    {
+        $stats = [
+            'total' => Keberatan::count(),
+            'pending' => Keberatan::where('status', 'pending')->count(),
+            'diproses' => Keberatan::where('status', 'diproses')->count(),
+            'dikabulkan' => Keberatan::where('status', 'dikabulkan')->count(),
+            'ditolak' => Keberatan::where('status', 'ditolak')->count(),
+        ];
+
+        // Statistik Indikator Waktu
+        $keberatanAktif = Keberatan::aktif()->get();
+        $statsIndikator = [
+            'aman' => 0,
+            'perhatian' => 0,
+            'urgent' => 0,
+            'terlambat' => 0,
+        ];
+
+        foreach ($keberatanAktif as $item) {
+            $indikator = $item->indikator_waktu;
+            $label = strtolower($indikator['label']);
+            
+            if ($label === 'aman') {
+                $statsIndikator['aman']++;
+            } elseif ($label === 'perhatian') {
+                $statsIndikator['perhatian']++;
+            } elseif ($label === 'urgent') {
+                $statsIndikator['urgent']++;
+            } elseif ($label === 'terlambat') {
+                $statsIndikator['terlambat']++;
+            }
+        }
+
+        return view('admin.keberatan.statistics', compact('stats', 'statsIndikator'));
+    }
+
+    /**
+     * Send email notification for status change
+     */
+    private function sendStatusChangeEmail($keberatan)
+    {
+        // Implementasi pengiriman email
+        // Sesuaikan dengan template email yang sudah dibuat
+        // Anda bisa menggunakan GraphMailService seperti di PermohonanController
     }
 }

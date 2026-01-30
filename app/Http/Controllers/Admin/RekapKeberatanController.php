@@ -14,10 +14,8 @@ class RekapKeberatanController extends Controller
      */
     public function index()
     {
-        // Get current year
         $currentYear = date('Y');
         
-        // Get statistics
         $stats = [
             'total' => Keberatan::count(),
             'bulan_ini' => Keberatan::whereMonth('created_at', date('m'))
@@ -30,7 +28,6 @@ class RekapKeberatanController extends Controller
             'ditolak' => Keberatan::where('status', 'ditolak')->count(),
         ];
         
-        // Get data by month (current year)
         $dataPerBulan = Keberatan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
             ->whereYear('created_at', $currentYear)
             ->groupBy('bulan')
@@ -39,18 +36,15 @@ class RekapKeberatanController extends Controller
             ->pluck('total', 'bulan')
             ->toArray();
         
-        // Fill missing months with 0
         $chartData = [];
         for ($i = 1; $i <= 12; $i++) {
             $chartData[] = $dataPerBulan[$i] ?? 0;
         }
         
-        // Get data by alasan
         $dataPerAlasan = Keberatan::selectRaw('alasan_keberatan, COUNT(*) as total')
             ->groupBy('alasan_keberatan')
             ->get();
         
-        // Get data by status
         $dataPerStatus = Keberatan::selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->get();
@@ -65,13 +59,12 @@ class RekapKeberatanController extends Controller
     }
     
     /**
-     * Get filtered data for preview
+     * Preview
      */
     public function preview(Request $request)
     {
-        $query = Keberatan::with('permohonan');
+        $query = Keberatan::query();
         
-        // Filter by date range
         if ($request->filled('tanggal_mulai')) {
             $query->whereDate('created_at', '>=', $request->tanggal_mulai);
         }
@@ -80,12 +73,10 @@ class RekapKeberatanController extends Controller
             $query->whereDate('created_at', '<=', $request->tanggal_selesai);
         }
         
-        // Filter by status
         if ($request->filled('status') && $request->status != 'semua') {
             $query->where('status', $request->status);
         }
         
-        // Filter by alasan
         if ($request->filled('alasan') && $request->alasan != 'semua') {
             $query->where('alasan_keberatan', $request->alasan);
         }
@@ -96,13 +87,12 @@ class RekapKeberatanController extends Controller
     }
     
     /**
-     * Export to Excel
+     * EXPORT EXCEL (FULL DATA)
      */
     public function export(Request $request)
     {
-        $query = Keberatan::with('permohonan');
+        $query = Keberatan::query();
         
-        // Apply same filters as preview
         if ($request->filled('tanggal_mulai')) {
             $query->whereDate('created_at', '>=', $request->tanggal_mulai);
         }
@@ -121,21 +111,25 @@ class RekapKeberatanController extends Controller
         
         $keberatan = $query->orderBy('created_at', 'desc')->get();
         
-        // Create Excel file using PhpSpreadsheet
+        // Spreadsheet
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        
-        // Set title
         $sheet->setTitle('Rekap Keberatan');
-        
-        // Header styling
+
+        // Header style
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '0e5b73']],
-            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '0e5b73']
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            ],
         ];
-        
-        // Set headers
+
+        // HEADERS
         $headers = [
             'A1' => 'No',
             'B1' => 'No. Registrasi Keberatan',
@@ -148,23 +142,37 @@ class RekapKeberatanController extends Controller
             'I1' => 'Uraian Keberatan',
             'J1' => 'Status',
             'K1' => 'Keterangan Admin',
-            'L1' => 'Tanggapan Atasan PPID',
-            'M1' => 'Tanggapan Pemohon',
+
+            // ATASAN PPID
+            'L1' => 'Nama Atasan PPID',
+            'M1' => 'Jabatan Atasan PPID',
+            'N1' => 'Tanggapan Atasan PPID',
+            'O1' => 'Nomor Surat Tanggapan',
+            'P1' => 'Tanggal Surat Tanggapan',
+
+            // PEMOHON
+            'Q1' => 'Tanggapan Pemohon',
+
+            // MEDIASI
+            'R1' => 'Keputusan Mediasi/Ajudikasi',
+
+            // PENGADILAN
+            'S1' => 'Putusan Pengadilan',
         ];
-        
+
         foreach ($headers as $cell => $value) {
             $sheet->setCellValue($cell, $value);
             $sheet->getStyle($cell)->applyFromArray($headerStyle);
         }
-        
-        // Auto-size columns
-        foreach (range('A', 'M') as $col) {
+
+        foreach (range('A', 'S') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
-        
-        // Fill data
+
+        // DATA
         $row = 2;
         foreach ($keberatan as $index => $item) {
+
             $sheet->setCellValue('A' . $row, $index + 1);
             $sheet->setCellValue('B' . $row, $item->nomor_registrasi);
             $sheet->setCellValue('C' . $row, $item->nomor_registrasi_permohonan);
@@ -176,35 +184,46 @@ class RekapKeberatanController extends Controller
             $sheet->setCellValue('I' . $row, $item->uraian_keberatan);
             $sheet->setCellValue('J' . $row, $item->status_label);
             $sheet->setCellValue('K' . $row, $item->keterangan ?? '-');
-            $sheet->setCellValue('L' . $row, $item->tanggapan_atasan_ppid ?? '-');
-            $sheet->setCellValue('M' . $row, $item->tanggapan_pemohon ?? '-');
-            
-            // Wrap text for long content
-            $sheet->getStyle('H' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('I' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('K' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('L' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('M' . $row)->getAlignment()->setWrapText(true);
-            
+
+            // ATASAN PPID
+            $sheet->setCellValue('L' . $row, $item->nama_atasan_ppid ?? '-');
+            $sheet->setCellValue('M' . $row, $item->jabatan_atasan_ppid ?? '-');
+            $sheet->setCellValue('N' . $row, $item->tanggapan_atasan_ppid ?? '-');
+            $sheet->setCellValue('O' . $row, $item->nomor_surat_tanggapan ?? '-');
+            $sheet->setCellValue('P' . $row, 
+                $item->tanggal_surat_tanggapan
+                    ? Carbon::parse($item->tanggal_surat_tanggapan)->format('d/m/Y')
+                    : '-'
+            );
+
+            // PEMOHON
+            $sheet->setCellValue('Q' . $row, $item->tanggapan_pemohon ?? '-');
+
+            // MEDIASI
+            $sheet->setCellValue('R' . $row, $item->keputusan_mediasi ?? '-');
+
+            // PENGADILAN
+            $sheet->setCellValue('S' . $row, $item->putusan_pengadilan ?? '-');
+
+            foreach (['H','I','K','N','R','S'] as $col) {
+                $sheet->getStyle($col . $row)->getAlignment()->setWrapText(true);
+            }
+
             $row++;
         }
-        
-        // Set row height
+
         for ($i = 2; $i < $row; $i++) {
-            $sheet->getRowDimension($i)->setRowHeight(-1); // Auto height
+            $sheet->getRowDimension($i)->setRowHeight(-1);
         }
-        
-        // Generate filename
-        $filename = 'Rekap_Keberatan_' . date('YmdHis') . '.xlsx';
-        
-        // Save file
+
+        $filename = 'Rekap_Keberatan_Lengkap_' . date('YmdHis') . '.xlsx';
+
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        
-        // Output to browser
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
-        
+
         $writer->save('php://output');
         exit;
     }

@@ -55,6 +55,206 @@ class Permohonan extends Model
         'updated_at' => 'datetime',
     ];
 
+    // ========================================
+    // WAKTU & INDIKATOR METHODS
+    // ========================================
+    
+    /**
+     * Konstanta batas waktu maksimal (hari kerja)
+     */
+    const BATAS_WAKTU_HARI_KERJA = 10;
+
+    /**
+     * Hitung sisa hari kerja dari permohonan
+     * Menghitung hari kerja (Senin-Jumat), tidak termasuk weekend
+     */
+    public function getSisaHariKerjaAttribute()
+    {
+        // Jika sudah selesai, tidak perlu hitung lagi
+        if ($this->tanggal_selesai) {
+            return 0;
+        }
+
+        $tanggalAwal = $this->created_at;
+        $tanggalSekarang = Carbon::now();
+        
+        // Hitung hari kerja antara tanggal awal dan sekarang
+        $hariKerjaTerpakai = $this->hitungHariKerja($tanggalAwal, $tanggalSekarang);
+        
+        // Sisa hari kerja
+        $sisaHari = self::BATAS_WAKTU_HARI_KERJA - $hariKerjaTerpakai;
+        
+        return max(0, $sisaHari); // Minimal 0, tidak boleh negatif
+    }
+
+    /**
+     * Hitung berapa hari kerja sudah terpakai
+     */
+    public function getHariKerjaTerpakaiAttribute()
+    {
+        if ($this->tanggal_selesai) {
+            return $this->hitungHariKerja($this->created_at, $this->tanggal_selesai);
+        }
+
+        return $this->hitungHariKerja($this->created_at, Carbon::now());
+    }
+
+    /**
+     * Helper function untuk menghitung hari kerja
+     */
+    private function hitungHariKerja($tanggalAwal, $tanggalAkhir)
+    {
+        $awal = Carbon::parse($tanggalAwal);
+        $akhir = Carbon::parse($tanggalAkhir);
+        
+        $hariKerja = 0;
+        
+        while ($awal->lte($akhir)) {
+            // Senin = 1, Jumat = 5
+            if ($awal->dayOfWeek >= 1 && $awal->dayOfWeek <= 5) {
+                $hariKerja++;
+            }
+            $awal->addDay();
+        }
+        
+        return $hariKerja;
+    }
+
+    /**
+     * Get status warna indikator berdasarkan sisa hari
+     * H1-H5 = Hijau (Aman)
+     * H6-H8 = Kuning (Perhatian)
+     * H9-H10 = Merah (Urgent)
+     * >H10 = Merah Tua (Terlambat)
+     */
+    public function getIndikatorWaktuAttribute()
+    {
+        // Jika sudah selesai, tidak perlu indikator
+        if ($this->tanggal_selesai) {
+            return [
+                'warna' => 'success',
+                'warna_hex' => '#28a745',
+                'bg_class' => 'bg-success',
+                'text_class' => 'text-success',
+                'badge_class' => 'badge-success',
+                'label' => 'Selesai',
+                'icon' => 'check-circle',
+                'sisa_hari' => 0,
+                'hari_terpakai' => $this->hari_kerja_terpakai,
+                'persentase' => 100,
+            ];
+        }
+
+        $sisaHari = $this->sisa_hari_kerja;
+        $hariTerpakai = $this->hari_kerja_terpakai;
+        $persentase = min(100, ($hariTerpakai / self::BATAS_WAKTU_HARI_KERJA) * 100);
+
+        // H1-H5 (Hari ke-1 sampai ke-5) = HIJAU (Masih aman, sisa 5 hari atau lebih)
+        if ($sisaHari >= 5) {
+            return [
+                'warna' => 'success',
+                'warna_hex' => '#28a745',
+                'bg_class' => 'bg-success',
+                'text_class' => 'text-success',
+                'badge_class' => 'badge-success',
+                'label' => 'Aman',
+                'icon' => 'check-circle',
+                'sisa_hari' => $sisaHari,
+                'hari_terpakai' => $hariTerpakai,
+                'persentase' => $persentase,
+            ];
+        }
+        
+        // H6-H8 (Hari ke-6 sampai ke-8) = KUNING (Perhatian, sisa 2-4 hari)
+        if ($sisaHari >= 2 && $sisaHari <= 4) {
+            return [
+                'warna' => 'warning',
+                'warna_hex' => '#ffc107',
+                'bg_class' => 'bg-warning',
+                'text_class' => 'text-warning',
+                'badge_class' => 'badge-warning',
+                'label' => 'Perhatian',
+                'icon' => 'exclamation-triangle',
+                'sisa_hari' => $sisaHari,
+                'hari_terpakai' => $hariTerpakai,
+                'persentase' => $persentase,
+            ];
+        }
+        
+        // H9-H10 (Hari ke-9 sampai ke-10) = MERAH (Urgent, sisa 0-1 hari)
+        if ($sisaHari >= 0 && $sisaHari <= 1) {
+            return [
+                'warna' => 'danger',
+                'warna_hex' => '#dc3545',
+                'bg_class' => 'bg-danger',
+                'text_class' => 'text-danger',
+                'badge_class' => 'badge-danger',
+                'label' => 'Urgent',
+                'icon' => 'exclamation-circle',
+                'sisa_hari' => $sisaHari,
+                'hari_terpakai' => $hariTerpakai,
+                'persentase' => $persentase,
+            ];
+        }
+
+        // Lebih dari H10 = MERAH TUA (Terlambat)
+        return [
+            'warna' => 'danger',
+            'warna_hex' => '#a71d2a',
+            'bg_class' => 'bg-danger',
+            'text_class' => 'text-danger',
+            'badge_class' => 'badge-danger',
+            'label' => 'Terlambat',
+            'icon' => 'times-circle',
+            'sisa_hari' => 0,
+            'hari_terpakai' => $hariTerpakai,
+            'persentase' => 100,
+            'terlambat' => true,
+            'hari_keterlambatan' => abs($sisaHari),
+        ];
+    }
+
+    /**
+     * Check apakah permohonan sudah urgent (H9-H10)
+     */
+    public function getIsUrgentAttribute()
+    {
+        $indikator = $this->indikator_waktu;
+        return $indikator['label'] === 'Urgent' || $indikator['label'] === 'Terlambat';
+    }
+
+    /**
+     * Check apakah permohonan terlambat
+     */
+    public function getIsTerlambatAttribute()
+    {
+        return isset($this->indikator_waktu['terlambat']) && $this->indikator_waktu['terlambat'] === true;
+    }
+
+    /**
+     * Get tanggal deadline (hari kerja)
+     */
+    public function getDeadlineAttribute()
+    {
+        $tanggal = $this->created_at->copy();
+        $hariKerjaCounter = 0;
+        
+        while ($hariKerjaCounter < self::BATAS_WAKTU_HARI_KERJA) {
+            $tanggal->addDay();
+            
+            // Hitung hanya hari kerja (Senin-Jumat)
+            if ($tanggal->dayOfWeek >= 1 && $tanggal->dayOfWeek <= 5) {
+                $hariKerjaCounter++;
+            }
+        }
+        
+        return $tanggal;
+    }
+
+    // ========================================
+    // EXISTING METHODS
+    // ========================================
+
     /**
      * Get kategori label
      */
@@ -235,6 +435,23 @@ class Permohonan extends Model
     public function scopeDitolak($query)
     {
         return $query->where('status', 'ditolak');
+    }
+
+    /**
+     * Scope untuk permohonan yang masih aktif (belum selesai)
+     */
+    public function scopeAktif($query)
+    {
+        return $query->whereNull('tanggal_selesai');
+    }
+
+    /**
+     * Scope untuk permohonan yang urgent (H9-H10)
+     */
+    public function scopeUrgent($query)
+    {
+        return $query->whereNull('tanggal_selesai')
+            ->where('created_at', '<=', Carbon::now()->subDays(8));
     }
 
     /**

@@ -70,9 +70,11 @@
                 <p><strong>Status:</strong></p>
                 <p>
                     @if($keberatan->status == 'pending')
-                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">Pending</span>
+                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">Menunggu Verifikasi</span>
                     @elseif($keberatan->status == 'diproses')
-                        <span class="badge bg-info fs-6 px-3 py-2">Diproses</span>
+                        <span class="badge bg-info fs-6 px-3 py-2">Sedang Diproses</span>
+                    @elseif($keberatan->status == 'ditunda')
+                        <span class="badge bg-secondary fs-6 px-3 py-2">Ditunda</span>
                     @elseif($keberatan->status == 'selesai')
                         <span class="badge bg-success fs-6 px-3 py-2">Selesai</span>
                     @else

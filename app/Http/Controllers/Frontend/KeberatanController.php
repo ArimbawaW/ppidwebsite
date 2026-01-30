@@ -89,7 +89,8 @@ class KeberatanController extends Controller
             "Nomor Registrasi Permohonan : {$keberatan->nomor_registrasi_permohonan}\n" .
             "Nama Pemohon                : {$keberatan->nama_pemohon}\n" .
             "Email                       : {$keberatan->email}\n" .
-            "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}";
+            "Alasan Keberatan            : {$keberatan->alasan_keberatan_label}\n" .
+            "Status                      : Perlu Diverifikasi";
 
         if (!$mailer->send(config('mail.from.address'), 'Keberatan Baru - PPID', $adminContent)) {
             Log::error('Email admin keberatan gagal dikirim.');
@@ -101,7 +102,7 @@ class KeberatanController extends Controller
                 "Keberatan Anda telah kami terima.\n" .
                 "Nomor Registrasi Keberatan: {$keberatan->nomor_registrasi}\n" .
                 "Nomor Registrasi Permohonan: {$keberatan->nomor_registrasi_permohonan}\n" .
-                "Status: Pending\n\n" .
+                "Status: Menunggu Verifikasi\n\n" .
                 "Simpan nomor registrasi ini untuk mengecek status keberatan Anda secara berkala.";
 
             if (!$mailer->send($keberatan->email, 'Nomor Registrasi Keberatan - PPID', $pemohonContent)) {

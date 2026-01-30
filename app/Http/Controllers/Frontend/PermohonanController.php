@@ -157,23 +157,115 @@ class PermohonanController extends Controller
     }
 
     /**
-     * Kirim email notifikasi
+     * Kirim email notifikasi dengan template resmi
      */
     private function sendNotifications($permohonan)
     {
         try {
             $mailer = app(GraphMailService::class);
             
-            // Email untuk Pemohon
-            $pemohonContent = "Halo {$permohonan->nama},\n\nPermohonan Anda diterima dengan nomor: {$permohonan->nomor_registrasi}";
-            $mailer->send($permohonan->email, 'Nomor Registrasi PPID', $pemohonContent);
+            // ============================================
+            // EMAIL UNTUK PEMOHON (FORMAT RESMI)
+            // ============================================
+            $pemohonContent = $this->generateEmailTemplatePemohon($permohonan);
+            $mailer->send(
+                $permohonan->email, 
+                'Konfirmasi Penerimaan Permohonan Informasi Publik - PPID Kementerian PUPR', 
+                $pemohonContent
+            );
 
-            // Email untuk Admin
-            $adminContent = "Ada permohonan baru dari {$permohonan->nama} dengan nomor: {$permohonan->nomor_registrasi}";
-            $mailer->send(config('mail.from.address'), 'Permohonan Baru - PPID', $adminContent);
+            // ============================================
+            // EMAIL UNTUK ADMIN (NOTIFIKASI INTERNAL)
+            // ============================================
+            $adminContent = $this->generateEmailTemplateAdmin($permohonan);
+            $mailer->send(
+                config('mail.from.address'), 
+                '[PPID] Permohonan Informasi Baru - ' . $permohonan->nomor_registrasi, 
+                $adminContent
+            );
             
         } catch (Exception $e) {
             Log::error('Email Notif Error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Generate template email untuk pemohon (Format Resmi Kementerian)
+     */
+    private function generateEmailTemplatePemohon($permohonan)
+    {
+        $template = "Yth. {$permohonan->nama},\n\n";
+        $template .= "Permohonan informasi publik dengan Nomor Tiket: {$permohonan->nomor_registrasi} telah kami terima dan akan diverifikasi.\n\n";
+        $template .= "Nomor tiket digunakan untuk mengecek status permohonan informasi. Permohonan informasi Bapak/Ibu akan kami verifikasi dan kami berikan tanggapan sesuai dengan ketentuan paling lambat 10 (Sepuluh) hari kerja.\n\n";
+        $template .= "Apabila dalam proses pemenuhan informasi diperlukan perpanjangan waktu, maka penyelesaian akan diperpanjang selama 7 (Tujuh) Hari Kerja berikutnya.\n\n";
+        $template .= "Bapak/Ibu dapat melakukan pengecekan status pengajuan secara berkala melalui kanal permohonan yang digunakan.\n\n";
+        $template .= "----------------------------------------\n";
+        $template .= "DETAIL PERMOHONAN\n";
+        $template .= "----------------------------------------\n";
+        $template .= "Nomor Tiket: {$permohonan->nomor_registrasi}\n";
+        $template .= "Nama Pemohon: {$permohonan->nama}\n";
+        $template .= "Kategori: " . $this->getKategoriLabel($permohonan->kategori_pemohon) . "\n";
+        $template .= "Tanggal Pengajuan: " . $permohonan->created_at->format('d F Y, H:i') . " WIB\n";
+        $template .= "----------------------------------------\n\n";
+        $template .= "Untuk mengecek status permohonan, silakan kunjungi:\n";
+        $template .= url('/cek-status') . "\n\n";
+        $template .= "Hormat Kami,\n";
+        $template .= "PPID Kementerian Pekerjaan Umum dan Perumahan Rakyat\n\n";
+        $template .= "----------------------------------------\n";
+        $template .= "Email ini dikirim secara otomatis, mohon tidak membalas email ini.\n";
+        $template .= "Untuk pertanyaan lebih lanjut, silakan hubungi PPID melalui saluran resmi.\n";
+
+        return $template;
+    }
+
+    /**
+     * Generate template email untuk admin (Notifikasi Internal)
+     */
+    private function generateEmailTemplateAdmin($permohonan)
+    {
+        $template = "==============================================\n";
+        $template .= "NOTIFIKASI PERMOHONAN INFORMASI BARU\n";
+        $template .= "==============================================\n\n";
+        $template .= "Ada permohonan informasi publik baru yang perlu ditindaklanjuti.\n\n";
+        $template .= "DETAIL PERMOHONAN:\n";
+        $template .= "----------------------------------------\n";
+        $template .= "Nomor Tiket: {$permohonan->nomor_registrasi}\n";
+        $template .= "Nama Pemohon: {$permohonan->nama}\n";
+        $template .= "Email: {$permohonan->email}\n";
+        $template .= "No. Telepon: {$permohonan->no_telepon}\n";
+        $template .= "Kategori: " . $this->getKategoriLabel($permohonan->kategori_pemohon) . "\n";
+        $template .= "Pekerjaan: {$permohonan->pekerjaan}\n";
+        $template .= "Alamat: {$permohonan->alamat}\n\n";
+        $template .= "RINCIAN INFORMASI:\n";
+        $template .= "----------------------------------------\n";
+        $template .= "{$permohonan->rincian_informasi}\n\n";
+        $template .= "TUJUAN PENGGUNAAN:\n";
+        $template .= "----------------------------------------\n";
+        $template .= "{$permohonan->tujuan_penggunaan}\n\n";
+        $template .= "WAKTU:\n";
+        $template .= "----------------------------------------\n";
+        $template .= "Tanggal Masuk: " . $permohonan->created_at->format('d F Y, H:i') . " WIB\n";
+        $template .= "Status: Perlu Verifikasi\n";
+        $template .= "Batas Waktu: 10 Hari Kerja (s.d. " . $permohonan->deadline->format('d F Y') . ")\n\n";
+        $template .= "----------------------------------------\n";
+        $template .= "Link Detail: " . route('admin.permohonan.show', $permohonan->id) . "\n";
+        $template .= "----------------------------------------\n\n";
+        $template .= "Harap segera melakukan verifikasi dan tindak lanjut.\n\n";
+        $template .= "Sistem PPID Kementerian PUPR\n";
+
+        return $template;
+    }
+
+    /**
+     * Helper untuk get label kategori pemohon
+     */
+    private function getKategoriLabel($kategori)
+    {
+        return match($kategori) {
+            'perorangan' => 'Perorangan',
+            'kelompok' => 'Kelompok Orang',
+            'badan_hukum' => 'Badan Hukum',
+            default => $kategori,
+        };
     }
 }

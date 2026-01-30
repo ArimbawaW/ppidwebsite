@@ -57,10 +57,13 @@
                 <p>
                     @switch($keberatan->status)
                         @case('pending')
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">Pending</span>
+                            <span class="badge bg-warning text-dark fs-6 px-3 py-2">Perlu Diverifikasi</span>
                             @break
                         @case('diproses')
                             <span class="badge bg-info fs-6 px-3 py-2">Diproses</span>
+                            @break
+                        @case('ditunda')
+                            <span class="badge bg-secondary fs-6 px-3 py-2">Ditunda</span>
                             @break
                         @case('selesai')
                             <span class="badge bg-success fs-6 px-3 py-2">Selesai</span>
@@ -195,9 +198,25 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Status Keberatan <span class="text-danger">*</span></label>
                     <select name="status" class="form-select" required>
-                        @foreach(['pending','diproses','selesai','ditolak'] as $status)
+                        @foreach(['pending','diproses','ditunda','selesai','ditolak'] as $status)
                             <option value="{{ $status }}" {{ $keberatan->status === $status ? 'selected' : '' }}>
-                                {{ ucfirst($status) }}
+                                @switch($status)
+                                    @case('pending')
+                                        Perlu Diverifikasi
+                                        @break
+                                    @case('diproses')
+                                        Diproses
+                                        @break
+                                    @case('ditunda')
+                                        Ditunda
+                                        @break
+                                    @case('selesai')
+                                        Selesai
+                                        @break
+                                    @case('ditolak')
+                                        Ditolak
+                                        @break
+                                @endswitch
                             </option>
                         @endforeach
                     </select>

@@ -33,9 +33,11 @@
                 <td width="40%"><strong>Status:</strong></td>
                 <td>
                     @if($keberatan->status == 'pending')
-                        <span class="badge bg-warning text-dark">Pending</span>
+                        <span class="badge bg-warning text-dark">Perlu Diverifikasi</span>
                     @elseif($keberatan->status == 'diproses')
                         <span class="badge bg-info">Diproses</span>
+                    @elseif($keberatan->status == 'ditunda')
+                        <span class="badge bg-secondary">Ditunda</span>
                     @elseif($keberatan->status == 'selesai')
                         <span class="badge bg-success">Selesai</span>
                     @else

@@ -39,8 +39,9 @@
     </div>
 
     <div class="mb-3">
-        <label for="gambar" class="form-label">Gambar (Format: JPG, JPEG, PNG | Max: 2MB)</label>
+        <label for="gambar" class="form-label">Gambar</label>
         <input type="file" class="form-control @error('gambar') is-invalid @enderror" id="gambar" name="gambar" accept="image/jpeg,image/png,image/jpg">
+       <label for="gambar" class="form-label">(Format: JPG, JPEG, PNG | Max: 2MB)</label>
         <div id="gambar-js-error" class="invalid-feedback" style="display: none;"></div>
         @error('gambar')
             <div class="invalid-feedback">{{ $message }}</div>

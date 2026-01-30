@@ -822,6 +822,146 @@
     @endif
 </div>
 @endsection
+{{-- KOMPONEN INDIKATOR WAKTU - Tambahkan ini di halaman show.blade.php --}}
+
+@php
+    $indikator = $permohonan->indikator_waktu;
+@endphp
+
+<!-- Indikator Waktu Card -->
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <div class="card shadow-sm border-left-{{ $indikator['warna'] }}">
+            <div class="card-body py-3">
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center">
+                        <i class="fas fa-{{ $indikator['icon'] }} fa-3x {{ $indikator['text_class'] }} mb-2"></i>
+                        <h4 class="mb-0 font-weight-bold {{ $indikator['text_class'] }}">
+                            {{ $indikator['label'] }}
+                        </h4>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <div class="row text-center">
+                            @if($permohonan->tanggal_selesai)
+                                {{-- Jika sudah selesai --}}
+                                <div class="col-md-4">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Status
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <i class="fas fa-check-circle text-success"></i> Selesai
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Hari Kerja Terpakai
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ $indikator['hari_terpakai'] }} dari {{ \App\Models\Permohonan::BATAS_WAKTU_HARI_KERJA }} hari
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Tanggal Selesai
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ $permohonan->tanggal_selesai->format('d M Y') }}
+                                    </div>
+                                </div>
+                            @else
+                                {{-- Jika belum selesai --}}
+                                <div class="col-md-3">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Sisa Hari Kerja
+                                    </div>
+                                    <div class="h4 mb-0 font-weight-bold {{ $indikator['text_class'] }}">
+                                        @if(isset($indikator['terlambat']) && $indikator['terlambat'])
+                                            <i class="fas fa-exclamation-triangle"></i> 
+                                            Terlambat {{ $indikator['hari_keterlambatan'] }} hari
+                                        @else
+                                            {{ $indikator['sisa_hari'] }} Hari
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                        Hari Terpakai
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ $indikator['hari_terpakai'] }} dari {{ \App\Models\Permohonan::BATAS_WAKTU_HARI_KERJA }} hari
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Deadline
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ $permohonan->deadline->format('d M Y') }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Progress
+                                    </div>
+                                    <div class="progress mt-2" style="height: 20px;">
+                                        <div class="progress-bar bg-{{ $indikator['warna'] }}" 
+                                             role="progressbar" 
+                                             style="width: {{ $indikator['persentase'] }}%"
+                                             aria-valuenow="{{ $indikator['persentase'] }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ round($indikator['persentase']) }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        @if(!$permohonan->tanggal_selesai)
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="alert alert-{{ $indikator['warna'] }} mb-0 py-2">
+                                    <small>
+                                        <i class="fas fa-info-circle"></i>
+                                        @if($indikator['label'] === 'Aman')
+                                            Permohonan masih dalam batas waktu normal. Proses sesuai prioritas.
+                                        @elseif($indikator['label'] === 'Perhatian')
+                                            <strong>Perhatian!</strong> Waktu pemrosesan mendekati deadline. Harap segera ditindaklanjuti.
+                                        @elseif($indikator['label'] === 'Urgent')
+                                            <strong>URGENT!</strong> Permohonan ini harus segera diselesaikan! Tinggal {{ $indikator['sisa_hari'] }} hari kerja lagi.
+                                        @else
+                                            <strong>TERLAMBAT!</strong> Permohonan ini telah melewati batas waktu {{ \App\Models\Permohonan::BATAS_WAKTU_HARI_KERJA }} hari kerja.
+                                        @endif
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.border-left-success {
+    border-left: 0.25rem solid #28a745 !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #ffc107 !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid #dc3545 !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #17a2b8 !important;
+}
+</style>
 
 @push('scripts')
 <script>

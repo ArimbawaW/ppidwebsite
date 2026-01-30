@@ -5,32 +5,107 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css">
 <style>
-    .stat-card { border-left: 4px solid; transition: transform 0.2s; }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .stat-card.primary { border-left-color: #007bff; }
-    .stat-card.success { border-left-color: #28a745; }
-    .stat-card.warning { border-left-color: #ffc107; }
-    .stat-card.danger { border-left-color: #dc3545; }
-    .chart-container { position: relative; height: 300px; }
+    body { background-color: #f4f7f6; color: #4a5568; }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    }
+
+    /* Header Card */
+    .card-header {
+        background: linear-gradient(45deg, #7a0f0f, #b71c1c) !important;
+        padding: 1rem 1.25rem;
+        border: none;
+    }
+
+    .card-header h6 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .card-header i {
+        color: rgba(255,255,255,0.85) !important;
+    }
+
+    /* Stat Card */
+    .stat-card {
+        border: none !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 4px;
+        border-radius: 4px;
+    }
+
+    .stat-card.primary::before { background-color: #dc3545; }
+    .stat-card.warning::before { background-color: #f6c23e; }
+    .stat-card.success::before { background-color: #1cc88a; }
+    .stat-card.danger::before  { background-color: #e74a3b; }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+    }
+
+    .btn-info { color: white; background-color: #36b9cc; border: none; }
+    .btn-success { background-color: #1cc88a; border: none; }
+
+    .chart-container {
+        position: relative;
+        height: 320px;
+        margin-top: 10px;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid">
-    
+
+    <!-- PAGE HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
                 <i class="fas fa-chart-bar me-2"></i>Rekap Data Keberatan
             </h1>
-            <p class="text-muted mb-0">Laporan dan statistik keberatan</p>
+            <p class="text-muted mb-0">Laporan dan statistik keberatan pemohon informasi</p>
         </div>
-        <a href="{{ route('admin.keberatan.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Kembali
-        </a>
+        <div>
+            <a href="{{ route('admin.keberatan.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Kembali
+            </a>
+        </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- STAT CARDS -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card primary shadow h-100">
@@ -38,9 +113,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-muted small mb-1">Total Keberatan</div>
-                            <div class="h3 mb-0 fw-bold text-primary">{{ number_format($stats['total']) }}</div>
+                            <div class="h3 mb-0 fw-bold text-danger">{{ number_format($stats['total']) }}</div>
                         </div>
-                        <div class="text-primary" style="font-size: 3rem; opacity: 0.3;">
+                        <div class="text-danger" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                     </div>
@@ -97,14 +172,12 @@
         </div>
     </div>
 
-    <!-- Charts -->
+    <!-- CHARTS -->
     <div class="row mb-4">
         <div class="col-xl-8 mb-4">
             <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">
-                        <i class="fas fa-chart-line me-2"></i>Trend Keberatan Tahun {{ $currentYear }}
-                    </h6>
+                <div class="card-header">
+                    <h6><i class="fas fa-chart-line me-2"></i>Trend Keberatan Tahun {{ $currentYear }}</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -116,10 +189,8 @@
 
         <div class="col-xl-4 mb-4">
             <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">
-                        <i class="fas fa-chart-pie me-2"></i>Distribusi Status
-                    </h6>
+                <div class="card-header">
+                    <h6><i class="fas fa-chart-pie me-2"></i>Distribusi Status</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -130,17 +201,14 @@
         </div>
     </div>
 
-    <!-- Export Section -->
+    <!-- EXPORT -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 fw-bold text-primary">
-                <i class="fas fa-file-export me-2"></i>Export Data ke Excel
-            </h6>
+        <div class="card-header">
+            <h6><i class="fas fa-file-export me-2"></i>Export Data Keberatan</h6>
         </div>
         <div class="card-body">
             <form id="exportForm" method="POST" target="_blank">
                 @csrf
-                
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label class="form-label fw-bold">Tanggal Mulai</label>
@@ -193,17 +261,20 @@
         </div>
     </div>
 
-    <!-- Preview Modal -->
+    <!-- PREVIEW MODAL -->
     <div class="modal fade" id="previewModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Preview Data Export</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-eye me-2"></i>Preview Data Export Keberatan
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="previewContent">
                     <div class="text-center py-5">
                         <div class="spinner-border text-primary"></div>
+                        <p class="mt-2">Loading...</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -221,82 +292,88 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <script>
 const chartData = @json($chartData);
 const statusData = @json($dataPerStatus);
 
-// Line Chart
-const ctx1 = document.getElementById('keberatanChart').getContext('2d');
-new Chart(ctx1, {
+/* LINE CHART */
+new Chart(document.getElementById('keberatanChart'), {
     type: 'line',
     data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+        labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
         datasets: [{
-            label: 'Jumlah Keberatan',
             data: chartData,
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: '#dc3545',
+            backgroundColor: 'rgba(220,53,69,0.2)',
             tension: 0.4,
             fill: true
         }]
     },
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 1 }
-            }
-        }
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{ legend:{ display:false }},
+        scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 }}}
     }
 });
 
-// Pie Chart
-const ctx2 = document.getElementById('statusChart').getContext('2d');
-new Chart(ctx2, {
+/* DOUGHNUT */
+new Chart(document.getElementById('statusChart'), {
     type: 'doughnut',
     data: {
-        labels: ['Pending', 'Diproses', 'Selesai', 'Ditolak'],
+        labels: ['Pending','Diproses','Selesai','Ditolak'],
         datasets: [{
-            data: statusData.map(item => item.total),
-            backgroundColor: ['#ffc107', '#17a2b8', '#28a745', '#dc3545']
+            data: statusData.map(i=>i.total),
+            backgroundColor: ['#f6c23e','#36b9cc','#1cc88a','#e74a3b']
         }]
     },
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom' }
-        }
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{ legend:{ position:'bottom' }}
     }
 });
 
+/* PREVIEW */
 function previewData() {
     const formData = new FormData(document.getElementById('exportForm'));
+    
     $('#previewModal').modal('show');
-    $('#previewContent').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>');
+    $('#previewContent').html(`
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2">Loading...</p>
+        </div>
+    `);
     
     fetch('{{ route("admin.rekap.keberatan.preview") }}', {
         method: 'POST',
         body: formData,
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .then(response => response.text())
-    .then(html => $('#previewContent').html(html));
+    .then(res => res.text())
+    .then(html => $('#previewContent').html(html))
+    .catch(()=> $('#previewContent').html(`
+        <div class="alert alert-danger text-center">
+            <i class="fas fa-exclamation-triangle me-2"></i>Gagal memuat preview
+        </div>
+    `));
 }
 
+/* EXPORT */
 function exportExcel() {
     const form = document.getElementById('exportForm');
     form.action = '{{ route("admin.rekap.keberatan.export") }}';
     form.submit();
 }
 
+/* RESET */
 function resetFilter() {
-    document.getElementById('tanggal_mulai').value = '';
-    document.getElementById('tanggal_selesai').value = '';
-    document.getElementById('status').value = 'semua';
-    document.getElementById('alasan').value = 'semua';
+    tanggal_mulai.value='';
+    tanggal_selesai.value='';
+    status.value='semua';
+    alasan.value='semua';
 }
 </script>
 @endpush
