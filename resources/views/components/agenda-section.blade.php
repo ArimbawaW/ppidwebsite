@@ -61,18 +61,19 @@
                         </div>
                         @endif
 
-                        {{-- ✅ UPDATED: Menggunakan accessor status_badge --}}
+                        {{-- STATUS BADGE --}}
                         <span class="agenda-badge mt-2 d-inline-block">
                             {{ $agenda->status_badge }}
                         </span>
                     </div>
 
-                    <!-- BUTTON DETAIL -->
+                    <!-- BUTTON DETAIL - FIXED SIZE -->
                     <div class="agenda-detail-btn">
                         <button class="btn btn-sm btn-detail"
+                                style="font-size: 0.875rem;"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalAgenda{{ $agenda->id }}">
-                            <i class="bi bi-info-circle me-1"></i> Detail
+                            <i class="bi bi-info-circle me-1" style="font-size: 1rem;"></i> Detail
                         </button>
                     </div>
 
@@ -138,7 +139,7 @@
                     <p class="text-muted fst-italic">Tidak ada deskripsi.</p>
                 @endif
 
-                {{-- ✅ UPDATED: Menggunakan accessor status_badge_class dan status_badge --}}
+                {{-- STATUS BADGE --}}
                 <div class="mt-3">
                     <span class="badge {{ $agenda->status_badge_class }}">
                         {{ $agenda->status_badge }}
@@ -253,11 +254,21 @@
     word-break: break-word;
 }
 
-/* ===================== DETAIL BUTTON ===================== */
+/* ===================== DETAIL BUTTON FIX ===================== */
 .agenda-detail-btn {
     position: absolute;
     bottom: 15px;
     right: 15px;
+}
+
+.btn-detail {
+    font-size: 0.875rem !important;
+    padding: 0.375rem 0.75rem;
+}
+
+.btn-detail i {
+    font-size: 1rem !important;
+    vertical-align: middle;
 }
 
 /* ===================== MODAL ===================== */
@@ -295,7 +306,5 @@
         align-self: center;
     }
 }
-
-
 </style>
 @endif

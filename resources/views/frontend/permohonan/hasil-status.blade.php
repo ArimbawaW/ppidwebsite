@@ -190,7 +190,7 @@
             </div>
 
             {{-- Info Keberatan --}}
-            @if(in_array($permohonan->status, ['ditolak', 'dikabulkan_sebagian']))
+            @if(in_array($permohonan->status, ['ditolak', 'dikabulkan_sebagian','dikabulkan_seluruhnya']))
             <div class="card border-0 shadow-sm mb-4 bg-light">
                 <div class="card-body p-4">
                     <h6 class="fw-bold text-primary mb-3">

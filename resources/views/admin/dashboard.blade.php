@@ -10,12 +10,82 @@
         border-radius: 10px;
         border-left: 5px solid;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: transform 0.2s;
     }
+    
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Tema Biru untuk Permohonan */
+    .stat-card.blue-theme {
+        border-left-color: #0d6efd;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+    }
+    
+    .stat-card.blue-theme .stat-number {
+        color: #0d6efd;
+    }
+    
+    .stat-card.blue-theme .icon-box {
+        background: rgba(13, 110, 253, 0.1);
+    }
+    
+    .stat-card.blue-theme .icon-box i {
+        color: #0d6efd;
+    }
+    
+    /* Tema Merah Soft untuk Keberatan */
+    .stat-card.red-theme {
+        border-left-color: #dc3545;
+        background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+    }
+    
+    .stat-card.red-theme .stat-number {
+        color: #dc3545;
+    }
+    
+    .stat-card.red-theme .icon-box {
+        background: rgba(220, 53, 69, 0.08);
+    }
+    
+    .stat-card.red-theme .icon-box i {
+        color: #dc3545;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0;
+    }
+    
+    .icon-box {
+        padding: 16px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .icon-box i {
+        font-size: 40px;
+    }
+    
     .badge {
         padding: 0.5em 0.75em;
         font-weight: 600;
     }
-    
 </style>
 @endpush
 
@@ -35,59 +105,33 @@
     </div>
 </div>
 
-{{-- STATISTICS CARDS --}}
+{{-- STATISTICS CARDS - 2 KOTAK DENGAN TEMA WARNA --}}
 <div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="stat-card" style="border-left-color: #ffc107;">
+    {{-- Permohonan Perlu Verifikasi - TEMA BIRU --}}
+    <div class="col-md-6 mb-3">
+        <div class="stat-card blue-theme">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <p class="mb-1 text-muted small fw-bold">PERLU VERIFIKASI</p>
-                    <h3 class="fw-bold" style="color: #ffc107;">{{ $stats['permohonan_pending'] ?? 0 }}</h3>
+                    <p class="stat-label">Permohonan Perlu Verifikasi</p>
+                    <h1 class="stat-number">{{ $stats['permohonan_pending'] ?? 0 }}</h1>
                 </div>
-                <div style="background: rgba(255, 193, 7, 0.1); padding: 12px; border-radius: 10px;">
-                    <i class="bi bi-envelope-exclamation" style="font-size: 24px; color: #ffc107;"></i>
+                <div class="icon-box">
+                    <i class="bi bi-envelope-exclamation"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-3 mb-3">
-        <div class="stat-card" style="border-left-color: #0dcaf0;">
+    {{-- Keberatan Perlu Verifikasi - TEMA MERAH SOFT --}}
+    <div class="col-md-6 mb-3">
+        <div class="stat-card red-theme">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <p class="mb-1 text-muted small fw-bold">KEBERATAN PENDING</p>
-                    <h3 class="fw-bold" style="color: #0dcaf0;">{{ $stats['keberatan_pending'] ?? 0 }}</h3>
+                    <p class="stat-label">Keberatan Perlu Verifikasi</p>
+                    <h1 class="stat-number">{{ $stats['keberatan_pending'] ?? 0 }}</h1>
                 </div>
-                <div style="background: rgba(13, 202, 240, 0.1); padding: 12px; border-radius: 10px;">
-                    <i class="bi bi-exclamation-octagon" style="font-size: 24px; color: #0dcaf0;"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-3">
-        <div class="stat-card" style="border-left-color: #198754;">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <p class="mb-1 text-muted small fw-bold">TOTAL BERITA</p>
-                    <h3 class="fw-bold" style="color: #198754;">{{ $stats['berita_total'] ?? 0 }}</h3>
-                </div>
-                <div style="background: rgba(25, 135, 84, 0.1); padding: 12px; border-radius: 10px;">
-                    <i class="bi bi-newspaper" style="font-size: 24px; color: #198754;"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-3">
-        <div class="stat-card" style="border-left-color: #6f42c1;">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <p class="mb-1 text-muted small fw-bold">TOTAL PERMOHONAN</p>
-                    <h3 class="fw-bold" style="color: #6f42c1;">{{ $stats['total_permohonan'] ?? 0 }}</h3>
-                </div>
-                <div style="background: rgba(111, 66, 193, 0.1); padding: 12px; border-radius: 10px;">
-                    <i class="bi bi-files" style="font-size: 24px; color: #6f42c1;"></i>
+                <div class="icon-box">
+                    <i class="bi bi-exclamation-octagon"></i>
                 </div>
             </div>
         </div>
@@ -99,7 +143,7 @@
     {{-- Permohonan Terbaru --}}
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3">
+            <div class="card-header bg-white py-3 border-bottom">
                 <h5 class="mb-0 fw-bold">
                     <i class="bi bi-clock-history me-2 text-primary"></i>Permohonan Terbaru
                 </h5>
@@ -157,7 +201,7 @@
     {{-- Keberatan Terbaru --}}
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3">
+            <div class="card-header bg-white py-3 border-bottom">
                 <h5 class="mb-0 fw-bold">
                     <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Keberatan Terbaru
                 </h5>
@@ -180,7 +224,9 @@
                                 <td>{{ Str::limit($item->nama_pemohon ?? '-', 15) }}</td>
                                 <td>
                                     @if($item->status === 'pending')
-                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        <span class="badge bg-warning text-dark">Perlu Verifikasi</span>
+                                    @elseif($item->status === 'diproses')
+                                        <span class="badge bg-info text-white">Diproses</span>
                                     @elseif($item->status === 'selesai')
                                         <span class="badge bg-success">Selesai</span>
                                     @else
@@ -198,43 +244,8 @@
                     </table>
                 </div>
                 <div class="d-grid mt-3">
-                    <a href="{{ route('admin.keberatan.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
+                    <a href="{{ route('admin.keberatan.index') }}" class="btn btn-outline-danger btn-sm">Lihat Semua</a>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- QUICK ACTIONS --}}
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3">
-        <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i>Aksi Cepat</h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-6 col-md-3">
-                <a href="{{ route('admin.berita.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
-                    <i class="bi bi-newspaper fs-3 mb-2 text-primary"></i>
-                    <span class="small fw-bold">Tambah Berita</span>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="{{ route('admin.informasi-publik.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
-                    <i class="bi bi-file-earmark-text fs-3 mb-2 text-success"></i>
-                    <span class="small fw-bold">Tambah Info</span>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="{{ route('admin.galeri.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
-                    <i class="bi bi-images fs-3 mb-2 text-info"></i>
-                    <span class="small fw-bold">Upload Galeri</span>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="{{ route('admin.agenda-kegiatan.create') }}" class="btn btn-light border w-100 py-3 shadow-sm h-100 d-flex flex-column align-items-center justify-content-center">
-                    <i class="bi bi-calendar-event fs-3 mb-2 text-warning"></i>
-                    <span class="small fw-bold">Tambah Agenda</span>
-                </a>
             </div>
         </div>
     </div>

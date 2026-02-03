@@ -183,9 +183,9 @@
     }
 
     .waktu-badge.selesai {
-        background-color: #ecfdf5;
+    
         color: #065f46;
-        border: 1px solid #d1fae5;
+       
     }
 
     @keyframes pulse-red {

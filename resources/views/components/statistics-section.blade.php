@@ -3,15 +3,22 @@
     <div class="container">
         <div class="statistics-title">
             <h2>Statistik Permohonan Informasi Publik</h2>
-            <p>Data permohonan yang telah diproses</p>
         </div>
         
         {{-- Stats Cards --}}
         <div class="stats-card-row">
             @php
-                $masuk = \App\Models\Permohonan::count();
-                $selesai = \App\Models\Permohonan::where('status', 'disetujui')->count();
-                $ditolak = \App\Models\Permohonan::where('status', 'ditolak')->count();
+                use App\Models\Permohonan;
+
+                $masuk = Permohonan::count();
+
+                // Disetujui = dikabulkan seluruhnya + sebagian
+                $disetujui = Permohonan::whereIn('status', [
+                    'dikabulkan_seluruhnya',
+                    'dikabulkan_sebagian'
+                ])->count();
+
+                $ditolak = Permohonan::where('status', 'ditolak')->count();
             @endphp
             
             <div class="stats-card masuk">
@@ -20,8 +27,8 @@
             </div>
             
             <div class="stats-card selesai">
-                <div class="stats-card-title">Permohonan Selesai</div>
-                <div class="stats-card-number">{{ $selesai }}</div>
+                <div class="stats-card-title">Permohonan Disetujui</div>
+                <div class="stats-card-number">{{ $disetujui }}</div>
             </div>
             
             <div class="stats-card ditolak">
@@ -44,7 +51,7 @@
 <script>
     window.statisticsData = {
         masuk: {{ $masuk }},
-        selesai: {{ $selesai }},
+        disetujui: {{ $disetujui }},
         ditolak: {{ $ditolak }}
     };
 </script>
@@ -71,7 +78,6 @@
         height: 300px;
     }
     
-    /* Responsive adjustments */
     @media (max-width: 768px) {
         .chart-container {
             padding: 15px;
@@ -105,93 +111,80 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('permohonanChart');
-        if (!ctx) return;
-        
-        const data = window.statisticsData;
-        
-        // Deteksi ukuran layar
-        const isMobile = window.innerWidth < 768;
-        
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Masuk', 'Selesai', 'Ditolak'],
-                datasets: [{
-                    label: '',
-                    data: [data.masuk, data.selesai, data.ditolak],
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(75, 192, 192, 0.7)',
-                        'rgba(255, 99, 132, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 2
-                }]
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('permohonanChart');
+    if (!ctx) return;
+
+    const data = window.statisticsData;
+    const isMobile = window.innerWidth < 768;
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Masuk', 'Disetujui', 'Ditolak'],
+            datasets: [{
+                label: '',
+                data: [data.masuk, data.disetujui, data.ditolak],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',   // Masuk
+                    'rgba(75, 192, 192, 0.7)',   // Disetujui
+                    'rgba(255, 99, 132, 0.7)'    // Ditolak
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { size: isMobile ? 12 : 14 },
+                    bodyFont: { size: isMobile ? 11 : 13 },
+                    padding: isMobile ? 8 : 12
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: isMobile ? 10 : 12 },
+                        stepSize: 1
                     },
-                    tooltip: {
-                        enabled: true,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleFont: {
-                            size: isMobile ? 12 : 14
-                        },
-                        bodyFont: {
-                            size: isMobile ? 11 : 13
-                        },
-                        padding: isMobile ? 8 : 12
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: isMobile ? 10 : 12
-                            },
-                            stepSize: 1
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
+                x: {
+                    ticks: {
+                        font: { size: isMobile ? 11 : 12 }
                     },
-                    x: {
-                        ticks: {
-                            font: {
-                                size: isMobile ? 11 : 12
-                            }
-                        },
-                        grid: {
-                            display: false
-                        }
-                    }
+                    grid: { display: false }
                 }
             }
-        });
-        
-        // Update chart saat resize
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                const newIsMobile = window.innerWidth < 768;
-                chart.options.plugins.tooltip.titleFont.size = newIsMobile ? 12 : 14;
-                chart.options.plugins.tooltip.bodyFont.size = newIsMobile ? 11 : 13;
-                chart.options.scales.y.ticks.font.size = newIsMobile ? 10 : 12;
-                chart.options.scales.x.ticks.font.size = newIsMobile ? 11 : 12;
-                chart.update();
-            }, 250);
-        });
+        }
     });
+
+    // Responsive resize handler
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            const newIsMobile = window.innerWidth < 768;
+            chart.options.plugins.tooltip.titleFont.size = newIsMobile ? 12 : 14;
+            chart.options.plugins.tooltip.bodyFont.size = newIsMobile ? 11 : 13;
+            chart.options.scales.y.ticks.font.size = newIsMobile ? 10 : 12;
+            chart.options.scales.x.ticks.font.size = newIsMobile ? 11 : 12;
+            chart.update();
+        }, 250);
+    });
+});
 </script>

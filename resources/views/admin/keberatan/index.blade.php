@@ -384,7 +384,7 @@
                         <th style="width: 150px;">No. Permohonan</th>
                         <th style="width: 170px;">Identitas Pemohon</th>
                         <th style="width: 200px;">Alasan Keberatan</th>
-                        <th class="text-center" style="width: 100px;">Status</th>
+                        <th class="text-center" style="width: 120px;">Status</th>
                         <th style="width: 90px;">Waktu Masuk</th>
                         <th class="text-center" style="width: 80px;">Aksi</th>
                     </tr>
@@ -400,6 +400,15 @@
                             'ditolak' => 'status-vibrant-danger',
                         ];
                         $class = $statusMap[$item->status] ?? 'bg-secondary text-white';
+                        
+                        // Label status yang diperbaiki
+                        $statusLabel = match($item->status) {
+                            'pending' => 'PERLU VERIFIKASI',
+                            'diproses' => 'DIPROSES',
+                            'dikabulkan' => 'DIKABULKAN',
+                            'ditolak' => 'DITOLAK',
+                            default => strtoupper($item->status)
+                        };
                     @endphp
                     <tr data-indikator="{{ strtolower($indikator['label']) }}">
                         <td class="text-center text-muted">{{ $index + 1 }}</td>
@@ -461,7 +470,7 @@
                         <td class="text-center">
                             <span class="badge status-badge {{ $class }}">
                                 <i class="bi bi-{{ $item->status === 'pending' ? 'exclamation-circle-fill' : ($item->status === 'diproses' ? 'arrow-repeat' : ($item->status === 'dikabulkan' ? 'check-circle-fill' : 'x-octagon-fill')) }} me-1"></i>
-                                {{ strtoupper($item->status) }}
+                                {{ $statusLabel }}
                             </span>
                         </td>
 
@@ -507,7 +516,7 @@ $(document).ready(function () {
     $('#keberatanTable').DataTable({
         pageLength: 25,
         responsive: true,
-        order: [[0, 'asc']], // Urutkan berdasarkan indikator waktu (urgent di atas)
+        order: [[0, 'asc']], 
         language: {
             processing: "Memproses...",
             search: "",

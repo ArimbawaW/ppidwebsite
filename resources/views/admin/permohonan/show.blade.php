@@ -496,95 +496,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Kategori & Status Informasi (Input Admin) -->
-    <div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3 bg-purple text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-tags"></i> Kategorisasi Informasi (Diisi Admin)
-                    </h6>
-                </div>
-                <div class="card-body">
-                    @if($permohonan->kategori_informasi || $permohonan->jenis_permohonan_informasi || $permohonan->status_informasi || $permohonan->bentuk_informasi || $permohonan->jenis_permintaan)
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-primary">
-                                    <i class="fas fa-layer-group"></i> Kategori Informasi:
-                                </strong>
-                                <p class="mb-0 mt-1">
-                                    @if($permohonan->kategori_informasi)
-                                        <span class="badge badge-info">{{ $permohonan->kategori_informasi_label }}</span>
-                                    @else
-                                        <span class="text-muted">Belum diisi</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-primary">
-                                    <i class="fas fa-clipboard-list"></i> Jenis Permohonan Informasi:
-                                </strong>
-                                <p class="mb-0 mt-1">
-                                    @if($permohonan->jenis_permohonan_informasi)
-                                        <span class="badge badge-primary">{{ $permohonan->jenis_permohonan_informasi_label }}</span>
-                                    @else
-                                        <span class="text-muted">Belum diisi</span>
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-primary">
-                                    <i class="fas fa-info-circle"></i> Status Informasi:
-                                </strong>
-                                <p class="mb-0 mt-1">
-                                    @if($permohonan->status_informasi)
-                                        <span class="badge badge-success">{{ $permohonan->status_informasi_label }}</span>
-                                    @else
-                                        <span class="text-muted">Belum diisi</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-primary">
-                                    <i class="fas fa-file-pdf"></i> Bentuk Informasi:
-                                </strong>
-                                <p class="mb-0 mt-1">
-                                    @if($permohonan->bentuk_informasi)
-                                        <span class="badge badge-warning">{{ $permohonan->bentuk_informasi_label }}</span>
-                                    @else
-                                        <span class="text-muted">Belum diisi</span>
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <strong class="text-primary">
-                                    <i class="fas fa-hand-pointer"></i> Jenis Permintaan:
-                                </strong>
-                                <p class="mb-0 mt-1">
-                                    @if($permohonan->jenis_permintaan)
-                                        <span class="badge badge-secondary">{{ $permohonan->jenis_permintaan_label }}</span>
-                                    @else
-                                        <span class="text-muted">Belum diisi</span>
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-exclamation-circle fa-3x mb-3 d-block"></i>
-                            <p class="mb-0">Kategorisasi belum diisi. Silakan isi pada form di bawah.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Update Status & Kategorisasi -->
     <div class="row">
         <div class="col-lg-12 mb-4">
@@ -821,9 +732,6 @@
     </div>
     @endif
 </div>
-@endsection
-{{-- KOMPONEN INDIKATOR WAKTU - Tambahkan ini di halaman show.blade.php --}}
-
 @php
     $indikator = $permohonan->indikator_waktu;
 @endphp
@@ -944,6 +852,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 <style>
 .border-left-success {

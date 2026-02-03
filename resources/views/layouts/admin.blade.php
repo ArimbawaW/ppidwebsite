@@ -50,7 +50,7 @@
 
             {{-- Logo Area --}}
             <div class="logo-area">
-                <img src="{{ asset('build/assets/logoppid.png') }}" alt="Logo PPID">
+                <img src="{{ asset('images/logoppid.png') }}" alt="Logo PPID">
             </div>
 
             <div class="menu-title">Menu Utama</div>
