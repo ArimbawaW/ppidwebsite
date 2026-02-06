@@ -84,12 +84,14 @@
                         <i class="bi bi-newspaper"></i> Berita
                     </a>
                 </li>
+
                 <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.banner-slider.*') ? 'active' : '' }}"
-       href="{{ route('admin.banner-slider.index') }}">
-        <i class="bi bi-images"></i> Banner Slider
-    </a>
-</li>
+                    <a class="nav-link {{ request()->routeIs('admin.banner-slider.*') ? 'active' : '' }}"
+                       href="{{ route('admin.banner-slider.index') }}">
+                        <i class="bi bi-images"></i> Banner Slider
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.halaman-statis.*') ? 'active' : '' }}"
                        href="{{ route('admin.halaman-statis.index') }}">
@@ -171,6 +173,10 @@
 {{-- DataTables --}}
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+{{-- Bootstrap JS Bundle (TAMBAHAN UNTUK MODAL & COMPONENTS) --}}
+{{-- Pastikan ini di-load setelah jQuery dan sebelum @stack('scripts') --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 @stack('scripts')
 

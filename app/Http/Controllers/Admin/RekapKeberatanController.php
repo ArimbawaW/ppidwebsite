@@ -12,25 +12,49 @@ class RekapKeberatanController extends Controller
     /**
      * Display rekap page
      */
-    public function index()
+    public function index(Request $request)
     {
         $currentYear = date('Y');
         
+        // Ambil periode dari request atau default semua data
+        $tanggalMulai = $request->filled('periode_mulai') 
+            ? Carbon::parse($request->periode_mulai) 
+            : null;
+        
+        $tanggalSelesai = $request->filled('periode_selesai') 
+            ? Carbon::parse($request->periode_selesai) 
+            : null;
+        
+        // Query builder untuk stats
+        $statsQuery = function($query) use ($tanggalMulai, $tanggalSelesai) {
+            if ($tanggalMulai && $tanggalSelesai) {
+                return $query->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+            }
+            return $query;
+        };
+        
+        // Get statistics dengan filter periode (jika ada)
         $stats = [
-            'total' => Keberatan::count(),
+            'total' => $statsQuery(Keberatan::query())->count(),
             'bulan_ini' => Keberatan::whereMonth('created_at', date('m'))
                                     ->whereYear('created_at', $currentYear)
                                     ->count(),
             'tahun_ini' => Keberatan::whereYear('created_at', $currentYear)->count(),
-            'pending' => Keberatan::where('status', 'pending')->count(),
-            'diproses' => Keberatan::where('status', 'diproses')->count(),
-            'selesai' => Keberatan::where('status', 'selesai')->count(),
-            'ditolak' => Keberatan::where('status', 'ditolak')->count(),
+            'pending' => $statsQuery(Keberatan::whereIn('status', ['pending', 'perlu_verifikasi']))->count(),
+            'diproses' => $statsQuery(Keberatan::where('status', 'diproses'))->count(),
+            'selesai' => $statsQuery(Keberatan::where('status', 'selesai'))->count(),
+            'ditolak' => $statsQuery(Keberatan::where('status', 'ditolak'))->count(),
         ];
         
-        $dataPerBulan = Keberatan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
-            ->whereYear('created_at', $currentYear)
-            ->groupBy('bulan')
+        // Get data by month dengan filter periode
+        $dataPerBulanQuery = Keberatan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->whereYear('created_at', $currentYear);
+        
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerBulanQuery->whereBetween('created_at', [$tanggalMulai->copy()->startOfYear(), $tanggalSelesai->copy()->endOfYear()]);
+        }
+        
+        $dataPerBulan = $dataPerBulanQuery->groupBy('bulan')
             ->orderBy('bulan')
             ->get()
             ->pluck('total', 'bulan')
@@ -41,20 +65,28 @@ class RekapKeberatanController extends Controller
             $chartData[] = $dataPerBulan[$i] ?? 0;
         }
         
-        $dataPerAlasan = Keberatan::selectRaw('alasan_keberatan, COUNT(*) as total')
-            ->groupBy('alasan_keberatan')
-            ->get();
+        // Get data by alasan dengan filter periode
+        $dataPerAlasanQuery = Keberatan::selectRaw('alasan_keberatan, COUNT(*) as total');
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerAlasanQuery->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+        $dataPerAlasan = $dataPerAlasanQuery->groupBy('alasan_keberatan')->get();
         
-        $dataPerStatus = Keberatan::selectRaw('status, COUNT(*) as total')
-            ->groupBy('status')
-            ->get();
+        // Get data by status dengan filter periode
+        $dataPerStatusQuery = Keberatan::selectRaw('status, COUNT(*) as total');
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerStatusQuery->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+        $dataPerStatus = $dataPerStatusQuery->groupBy('status')->get();
         
         return view('admin.rekap.keberatan.index', compact(
             'stats',
             'chartData',
             'dataPerAlasan',
             'dataPerStatus',
-            'currentYear'
+            'currentYear',
+            'tanggalMulai',
+            'tanggalSelesai'
         ));
     }
     
@@ -142,21 +174,13 @@ class RekapKeberatanController extends Controller
             'I1' => 'Uraian Keberatan',
             'J1' => 'Status',
             'K1' => 'Keterangan Admin',
-
-            // ATASAN PPID
             'L1' => 'Nama Atasan PPID',
             'M1' => 'Jabatan Atasan PPID',
             'N1' => 'Tanggapan Atasan PPID',
             'O1' => 'Nomor Surat Tanggapan',
             'P1' => 'Tanggal Surat Tanggapan',
-
-            // PEMOHON
             'Q1' => 'Tanggapan Pemohon',
-
-            // MEDIASI
             'R1' => 'Keputusan Mediasi/Ajudikasi',
-
-            // PENGADILAN
             'S1' => 'Putusan Pengadilan',
         ];
 
@@ -172,7 +196,6 @@ class RekapKeberatanController extends Controller
         // DATA
         $row = 2;
         foreach ($keberatan as $index => $item) {
-
             $sheet->setCellValue('A' . $row, $index + 1);
             $sheet->setCellValue('B' . $row, $item->nomor_registrasi);
             $sheet->setCellValue('C' . $row, $item->nomor_registrasi_permohonan);
@@ -184,8 +207,6 @@ class RekapKeberatanController extends Controller
             $sheet->setCellValue('I' . $row, $item->uraian_keberatan);
             $sheet->setCellValue('J' . $row, $item->status_label);
             $sheet->setCellValue('K' . $row, $item->keterangan ?? '-');
-
-            // ATASAN PPID
             $sheet->setCellValue('L' . $row, $item->nama_atasan_ppid ?? '-');
             $sheet->setCellValue('M' . $row, $item->jabatan_atasan_ppid ?? '-');
             $sheet->setCellValue('N' . $row, $item->tanggapan_atasan_ppid ?? '-');
@@ -195,14 +216,8 @@ class RekapKeberatanController extends Controller
                     ? Carbon::parse($item->tanggal_surat_tanggapan)->format('d/m/Y')
                     : '-'
             );
-
-            // PEMOHON
             $sheet->setCellValue('Q' . $row, $item->tanggapan_pemohon ?? '-');
-
-            // MEDIASI
             $sheet->setCellValue('R' . $row, $item->keputusan_mediasi ?? '-');
-
-            // PENGADILAN
             $sheet->setCellValue('S' . $row, $item->putusan_pengadilan ?? '-');
 
             foreach (['H','I','K','N','R','S'] as $col) {

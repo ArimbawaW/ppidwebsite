@@ -88,7 +88,7 @@
     .badge-soft-warning { background-color: #fffbeb; color: #92400e; border-color: #fef3c7; }
     .badge-soft-secondary { background-color: #f9fafb; color: #374151; border-color: #f3f4f6; }
 
-    /* Compact Action Buttons */
+    /* Compact Action Buttons - SAMA SEPERTI KEBERATAN */
     .btn-action {
         width: 26px;
         height: 26px;
@@ -97,24 +97,35 @@
         justify-content: center;
         border-radius: 6px;
         padding: 0;
-        border: 1px solid #e5e7eb;
-        background: #fff;
-        color: #4b5563;
+        border: 1px solid transparent;
         transition: all 0.2s;
         font-size: 0.7rem;
     }
 
-    .btn-action:hover {
-        background: #f3f4f6;
-        color: #111827;
-        border-color: #d1d5db;
-        transform: translateY(-1px);
+    .btn-action.btn-info {
+        background-color: #17a2b8;
+        color: #fff;
+        border-color: #17a2b8;
     }
 
-    .btn-action.delete:hover {
-        background: #fef2f2;
-        color: #dc2626;
-        border-color: #fecaca;
+    .btn-action.btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-action.btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+        border-color: #dc3545;
+    }
+
+    .btn-action.btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
     }
 
     /* Compact Link Style */
@@ -524,10 +535,10 @@
                         
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-1">
-                                <a href="{{ route('admin.permohonan.show', $item) }}" class="btn-action" title="Detail">
+                                <a href="{{ route('admin.permohonan.show', $item) }}" class="btn btn-sm btn-info btn-action" title="Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <button type="button" class="btn-action delete" onclick="confirmDelete({{ $item->id }})" title="Hapus">
+                                <button type="button" class="btn btn-sm btn-danger btn-action" onclick="confirmDelete({{ $item->id }})" title="Hapus">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>

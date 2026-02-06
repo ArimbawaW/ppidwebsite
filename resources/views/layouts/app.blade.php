@@ -515,31 +515,31 @@
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
-                text-align: center;
+                text-align: left;
             }
 
             .footer-container {
-                padding: 25px 20px;
+                padding: 25px 30px;
             }
 
             .footer-logo-section {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .footer-address {
-                text-align: center;
+                text-align: left;
             }
 
             .footer-contact {
-                text-align: center;
+                text-align: left;
             }
 
             .whatsapp-link {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .social-media {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .footer-brand-text h2 {
@@ -554,69 +554,78 @@
 
         @media (max-width: 576px) {
             .footer-container {
-                padding: 20px 15px;
+                padding: 30px 25px;
             }
 
             .footer-grid {
-                gap: 25px;
+                gap: 35px;
             }
 
             .footer-logo-section {
-                gap: 12px;
+                gap: 15px;
             }
 
             .footer-brand-text h2 {
-                font-size: 20px;
+                font-size: 28px;
+                margin-bottom: 8px;
             }
 
             .footer-brand-text p {
-                font-size: 9px;
+                font-size: 11px;
+                line-height: 1.5;
             }
 
             .footer-address h3,
             .footer-contact h3 {
-                font-size: 16px;
-                margin-bottom: 10px;
+                font-size: 20px;
+                margin-bottom: 15px;
+                font-weight: 800;
             }
 
             .footer-address p {
-                font-size: 12px;
-                margin-bottom: 15px;
+                font-size: 15px;
+                margin-bottom: 20px;
+                line-height: 1.6;
             }
 
             .visitor-counter {
-                padding: 6px 14px;
+                padding: 10px 18px;
             }
 
             .visitor-icon {
-                font-size: 16px;
-            }
-
-            .visitor-label {
-                font-size: 11px;
-            }
-
-            .visitor-count {
-                font-size: 14px;
-            }
-
-            .whatsapp-link {
-                font-size: 14px;
-                margin-bottom: 12px;
-            }
-
-            .whatsapp-link i {
                 font-size: 20px;
             }
 
+            .visitor-label {
+                font-size: 13px;
+            }
+
+            .visitor-count {
+                font-size: 18px;
+            }
+
+            .whatsapp-link {
+                font-size: 18px;
+                margin-bottom: 18px;
+            }
+
+            .whatsapp-link i {
+                font-size: 28px;
+            }
+
             .social-link {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
             }
 
             .social-media {
-                gap: 10px;
+                gap: 12px;
+            }
+
+            .footer-logo-section img {
+                width: 70px;
+                height: 70px;
             }
         }
     @media (min-width: 992px) {
@@ -693,7 +702,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('profil.index') }}">Profil</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.struktur-organisasi') }}">Struktur Organisasi</a></li>
-                            <li><a class="dropdown-item" href="{{ route('profil.tugas-fungsi') }}">Tugas & Fungsi</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profil.tugas-fungsi') }}">Tugas & Tanggung jawab</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.visi-misi') }}">Visi & Misi</a></li>
                             <li><a class="dropdown-item" href="{{ route('profil.dasar-hukum') }}">Maklumat</a></li>
                         </ul>
@@ -783,7 +792,7 @@
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="bi bi-check-circle me-2"></i>
                     {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-alert></button>
                 </div>
             </div>
         @endif
@@ -872,7 +881,7 @@
         const lightbox = GLightbox({
             selector: '.glightbox',
             touchNavigation: true,
-            loop: true,<nav class="navbar navbar-expand-lg navbar-custom">
+            loop: true,
             autoplayVideos: true,
             closeButton: true,
             zoomable: true,

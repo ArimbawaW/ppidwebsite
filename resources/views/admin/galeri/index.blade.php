@@ -41,11 +41,43 @@
     border-radius: 0.375rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .gallery-thumbnail:hover {
     transform: scale(1.05);
     cursor: pointer;
+}
+
+/* Prevent modal flickering */
+.modal {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.modal-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Modal image container */
+.modal-image-container {
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-image-container img {
+    max-height: 80vh;
+    width: auto;
+    object-fit: contain;
 }
 
 /* Responsive button sizing */
@@ -68,7 +100,6 @@
 <div class="page-header">
     <div>
         <h2>Kelola Galeri</h2>
-       
     </div>
     <div>
         <a href="{{ route('admin.galeri.create') }}" class="btn btn-primary">
@@ -118,8 +149,8 @@
                                 <img src="{{ asset('storage/' . $item->gambar) }}"
                                      alt="{{ $item->judul }}"
                                      class="gallery-thumbnail"
-                                     data-bs-toggle="modal"
-                                     data-bs-target="#imageModal{{ $item->id }}">
+                                     onclick="showImageModal({{ $item->id }})"
+                                     loading="lazy">
                             @else
                                 <span class="text-muted">-</span>
                             @endif
@@ -164,26 +195,6 @@
                             </div>
                         </td>
                     </tr>
-
-                    <!-- Modal untuk Preview Gambar -->
-                    @if($item->gambar)
-                    <div class="modal fade" id="imageModal{{ $item->id }}" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">{{ $item->judul }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <img src="{{ asset('storage/' . $item->gambar) }}"
-                                         alt="{{ $item->judul }}"
-                                         class="img-fluid rounded">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
                     @endforeach
                 </tbody>
             </table>
@@ -209,6 +220,23 @@
     </div>
 </div>
 
+<!-- Modal untuk Preview Gambar (Single Modal) -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <div class="modal-image-container">
+                    <img id="modalPreviewImage" src="" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -229,5 +257,40 @@ function confirmDelete(id) {
         document.getElementById('delete-form-' + id).submit();
     }
 }
+
+// Show image modal function
+let imagePreviewModal = null;
+
+function showImageModal(itemId) {
+    // Cari gambar berdasarkan ID
+    const thumbnailImg = event.target;
+    const imgSrc = thumbnailImg.src;
+    const imgAlt = thumbnailImg.alt;
+    
+    // Update modal content
+    const modalImage = document.getElementById('modalPreviewImage');
+    const modalTitle = document.getElementById('imagePreviewModalLabel');
+    
+    modalTitle.textContent = imgAlt;
+    modalImage.src = imgSrc;
+    modalImage.alt = imgAlt;
+    
+    // Show modal
+    if (!imagePreviewModal) {
+        imagePreviewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+    }
+    imagePreviewModal.show();
+}
+
+// Preload images untuk mencegah blinking
+document.addEventListener('DOMContentLoaded', function() {
+    const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+    
+    thumbnails.forEach(function(thumb) {
+        // Preload image
+        const img = new Image();
+        img.src = thumb.src;
+    });
+});
 </script>
 @endpush

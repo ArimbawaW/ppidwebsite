@@ -195,6 +195,7 @@ class Keberatan extends Model
     {
         return match($this->status) {
             'pending'   => 'Menunggu Verifikasi',
+            'perlu_verifikasi' => 'Menunggu Verifikasi',
             'diproses'  => 'Sedang Diproses',
             'ditunda'   => 'Ditunda',
             'selesai'   => 'Selesai',
@@ -208,6 +209,7 @@ class Keberatan extends Model
     {
         return match($this->status) {
             'pending'   => 'Perlu Diverifikasi',
+            'perlu_verifikasi' => 'Perlu Diverifikasi',
             'diproses'  => 'Sedang Diproses',
             'ditunda'   => 'Ditunda',
             'selesai'   => 'Selesai',
@@ -242,7 +244,14 @@ class Keberatan extends Model
     // ========================================
     // SCOPES
     // ========================================
-    public function scopePending($q)   { return $q->where('status','pending'); }
+    public function scopePending($q)   { 
+        return $q->whereIn('status', ['pending', 'perlu_verifikasi']); 
+    }
+    
+    public function scopePerluVerifikasi($q) { 
+        return $q->whereIn('status', ['pending', 'perlu_verifikasi']); 
+    }
+    
     public function scopeDiproses($q)  { return $q->where('status','diproses'); }
     public function scopeDikabulkan($q){ return $q->where('status','dikabulkan'); }
     public function scopeDitolak($q)   { return $q->where('status','ditolak'); }

@@ -15,29 +15,24 @@
         transition: all 0.3s cubic-bezier(.25,.8,.25,1);
     }
     
-    /* Pastikan teks Header Kartu berwarna putih dan tebal */
-.card-header {
-    background: linear-gradient(45deg, #0e5b73, #157a91) !important; /* Warna sesuai screenshot Anda */
-    padding: 1rem 1.25rem;
-    border: none;
-}
+    /* Header Card */
+    .card-header {
+        background: linear-gradient(45deg, #0e5b73, #157a91) !important;
+        padding: 1rem 1.25rem;
+        border: none;
+    }
 
-.card-header h6 {
-    color: #ffffff !important; /* Teks Putih */
-    font-weight: 600 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* Memberi dimensi agar lebih terbaca */
-}
+    .card-header h6 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
 
-/* Memperbaiki warna ikon di dalam header agar ikut putih */
-.card-header i {
-    color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/* Opsional: Jika tulisan di dalam chart juga sulit terbaca, 
-   pastikan font-nya cukup besar di konfigurasi Chart.js */px;
+    .card-header i {
+        color: rgba(255, 255, 255, 0.8) !important;
     }
 
     /* Stat Card Enhancements */
@@ -65,16 +60,6 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
     }
 
-    .icon-shape {
-        width: 50px;
-        height: 50px;
-        background: rgba(255,255,255,0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-    }
-
     /* Form Styling */
     .form-control, .form-select {
         border-radius: 8px;
@@ -98,6 +83,7 @@
 
     .btn-info { color: white; background-color: #36b9cc; border: none; }
     .btn-success { background-color: #1cc88a; border: none; }
+    .btn-primary { background-color: #4e73df; border: none; }
     
     /* Chart Container */
     .chart-container {
@@ -110,6 +96,43 @@
     .modal-content {
         border: none;
         border-radius: 16px;
+    }
+
+    /* Periode Filter Card */
+    .periode-filter {
+        background: linear-gradient(135deg, #0e5b73 0%, #1a8fb8 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .periode-filter .form-label {
+        color: white;
+        font-weight: 500;
+    }
+
+    .periode-filter .form-control {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .periode-filter .form-control::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .periode-filter .form-control:focus {
+        background: rgba(255,255,255,0.3);
+        border-color: white;
+        color: white;
+    }
+
+    .periode-info {
+        background: rgba(255,255,255,0.15);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        display: inline-block;
     }
 </style>
 @endpush
@@ -140,6 +163,47 @@
         </div>
     @endif
 
+    <!-- Filter Periode -->
+    <div class="periode-filter shadow">
+        <form action="{{ route('admin.rekap.permohonan.index') }}" method="GET">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt me-2"></i>Tanggal Mulai
+                    </label>
+                    <input type="date" name="periode_mulai" class="form-control" 
+                           value="{{ $tanggalMulai ? $tanggalMulai->format('Y-m-d') : '' }}">
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-check me-2"></i>Tanggal Selesai
+                    </label>
+                    <input type="date" name="periode_selesai" class="form-control" 
+                           value="{{ $tanggalSelesai ? $tanggalSelesai->format('Y-m-d') : '' }}">
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-light">
+                            <i class="fas fa-filter me-2"></i>Terapkan Filter
+                        </button>
+                        <a href="{{ route('admin.rekap.permohonan.index') }}" class="btn btn-outline-light">
+                            <i class="fas fa-redo me-2"></i>Reset
+                        </a>
+                        <div class="periode-info ms-auto">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Periode:</strong> 
+                            @if($tanggalMulai && $tanggalSelesai)
+                                {{ $tanggalMulai->format('d M Y') }} - {{ $tanggalSelesai->format('d M Y') }}
+                            @else
+                                Semua Data
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
@@ -149,25 +213,16 @@
                         <div>
                             <div class="text-muted small mb-1">Total Permohonan</div>
                             <div class="h3 mb-0 fw-bold text-primary">{{ number_format($stats['total']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-primary" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-file-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card info shadow h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="text-muted small mb-1">Bulan Ini</div>
-                            <div class="h3 mb-0 fw-bold text-info">{{ number_format($stats['bulan_ini']) }}</div>
-                        </div>
-                        <div class="text-info" style="font-size: 3rem; opacity: 0.3;">
-                            <i class="fas fa-calendar-alt"></i>
                         </div>
                     </div>
                 </div>
@@ -181,9 +236,39 @@
                         <div>
                             <div class="text-muted small mb-1">Perlu Verifikasi</div>
                             <div class="h3 mb-0 fw-bold text-warning">{{ number_format($stats['perlu_verifikasi']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-warning" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card info shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Diproses</div>
+                            <div class="h3 mb-0 fw-bold text-info">{{ number_format($stats['diproses']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
+                        </div>
+                        <div class="text-info" style="font-size: 3rem; opacity: 0.3;">
+                            <i class="fas fa-sync-alt"></i>
                         </div>
                     </div>
                 </div>
@@ -197,6 +282,13 @@
                         <div>
                             <div class="text-muted small mb-1">Selesai</div>
                             <div class="h3 mb-0 fw-bold text-success">{{ number_format($stats['selesai']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-success" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-check-circle"></i>
@@ -213,7 +305,7 @@
         <div class="col-xl-8 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-primary">
+                    <h6 class="m-0 fw-bold">
                         <i class="fas fa-chart-line me-2"></i>
                         Trend Permohonan Tahun {{ $currentYear }}
                     </h6>
@@ -230,7 +322,7 @@
         <div class="col-xl-4 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">
+                    <h6 class="m-0 fw-bold">
                         <i class="fas fa-chart-pie me-2"></i>
                         Distribusi Status
                     </h6>
@@ -247,7 +339,7 @@
     <!-- Export Section -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 fw-bold text-primary">
+            <h6 class="m-0 fw-bold">
                 <i class="fas fa-file-export me-2"></i>
                 Export Data ke Excel
             </h6>
@@ -346,7 +438,6 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <script>
 // Chart configurations
@@ -355,41 +446,53 @@ Chart.register(ChartDataLabels);
 const chartData = @json($chartData);
 const statusData = @json($dataPerStatus);
 
-// 1. Line Chart (Hapus Label/Legend)
+// 1. Line Chart
 const ctx1 = document.getElementById('permohonanChart').getContext('2d');
-new Chart(ctx1, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-        datasets: [{
-            data: chartData,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.4,
-            fill: true
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false // MENGHAPUS TULISAN "JUMLAH PERMOHONAN"
-            },
-            datalabels: {
-                display: false // Jangan tampilkan angka di line chart agar bersih
-            }
+const hasLineData = chartData.reduce((a, b) => a + b, 0) > 0;
+
+if (hasLineData) {
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+            datasets: [{
+                data: chartData,
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 1 }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                datalabels: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
-    }
-});
+    });
+} else {
+    const chartCanvas = document.getElementById('permohonanChart');
+    chartCanvas.style.display = 'none';
+    
+    const container = chartCanvas.parentElement;
+    const noDataMsg = document.createElement('div');
+    noDataMsg.className = 'text-center py-5';
+    noDataMsg.innerHTML = `
+        <i class="fas fa-chart-line text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+        <p class="text-muted mt-3 mb-0">Tidak ada data permohonan pada tahun ini</p>
+    `;
+    container.appendChild(noDataMsg);
+}
 
-// 2. Pie/Doughnut Chart (Tambah Persentase)
+// 2. Pie/Doughnut Chart
 const statusLabels = statusData.map(item => {
     const labels = {
         'perlu_verifikasi': 'Perlu Verifikasi',
@@ -404,39 +507,55 @@ const statusLabels = statusData.map(item => {
 });
 
 const statusValues = statusData.map(item => item.total);
+const hasStatusData = statusValues.reduce((a, b) => a + b, 0) > 0;
 
 const ctx2 = document.getElementById('statusChart').getContext('2d');
-new Chart(ctx2, {
-    type: 'doughnut',
-    data: {
-        labels: statusLabels,
-        datasets: [{
-            data: statusValues,
-            backgroundColor: ['#ffc107', '#17a2b8', '#6c757d', '#28a745', '#20c997', '#dc3545', '#f6c23e']
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: { boxWidth: 12, padding: 15 }
-            },
-            datalabels: {
-                color: '#fff',
-                font: { weight: 'bold', size: 14 },
-                formatter: (value, ctx) => {
-                    let sum = 0;
-                    let dataArr = ctx.chart.data.datasets[0].data;
-                    dataArr.map(data => { sum += data; });
-                    let percentage = (value * 100 / sum).toFixed(1) + "%";
-                    return percentage; // MENAMPILKAN PERSENTASE
+
+if (hasStatusData) {
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusValues,
+                backgroundColor: ['#ffc107', '#17a2b8', '#6c757d', '#28a745', '#20c997', '#dc3545', '#f6c23e']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { boxWidth: 12, padding: 15 }
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: { weight: 'bold', size: 14 },
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => { sum += data; });
+                        let percentage = (value * 100 / sum).toFixed(1) + "%";
+                        return percentage;
+                    }
                 }
             }
         }
-    }
-});
+    });
+} else {
+    const chartCanvas = document.getElementById('statusChart');
+    chartCanvas.style.display = 'none';
+    
+    const container = chartCanvas.parentElement;
+    const noDataMsg = document.createElement('div');
+    noDataMsg.className = 'text-center py-5';
+    noDataMsg.innerHTML = `
+        <i class="fas fa-chart-pie text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+        <p class="text-muted mt-3 mb-0">Tidak ada data permohonan pada periode ini</p>
+    `;
+    container.appendChild(noDataMsg);
+}
 
 // Functions
 function previewData() {

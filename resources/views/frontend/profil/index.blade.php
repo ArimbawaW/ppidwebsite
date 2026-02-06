@@ -15,10 +15,29 @@
         margin-bottom: 40px;
     }
 
+    .profile-section {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .profile-section .col-md-6 {
+        display: flex;
+        flex-direction: column;
+    }
+
     .profile-section img {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
         border-radius: 10px;
-        margin-bottom: 20px;
+        display: block;
+    }
+
+    .text-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
     }
 
     .profile-title {
@@ -30,6 +49,18 @@
     .text-justify {
         text-align: justify;
         line-height: 1.7;
+    }
+
+    /* Responsive untuk mobile */
+    @media (max-width: 767px) {
+        .profile-section {
+            flex-direction: column;
+        }
+        
+        .profile-section img {
+            height: auto;
+            margin-bottom: 20px;
+        }
     }
 </style>
 
@@ -44,33 +75,35 @@
 
         <!-- FOTO -->
         <div class="col-md-6">
-            <img src="{{ asset('images/rumah.png') }}" alt="Foto Perumahan">
+            <img src="{{ asset('images/rumah3.png') }}" alt="Foto Perumahan">
         </div>
 
         <!-- Latar Belakang -->
-        <div class="col-md-6 text-justify">
-            <div class="profile-title">LATAR BELAKANG</div>
+        <div class="col-md-6">
+            <div class="text-content text-justify">
+                <div class="profile-title">Gambaran Umum</div>
 
-            <p>
-                Dalam rangka mewujudkan penyelenggaraan Pelayanan Publik Terpadu sesuai dengan asas 
-                penyelenggaraan pemerintahan yang baik, mewujudkan kepastian hak dan kewajiban berbagai pihak 
-                yang berkaitan dengan penyelenggaraan pelayanan, menjamin dan meningkatkan kualitas pelayanan 
-                publik agar disiplin serta mencegah terjadinya perbuatan yang dapat mengarah pada pelanggaran 
-                disiplin dan pelanggaran hukum, setiap penyelenggara pelayanan publik terpadu wajib menetapkan 
-                standar pelayanan publik terpadu.
-            </p>
+                <p>
+                    Dalam rangka mewujudkan penyelenggaraan Pelayanan Publik Terpadu sesuai dengan asas 
+                    penyelenggaraan pemerintahan yang baik, mewujudkan kepastian hak dan kewajiban berbagai pihak 
+                    yang berkaitan dengan penyelenggaraan pelayanan, menjamin dan meningkatkan kualitas pelayanan 
+                    publik agar disiplin serta mencegah terjadinya perbuatan yang dapat mengarah pada pelanggaran 
+                    disiplin dan pelanggaran hukum, setiap penyelenggara pelayanan publik terpadu wajib menetapkan 
+                    standar pelayanan publik terpadu.
+                </p>
 
-            <p>
-                Kementerian Perumahan dan Kawasan Permukiman perlu menggiatkan penerapan nilai pelayanan publik 
-                terpadu sesuai dengan asas-asas umum pemerintahan yang baik sehingga dapat memberi perlindungan 
-                bagi setiap masyarakat dari penyalahgunaan wewenang di dalam penyelenggaraan pelayanan publik terpadu.
-            </p>
+                <p>
+                    Kementerian Perumahan dan Kawasan Permukiman perlu menggiatkan penerapan nilai pelayanan publik 
+                    terpadu sesuai dengan asas-asas umum pemerintahan yang baik sehingga dapat memberi perlindungan 
+                    bagi setiap masyarakat dari penyalahgunaan wewenang di dalam penyelenggaraan pelayanan publik terpadu.
+                </p>
 
-            <p>
-                Oleh karena itu, untuk melaksanakan pelayanan informasi maka dibentuklah Pejabat Pengelola 
-                Informasi dan Dokumentasi (PPID) yang bertanggung jawab memberikan pelayanan informasi yang 
-                meliputi proses penyimpanan, pendokumentasian, dan penyediaan pelayanan serta pengumuman informasi publik.
-            </p>
+                <p>
+                    Oleh karena itu, untuk melaksanakan pelayanan informasi maka dibentuklah Pejabat Pengelola 
+                    Informasi dan Dokumentasi (PPID) yang bertanggung jawab memberikan pelayanan informasi yang 
+                    meliputi proses penyimpanan, pendokumentasian, dan penyediaan pelayanan serta pengumuman informasi publik.
+                </p>
+            </div>
         </div>
     </div>
 

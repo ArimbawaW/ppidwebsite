@@ -26,6 +26,25 @@
         border-radius: 3px;
         margin-left: 5px;
     }
+    
+    .alert {
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .alert-danger {
+        border-left: 4px solid #dc3545;
+    }
 </style>
 @endpush
 
@@ -432,6 +451,89 @@
 document.addEventListener('DOMContentLoaded', function() {
     const kategoriPemohon = document.getElementById('kategoriPemohon');
     
+    // File validation function
+    function validateFileSize(input, maxSizeMB = 2) {
+        if (input.files && input.files[0]) {
+            const fileSize = input.files[0].size / 1024 / 1024; // Convert to MB
+            
+            if (fileSize > maxSizeMB) {
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-2';
+                errorDiv.innerHTML = `
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Ukuran file terlalu besar!</strong> 
+                    File yang Anda upload berukuran ${fileSize.toFixed(2)} MB. 
+                    Maksimal ukuran file adalah ${maxSizeMB} MB.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Remove existing error if any
+                const existingError = input.parentElement.querySelector('.alert-danger');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Insert error after small text
+                const smallText = input.parentElement.querySelector('.form-text');
+                if (smallText) {
+                    smallText.insertAdjacentElement('afterend', errorDiv);
+                } else {
+                    input.insertAdjacentElement('afterend', errorDiv);
+                }
+                
+                // Clear the input
+                input.value = '';
+                
+                // Scroll to error
+                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                return false;
+            } else {
+                // Show file info if valid
+                const fileName = input.files[0].name;
+                let infoDiv = input.parentElement.querySelector('.file-info');
+                if (!infoDiv) {
+                    infoDiv = document.createElement('div');
+                    infoDiv.className = 'file-info small text-success mt-1';
+                    const smallText = input.parentElement.querySelector('.form-text');
+                    if (smallText) {
+                        smallText.insertAdjacentElement('afterend', infoDiv);
+                    } else {
+                        input.insertAdjacentElement('afterend', infoDiv);
+                    }
+                }
+                
+                infoDiv.innerHTML = `
+                    <i class="bi bi-file-earmark-check me-1"></i>
+                    ${fileName} (${fileSize.toFixed(2)} MB)
+                `;
+            }
+        }
+        return true;
+    }
+    
+    // Add file size validation to all file inputs
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            // Remove any existing error messages
+            const existingError = this.parentElement.querySelector('.alert-danger');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Remove any existing file info
+            const existingInfo = this.parentElement.querySelector('.file-info');
+            if (existingInfo) {
+                existingInfo.remove();
+            }
+            
+            // Validate file size
+            validateFileSize(this);
+        });
+    });
+    
     // Function to show/hide dynamic fields
     function updateDynamicFields() {
         const selectedKategori = kategoriPemohon.value;
@@ -463,6 +565,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize on page load (untuk handle old() values)
     updateDynamicFields();
+    
+    // Prevent form submission if file size is invalid
+    document.getElementById('formPermohonan').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        fileInputs.forEach(input => {
+            if (input.files && input.files[0]) {
+                if (!validateFileSize(input)) {
+                    isValid = false;
+                }
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            
+            // Show alert at top
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Gagal mengirim permohonan!</strong> 
+                Terdapat file yang melebihi ukuran maksimal (2 MB). 
+                Silakan periksa kembali file yang Anda upload.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Remove existing alert if any
+            const existingAlert = document.querySelector('.card-body > .alert-danger');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // Insert at top of form
+            const formCard = document.querySelector('.card-body');
+            formCard.insertBefore(alertDiv, formCard.firstChild);
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
 });
 </script>
 @endpush

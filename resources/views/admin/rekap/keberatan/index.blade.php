@@ -84,6 +84,43 @@
         border: none;
         border-radius: 16px;
     }
+
+    /* Periode Filter Card */
+    .periode-filter {
+        background: linear-gradient(135deg, #7a0f0f 0%, #b71c1c 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .periode-filter .form-label {
+        color: white;
+        font-weight: 500;
+    }
+
+    .periode-filter .form-control {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .periode-filter .form-control::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .periode-filter .form-control:focus {
+        background: rgba(255,255,255,0.3);
+        border-color: white;
+        color: white;
+    }
+
+    .periode-info {
+        background: rgba(255,255,255,0.15);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        display: inline-block;
+    }
 </style>
 @endpush
 
@@ -105,6 +142,47 @@
         </div>
     </div>
 
+    <!-- Filter Periode -->
+    <div class="periode-filter shadow">
+        <form action="{{ route('admin.rekap.keberatan.index') }}" method="GET">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt me-2"></i>Tanggal Mulai
+                    </label>
+                    <input type="date" name="periode_mulai" class="form-control" 
+                           value="{{ $tanggalMulai ? $tanggalMulai->format('Y-m-d') : '' }}">
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-check me-2"></i>Tanggal Selesai
+                    </label>
+                    <input type="date" name="periode_selesai" class="form-control" 
+                           value="{{ $tanggalSelesai ? $tanggalSelesai->format('Y-m-d') : '' }}">
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-light">
+                            <i class="fas fa-filter me-2"></i>Terapkan Filter
+                        </button>
+                        <a href="{{ route('admin.rekap.keberatan.index') }}" class="btn btn-outline-light">
+                            <i class="fas fa-redo me-2"></i>Reset
+                        </a>
+                        <div class="periode-info ms-auto">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Periode:</strong> 
+                            @if($tanggalMulai && $tanggalSelesai)
+                                {{ $tanggalMulai->format('d M Y') }} - {{ $tanggalSelesai->format('d M Y') }}
+                            @else
+                                Semua Data
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- STAT CARDS -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
@@ -114,6 +192,13 @@
                         <div>
                             <div class="text-muted small mb-1">Total Keberatan</div>
                             <div class="h3 mb-0 fw-bold text-danger">{{ number_format($stats['total']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-danger" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -128,8 +213,15 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="text-muted small mb-1">Pending</div>
+                            <div class="text-muted small mb-1">Perlu Verifikasi</div>
                             <div class="h3 mb-0 fw-bold text-warning">{{ number_format($stats['pending']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-warning" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-hourglass-half"></i>
@@ -146,6 +238,13 @@
                         <div>
                             <div class="text-muted small mb-1">Selesai</div>
                             <div class="h3 mb-0 fw-bold text-success">{{ number_format($stats['selesai']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-success" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-check-circle"></i>
@@ -162,6 +261,13 @@
                         <div>
                             <div class="text-muted small mb-1">Ditolak</div>
                             <div class="h3 mb-0 fw-bold text-danger">{{ number_format($stats['ditolak']) }}</div>
+                            <small class="text-muted">
+                                @if($tanggalMulai && $tanggalSelesai)
+                                    Pada periode terpilih
+                                @else
+                                    Seluruh data
+                                @endif
+                            </small>
                         </div>
                         <div class="text-danger" style="font-size: 3rem; opacity: 0.3;">
                             <i class="fas fa-times-circle"></i>
@@ -224,7 +330,7 @@
                         <label class="form-label fw-bold">Status</label>
                         <select name="status" class="form-select" id="status">
                             <option value="semua">Semua Status</option>
-                            <option value="pending">Pending</option>
+                            <option value="perlu_verifikasi">Perlu Verifikasi</option>
                             <option value="diproses">Diproses</option>
                             <option value="selesai">Selesai</option>
                             <option value="ditolak">Ditolak</option>
@@ -292,48 +398,118 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <script>
+// Register plugin
+Chart.register(ChartDataLabels);
+
 const chartData = @json($chartData);
 const statusData = @json($dataPerStatus);
 
 /* LINE CHART */
-new Chart(document.getElementById('keberatanChart'), {
-    type: 'line',
-    data: {
-        labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
-        datasets: [{
-            data: chartData,
-            borderColor: '#dc3545',
-            backgroundColor: 'rgba(220,53,69,0.2)',
-            tension: 0.4,
-            fill: true
-        }]
-    },
-    options: {
-        responsive:true,
-        maintainAspectRatio:false,
-        plugins:{ legend:{ display:false }},
-        scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 }}}
-    }
-});
+const lineChartData = chartData;
+const hasLineData = lineChartData.reduce((a, b) => a + b, 0) > 0;
+
+if (hasLineData) {
+    new Chart(document.getElementById('keberatanChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
+            datasets: [{
+                data: chartData,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220,53,69,0.2)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }},
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }}}
+        }
+    });
+} else {
+    const chartCanvas = document.getElementById('keberatanChart');
+    chartCanvas.style.display = 'none';
+    
+    const container = chartCanvas.parentElement;
+    const noDataMsg = document.createElement('div');
+    noDataMsg.className = 'text-center py-5';
+    noDataMsg.innerHTML = `
+        <i class="fas fa-chart-line text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+        <p class="text-muted mt-3 mb-0">Tidak ada data keberatan pada tahun ini</p>
+    `;
+    container.appendChild(noDataMsg);
+}
 
 /* DOUGHNUT */
-new Chart(document.getElementById('statusChart'), {
-    type: 'doughnut',
-    data: {
-        labels: ['Pending','Diproses','Selesai','Ditolak'],
-        datasets: [{
-            data: statusData.map(i=>i.total),
-            backgroundColor: ['#f6c23e','#36b9cc','#1cc88a','#e74a3b']
-        }]
-    },
-    options: {
-        responsive:true,
-        maintainAspectRatio:false,
-        plugins:{ legend:{ position:'bottom' }}
-    }
+// Mapping label status keberatan
+const keberatanStatusLabels = statusData.map(item => {
+    const labels = {
+        'pending': 'Perlu Verifikasi',
+        'perlu_verifikasi': 'Perlu Verifikasi',
+        'diproses': 'Diproses',
+        'ditunda': 'Ditunda',
+        'selesai': 'Selesai',
+        'dikabulkan': 'Dikabulkan',
+        'ditolak': 'Ditolak'
+    };
+    return labels[item.status] || item.status;
 });
+
+const statusChartData = statusData.map(i => i.total);
+const hasData = statusChartData.reduce((a, b) => a + b, 0) > 0;
+
+if (hasData) {
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: keberatanStatusLabels,
+            datasets: [{
+                data: statusChartData,
+                backgroundColor: ['#ffc107', '#17a2b8', '#6c757d', '#28a745', '#20c997', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { 
+                    position: 'bottom',
+                    labels: { boxWidth: 12, padding: 15 }
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: { weight: 'bold', size: 14 },
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => { sum += data; });
+                        let percentage = (value * 100 / sum).toFixed(1) + "%";
+                        return percentage;
+                    }
+                }
+            }
+        }
+    });
+} else {
+    // Tampilkan pesan jika tidak ada data
+    const chartCanvas = document.getElementById('statusChart');
+    const ctx = chartCanvas.getContext('2d');
+    chartCanvas.style.display = 'none';
+    
+    const container = chartCanvas.parentElement;
+    const noDataMsg = document.createElement('div');
+    noDataMsg.className = 'text-center py-5';
+    noDataMsg.innerHTML = `
+        <i class="fas fa-chart-pie text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+        <p class="text-muted mt-3 mb-0">Tidak ada data keberatan pada periode ini</p>
+    `;
+    container.appendChild(noDataMsg);
+}
 
 /* PREVIEW */
 function previewData() {

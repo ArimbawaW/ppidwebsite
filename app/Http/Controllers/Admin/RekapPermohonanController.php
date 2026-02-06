@@ -12,28 +12,50 @@ class RekapPermohonanController extends Controller
     /**
      * Display rekap page
      */
-    public function index()
+    public function index(Request $request)
     {
         // Get current year
         $currentYear = date('Y');
         
-        // Get statistics
+        // Ambil periode dari request atau default semua data
+        $tanggalMulai = $request->filled('periode_mulai') 
+            ? Carbon::parse($request->periode_mulai) 
+            : null;
+        
+        $tanggalSelesai = $request->filled('periode_selesai') 
+            ? Carbon::parse($request->periode_selesai) 
+            : null;
+        
+        // Query builder untuk stats
+        $statsQuery = function($query) use ($tanggalMulai, $tanggalSelesai) {
+            if ($tanggalMulai && $tanggalSelesai) {
+                return $query->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+            }
+            return $query;
+        };
+        
+        // Get statistics dengan filter periode (jika ada)
         $stats = [
-            'total' => Permohonan::count(),
+            'total' => $statsQuery(Permohonan::query())->count(),
             'bulan_ini' => Permohonan::whereMonth('created_at', date('m'))
                                      ->whereYear('created_at', $currentYear)
                                      ->count(),
             'tahun_ini' => Permohonan::whereYear('created_at', $currentYear)->count(),
-            'perlu_verifikasi' => Permohonan::where('status', 'perlu_verifikasi')->count(),
-            'diproses' => Permohonan::where('status', 'diproses')->count(),
-            'selesai' => Permohonan::whereIn('status', ['dikabulkan_seluruhnya', 'dikabulkan_sebagian'])->count(),
-            'ditolak' => Permohonan::where('status', 'ditolak')->count(),
+            'perlu_verifikasi' => $statsQuery(Permohonan::where('status', 'perlu_verifikasi'))->count(),
+            'diproses' => $statsQuery(Permohonan::where('status', 'diproses'))->count(),
+            'selesai' => $statsQuery(Permohonan::whereIn('status', ['dikabulkan_seluruhnya', 'dikabulkan_sebagian']))->count(),
+            'ditolak' => $statsQuery(Permohonan::where('status', 'ditolak'))->count(),
         ];
         
         // Get data by month (current year)
-        $dataPerBulan = Permohonan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
-            ->whereYear('created_at', $currentYear)
-            ->groupBy('bulan')
+        $dataPerBulanQuery = Permohonan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->whereYear('created_at', $currentYear);
+        
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerBulanQuery->whereBetween('created_at', [$tanggalMulai->copy()->startOfYear(), $tanggalSelesai->copy()->endOfYear()]);
+        }
+        
+        $dataPerBulan = $dataPerBulanQuery->groupBy('bulan')
             ->orderBy('bulan')
             ->get()
             ->pluck('total', 'bulan')
@@ -45,22 +67,28 @@ class RekapPermohonanController extends Controller
             $chartData[] = $dataPerBulan[$i] ?? 0;
         }
         
-        // Get data by kategori
-        $dataPerKategori = Permohonan::selectRaw('kategori_pemohon, COUNT(*) as total')
-            ->groupBy('kategori_pemohon')
-            ->get();
+        // Get data by kategori dengan filter periode
+        $dataPerKategoriQuery = Permohonan::selectRaw('kategori_pemohon, COUNT(*) as total');
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerKategoriQuery->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+        $dataPerKategori = $dataPerKategoriQuery->groupBy('kategori_pemohon')->get();
         
-        // Get data by status
-        $dataPerStatus = Permohonan::selectRaw('status, COUNT(*) as total')
-            ->groupBy('status')
-            ->get();
+        // Get data by status dengan filter periode
+        $dataPerStatusQuery = Permohonan::selectRaw('status, COUNT(*) as total');
+        if ($tanggalMulai && $tanggalSelesai) {
+            $dataPerStatusQuery->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+        $dataPerStatus = $dataPerStatusQuery->groupBy('status')->get();
         
         return view('admin.rekap.permohonan.index', compact(
             'stats',
             'chartData',
             'dataPerKategori',
             'dataPerStatus',
-            'currentYear'
+            'currentYear',
+            'tanggalMulai',
+            'tanggalSelesai'
         ));
     }
     
@@ -136,17 +164,17 @@ class RekapPermohonanController extends Controller
         ];
         
         // Set headers
-       $headers = [
+        $headers = [
             'A1' => 'No',
             'B1' => 'Nomor Registrasi',
             'C1' => 'Tanggal Pengajuan',
             'D1' => 'Kategori Pemohon',
             'E1' => 'Nama Pemohon',
-            'F1' => 'Kategori Informasi', // kategori_informasi
-            'G1' => 'Jenis Permohonan',   // jenis_permohonan_informasi
-            'H1' => 'Status Informasi',  // status_informasi
-            'I1' => 'Bentuk Informasi',  // bentuk_informasi
-            'J1' => 'Jenis Permintaan',  // jenis_permintaan
+            'F1' => 'Kategori Informasi',
+            'G1' => 'Jenis Permohonan',
+            'H1' => 'Status Informasi',
+            'I1' => 'Bentuk Informasi',
+            'J1' => 'Jenis Permintaan',
             'K1' => 'Rincian Informasi',
             'L1' => 'Status',
             'M1' => 'Tanggal Selesai',
@@ -164,39 +192,34 @@ class RekapPermohonanController extends Controller
         }
         
         // Fill data
-      $row = 2;
+        $row = 2;
         foreach ($permohonan as $index => $item) {
             $sheet->setCellValue('A' . $row, $index + 1);
             $sheet->setCellValue('B' . $row, $item->nomor_registrasi);
             $sheet->setCellValue('C' . $row, $item->created_at->format('d/m/Y H:i'));
             $sheet->setCellValue('D' . $row, $item->kategori_label);
             $sheet->setCellValue('E' . $row, $item->nama);
-            
-            // Kolom baru sesuai database
             $sheet->setCellValue('F' . $row, $item->kategori_informasi ?? '-');
             $sheet->setCellValue('G' . $row, $item->jenis_permohonan_informasi ?? '-');
             $sheet->setCellValue('H' . $row, $item->status_informasi ?? '-');
             $sheet->setCellValue('I' . $row, $item->bentuk_informasi ?? '-');
             $sheet->setCellValue('J' . $row, $item->jenis_permintaan ?? '-');
-            
             $sheet->setCellValue('K' . $row, $item->rincian_informasi);
             $sheet->setCellValue('L' . $row, $item->status_label);
             $sheet->setCellValue('M' . $row, $item->tanggal_selesai ? Carbon::parse($item->tanggal_selesai)->format('d/m/Y H:i') : '-');
             $sheet->setCellValue('N' . $row, $item->catatan_admin ?? '-');
             
             // Wrap text for long content
-            $sheet->getStyle('H' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('I' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('J' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('K' . $row)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('N' . $row)->getAlignment()->setWrapText(true);
+            foreach (['H','I','J','K','N'] as $col) {
+                $sheet->getStyle($col . $row)->getAlignment()->setWrapText(true);
+            }
             
             $row++;
         }
         
         // Set row height
         for ($i = 2; $i < $row; $i++) {
-            $sheet->getRowDimension($i)->setRowHeight(-1); // Auto height
+            $sheet->getRowDimension($i)->setRowHeight(-1);
         }
         
         // Generate filename

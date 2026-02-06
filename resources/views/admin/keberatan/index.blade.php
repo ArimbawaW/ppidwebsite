@@ -432,11 +432,11 @@
                                     </span>
                                 @elseif(isset($indikator['terlambat']) && $indikator['terlambat'])
                                     <span class="sisa-hari-text text-danger fw-bold">
-                                        +{{ $indikator['hari_keterlambatan'] }}h
+                                        +{{ $indikator['hari_keterlambatan'] }}hari
                                     </span>
                                 @else
                                     <span class="sisa-hari-text">
-                                        Sisa: {{ $indikator['sisa_hari'] }}h
+                                        Sisa: {{ $indikator['sisa_hari'] }}hari
                                     </span>
                                     <div class="mini-progress">
                                         <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 

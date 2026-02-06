@@ -10,7 +10,7 @@
 
             {{-- GAMBAR Struktur --}}
             <img 
-                src="{{ asset('images/struktur.png') }}" 
+                src="{{ asset('images/struktur2.png') }}" 
                 alt="Tugas dan Fungsi PPID"
                 class="img-fluid mx-auto d-block"
                 style="max-width: 700px;"

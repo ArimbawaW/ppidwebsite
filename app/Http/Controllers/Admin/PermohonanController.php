@@ -216,7 +216,7 @@ class PermohonanController extends Controller
         
         // Penutup
         $template .= "Hormat Kami,\n";
-        $template .= "PPID Kementerian Pekerjaan Umum dan Perumahan Rakyat\n\n";
+        $template .= "PPID Kementerian Perumahan dan Kawasan Permukiman\n\n";
         $template .= "----------------------------------------\n";
         $template .= "Email ini dikirim secara otomatis, mohon tidak membalas email ini.\n";
         $template .= "Untuk pertanyaan lebih lanjut, silakan hubungi PPID melalui saluran resmi.\n";
