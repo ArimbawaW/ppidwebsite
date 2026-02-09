@@ -66,11 +66,10 @@ class PermohonanController extends Controller
         DB::beginTransaction();
 
         try {
-            // Generate nomor registrasi di dalam transaksi agar benar-benar unik
-            $nomorRegistrasi = $this->generateNomorRegistrasi();
-
+            // Nomor registrasi akan di-generate otomatis oleh Model
+            // melalui event booted() pada saat creating
+            
             $data = [
-                'nomor_registrasi' => $nomorRegistrasi,
                 'kategori_pemohon' => $validated['kategori_pemohon'],
                 'nama' => $validated['nama'],
                 'pekerjaan' => $validated['pekerjaan'],
@@ -99,6 +98,7 @@ class PermohonanController extends Controller
             }
 
             // 4. Simpan ke Database
+            // Nomor registrasi akan di-generate otomatis
             $permohonan = Permohonan::create($data);
 
             // Jika sampai sini tidak ada error, commit transaksi
@@ -108,7 +108,7 @@ class PermohonanController extends Controller
             $this->sendNotifications($permohonan);
 
             return redirect()->route('permohonan.index')
-                ->with('success', '✅ Permohonan berhasil dikirim! Nomor Registrasi: ' . $nomorRegistrasi);
+                ->with('success', '✅ Permohonan berhasil dikirim! Nomor Registrasi: ' . $permohonan->nomor_registrasi);
 
         } catch (Exception $e) {
             // Jika ada error, batalkan semua perubahan database
@@ -119,41 +119,6 @@ class PermohonanController extends Controller
                 ->withInput()
                 ->with('error', '❌ Terjadi kesalahan: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Generate nomor registrasi (Logika yang diperbaiki)
-     */
-    private function generateNomorRegistrasi()
-    {
-        $tahun = date('Y');
-        $bulan = date('m');
-        $prefix = "PPID/PERMOHONAN/{$tahun}/{$bulan}/";
-
-        // Ambil data terakhir untuk mendapatkan nomor urut tertinggi
-        $lastRecord = Permohonan::where('nomor_registrasi', 'LIKE', $prefix . '%')
-            ->orderBy('nomor_registrasi', 'desc')
-            ->lockForUpdate() // Mengunci baris saat proses pendaftaran berlangsung
-            ->first();
-
-        if ($lastRecord) {
-            $lastNumber = (int) substr($lastRecord->nomor_registrasi, -3);
-            $nextNumber = $lastNumber + 1;
-        } else {
-            $nextNumber = 1;
-        }
-
-        $urutan = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-        $finalNomor = $prefix . $urutan;
-
-        // Double check untuk menghindari Duplicate Entry
-        while (Permohonan::where('nomor_registrasi', $finalNomor)->exists()) {
-            $nextNumber++;
-            $urutan = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-            $finalNomor = $prefix . $urutan;
-        }
-
-        return $finalNomor;
     }
 
     /**

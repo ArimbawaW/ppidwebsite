@@ -6,17 +6,84 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title><?php echo $__env->yieldContent('title', 'PPID Website'); ?></title>
     <link rel="icon" type="image/png" href="<?php echo e(asset('images/LogoPKP.png')); ?>">
-
+    <link rel="stylesheet" href="<?php echo e(asset('css/pagination-fix.css')); ?>">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <!-- Google Fonts Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo e(asset('css/agenda.css')); ?>">    
 
     <!-- GLightbox CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
 
     <style>
+
+/* =========================================================
+   NAVBAR CUSTOM - WARNA UTAMA
+   ========================================================= */
+
+.navbar-custom {
+    background-color: #1a6b8a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-custom::after {
+    background: #d5c58a; /* aksen emas tetap */
+}
+
+/* Brand text */
+.navbar-custom .navbar-brand div:first-child {
+    color: #ffffff !important;
+}
+
+.navbar-custom .navbar-brand div:last-child {
+    color: #e6f4f8 !important;
+}
+
+
+/* Nav links */
+.navbar-custom .nav-link {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+.navbar-custom .nav-link:hover {
+    background: #d5c58a !important;
+    color: #1a6b8a !important;
+}
+
+.navbar-custom .nav-link.active {
+    background: #d5c58a !important;
+    color: #1a6b8a !important;
+}
+
+/* Dropdown */
+.navbar-custom .dropdown-menu {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-custom .dropdown-item {
+    font-weight: 600;
+}
+
+.navbar-custom .dropdown-item:hover {
+    background: #1a6b8a;
+    color: #ffffff;
+}
+
+
+/* Toggler */
+.navbar-custom .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.navbar-custom .navbar-toggler-icon {
+    filter: invert(1);
+}
+
         /* ==== STICKY FOOTER ==== */
         html, body {
             height: 100%;
@@ -49,7 +116,7 @@
             margin-left: 0 !important;
         }
 
-        /* Agar navbar menempel kiri */
+        /* Agar navbar tidak menempel kiri */
         .navbar {
             padding-left: 0 !important;
             padding-right: 0 !important;
@@ -57,7 +124,7 @@
         }
 
         .navbar .container-fluid {
-            padding-left: 0 !important;
+            padding-left: 20px !important;
             padding-right: 20px !important;
         }
 
@@ -71,9 +138,29 @@
             background: #d5c58a;
         }
 
-        /* === PERGESERAN LOGO SEDIKIT KE KANAN === */
+        /* Logo tanpa margin berlebih */
         .navbar-brand img {
-            margin-left: 8px !important;
+            margin-left: 0 !important;
+        }
+
+        /* Nav link styling */
+        .nav-link {
+            color: #1a6b8a !important;
+            padding: 6px 14px !important;
+            margin: 0 2px;
+            font-weight: 600;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-custom .nav-link:hover {
+        background: #ffffff !important;
+         color: #1a6b8a !important;
+        }
+
+        .navbar-custom .nav-link.active {
+        background: #ffffff !important;
+        color: #1a6b8a !important;
         }
 
         /* === GALERI LIGHTBOX STYLE === */
@@ -122,9 +209,9 @@
             padding: 15px 20px;
         }
 
-        /* Navbar active state */
-        .nav-link.active {
-            color: #d5c58a !important;
+        /* Logo tanpa margin berlebih */
+        .navbar-brand img {
+            margin-left: 0 !important;
         }
 
         .ppid-link,
@@ -153,8 +240,8 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding-left: 0 !important;
-                padding-right: 12px !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
             }
 
             /* Logo tetap di kiri */
@@ -207,6 +294,34 @@
 
             .navbar-brand {
                 padding-right: 56px;
+            }
+
+            /* Responsive text size */
+            .navbar-brand > div > div:first-child {
+                font-size: 18px !important;
+            }
+            
+            .navbar-brand > div > div:last-child {
+                font-size: 9px !important;
+            }
+            
+            .navbar-brand img {
+                height: 40px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand > div > div:first-child {
+                font-size: 16px !important;
+            }
+            
+            .navbar-brand > div > div:last-child {
+                font-size: 8px !important;
+            }
+            
+            .navbar-brand img {
+                height: 35px !important;
+                margin-right: 8px !important;
             }
         }
 
@@ -400,31 +515,31 @@
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
-                text-align: center;
+                text-align: left;
             }
 
             .footer-container {
-                padding: 25px 20px;
+                padding: 25px 30px;
             }
 
             .footer-logo-section {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .footer-address {
-                text-align: center;
+                text-align: left;
             }
 
             .footer-contact {
-                text-align: center;
+                text-align: left;
             }
 
             .whatsapp-link {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .social-media {
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .footer-brand-text h2 {
@@ -439,71 +554,103 @@
 
         @media (max-width: 576px) {
             .footer-container {
-                padding: 20px 15px;
+                padding: 30px 25px;
             }
 
             .footer-grid {
-                gap: 25px;
+                gap: 35px;
             }
 
             .footer-logo-section {
-                gap: 12px;
+                gap: 15px;
             }
 
             .footer-brand-text h2 {
-                font-size: 20px;
+                font-size: 28px;
+                margin-bottom: 8px;
             }
 
             .footer-brand-text p {
-                font-size: 9px;
+                font-size: 11px;
+                line-height: 1.5;
             }
 
             .footer-address h3,
             .footer-contact h3 {
-                font-size: 16px;
-                margin-bottom: 10px;
+                font-size: 20px;
+                margin-bottom: 15px;
+                font-weight: 800;
             }
 
             .footer-address p {
-                font-size: 12px;
-                margin-bottom: 15px;
+                font-size: 15px;
+                margin-bottom: 20px;
+                line-height: 1.6;
             }
 
             .visitor-counter {
-                padding: 6px 14px;
+                padding: 10px 18px;
             }
 
             .visitor-icon {
-                font-size: 16px;
-            }
-
-            .visitor-label {
-                font-size: 11px;
-            }
-
-            .visitor-count {
-                font-size: 14px;
-            }
-
-            .whatsapp-link {
-                font-size: 14px;
-                margin-bottom: 12px;
-            }
-
-            .whatsapp-link i {
                 font-size: 20px;
             }
 
+            .visitor-label {
+                font-size: 13px;
+            }
+
+            .visitor-count {
+                font-size: 18px;
+            }
+
+            .whatsapp-link {
+                font-size: 18px;
+                margin-bottom: 18px;
+            }
+
+            .whatsapp-link i {
+                font-size: 28px;
+            }
+
             .social-link {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
             }
 
             .social-media {
-                gap: 10px;
+                gap: 12px;
+            }
+
+            .footer-logo-section img {
+                width: 70px;
+                height: 70px;
             }
         }
+    @media (min-width: 992px) {
+    .navbar-custom .container-fluid {
+        padding-left: 48px !important;
+    }
+}
+@media (min-width: 992px) {
+    .navbar-custom .navbar-brand img {
+        height: 56px !important;
+        width: auto;
+    }
+
+    .navbar-custom .navbar-brand .brand-title {
+        font-size: 22px;
+        line-height: 1.1;
+        font-weight: 800;
+    }
+
+    .navbar-custom .navbar-brand .brand-subtitle {
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 700;
+    }
+}
     </style>
 
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
@@ -512,25 +659,24 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #1a6b8a, #003344);">
+    <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
 
             <!-- LOGO + TEKS -->
-            <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="<?php echo e(route('home')); ?>">
-                <img src="<?php echo e(asset('images/LogoPKP.png')); ?>" alt="Logo PKP" height="40" class="me-2">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="<?php echo e(route('home')); ?>">
+                <img src="<?php echo e(asset('images/LogoPKP.png')); ?>" alt="Logo PKP" height="50" class="me-3">
                 <div>
-                    <div style="font-size: 18px; line-height: 1.2; font-weight: 800; color: #d5c58a;">
+                    <div style="font-size: 22px; line-height: 1.2; font-weight: 800; color: #d5c58a;">
                         PPID
                     </div>
-                    <div style="font-size: 9px; font-weight: 800; line-height: 1.2;">
-                        KEMENTERIAN PERUMAHAN DAN KAWASAN PERMUKIMAN<br>
-                        REPUBLIK INDONESIA
+                    <div style="font-size: 11px; font-weight: 700; line-height: 1.2; color: #1a6b8a; margin-top: 2px;">
+                        KEMENTERIAN PERUMAHAN DAN KAWASAN PERMUKIMAN
                     </div>
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: white;">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: #1a6b8a;">
+                <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -538,7 +684,7 @@
 
                     <!-- Beranda -->
                     <li class="nav-item">
-                        <a class="nav-link text-white <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" 
+                        <a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('home')); ?>">
                             Beranda
                         </a>
@@ -546,7 +692,7 @@
 
                     <!-- Profil PPID -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white <?php echo e(request()->routeIs('profil.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link dropdown-toggle <?php echo e(request()->routeIs('profil.*') ? 'active' : ''); ?>" 
                            href="#" 
                            id="profilDropdown" 
                            role="button" 
@@ -556,7 +702,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?php echo e(route('profil.index')); ?>">Profil</a></li>
                             <li><a class="dropdown-item" href="<?php echo e(route('profil.struktur-organisasi')); ?>">Struktur Organisasi</a></li>
-                            <li><a class="dropdown-item" href="<?php echo e(route('profil.tugas-fungsi')); ?>">Tugas & Fungsi</a></li>
+                            <li><a class="dropdown-item" href="<?php echo e(route('profil.tugas-fungsi')); ?>">Tugas & Tanggung jawab</a></li>
                             <li><a class="dropdown-item" href="<?php echo e(route('profil.visi-misi')); ?>">Visi & Misi</a></li>
                             <li><a class="dropdown-item" href="<?php echo e(route('profil.dasar-hukum')); ?>">Maklumat</a></li>
                         </ul>
@@ -564,7 +710,7 @@
 
                     <!-- Regulasi -->
                     <li class="nav-item">
-                        <a class="nav-link text-white <?php echo e(request()->routeIs('regulasi.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link <?php echo e(request()->routeIs('regulasi.*') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('regulasi.index')); ?>">
                             Regulasi
                         </a>
@@ -572,7 +718,7 @@
 
                     <!-- Informasi Publik -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white <?php echo e(request()->routeIs('informasi-publik.*') || request()->routeIs('halaman-statis.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link dropdown-toggle <?php echo e(request()->routeIs('informasi-publik.*') || request()->routeIs('halaman-statis.*') ? 'active' : ''); ?>" 
                            href="#" 
                            role="button" 
                            data-bs-toggle="dropdown">
@@ -587,7 +733,7 @@
 
                     <!-- Standar Layanan -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white <?php echo e(request()->routeIs('standar-layanan.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link dropdown-toggle <?php echo e(request()->routeIs('standar-layanan.*') ? 'active' : ''); ?>" 
                            href="#" 
                            role="button" 
                            data-bs-toggle="dropdown">
@@ -615,7 +761,7 @@
 
                     <!-- FAQ -->
                     <li class="nav-item">
-                        <a class="nav-link text-white <?php echo e(request()->routeIs('faq.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link <?php echo e(request()->routeIs('faq.*') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('faq.index')); ?>">
                             FAQ
                         </a>
@@ -623,7 +769,7 @@
 
                     <!-- Berita -->
                     <li class="nav-item">
-                        <a class="nav-link text-white <?php echo e(request()->routeIs('berita.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link <?php echo e(request()->routeIs('berita.*') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('berita.index')); ?>">
                             Berita
                         </a>
@@ -631,7 +777,7 @@
 
                     <!-- Galeri -->
                     <li class="nav-item">
-                        <a class="nav-link text-white <?php echo e(request()->routeIs('galeri.*') ? 'active' : ''); ?>" 
+                        <a class="nav-link <?php echo e(request()->routeIs('galeri.*') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('galeri.index')); ?>">
                             Galeri
                         </a>
@@ -648,7 +794,7 @@
                     <i class="bi bi-check-circle me-2"></i>
                     <?php echo e(session('success')); ?>
 
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-alert></button>
                 </div>
             </div>
         <?php endif; ?>
@@ -667,12 +813,10 @@
         <?php echo $__env->yieldContent('content'); ?>
     </main>
 
-    <!-- FOOTER REDESIGN -->
-    <footer>
+  <footer>
         <div class="footer-container">
             <div class="footer-grid">
                 
-                <!-- Logo & Brand -->
                 <div class="footer-logo-section">
                     <img src="<?php echo e(asset('images/LogoPKP.png')); ?>" alt="Logo PKP">
                     <div class="footer-brand-text">
@@ -685,7 +829,6 @@
                     </div>
                 </div>
 
-                <!-- Address & Visitor Counter -->
                 <div class="footer-address">
                     <h3>Alamat</h3>
                     <p>
@@ -710,7 +853,6 @@
                     </div>
                 </div>
 
-                <!-- Contact -->
                 <div class="footer-contact">
                     <h3>Hubungi Kami:</h3>
                     
@@ -720,19 +862,16 @@
                     </a>
 
                     <div class="social-media">
-                        <a href="#" class="social-link" title="Website">
+                        <a href="https://pkp.go.id" target="_blank" class="social-link" title="Website">
                             <i class="bi bi-globe"></i>
                         </a>
                         <a href="https://www.instagram.com/ppid.kemenpkp/" target="_blank" class="social-link" title="Instagram">
                             <i class="bi bi-instagram"></i>
                         </a>
-                        <a href="https://www.youtube.com/@KementerianPKP" class="social-link" title="YouTube">
+                        <a href="https://www.youtube.com/@KementerianPKP" target="_blank" class="social-link" title="YouTube">
                             <i class="bi bi-youtube"></i>
                         </a>
-                        <a href="#" class="social-link" title="TikTok">
-                            <i class="bi bi-tiktok"></i>
-                        </a>
-                    </div>
+                        </div>
                 </div>
 
             </div>

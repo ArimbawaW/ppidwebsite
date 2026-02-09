@@ -11,13 +11,34 @@
             {{-- GAMBAR visi --}}
             <img 
                 src="{{ asset('images/visi.png') }}" 
-                alt="Tugas dan Fungsi PPID"
-                class="img-fluid mx-auto d-block"
-                style="max-width: 700px;"
+                alt="Visi Misi PPID"
+                class="img-fluid mx-auto d-block visi-img"
             >
 
         </div>
     </div>
-
 </div>
+
+<style>
+    .visi-img {
+        max-width: 100%;
+        height: auto;
+        width: 1200px;
+    }
+    
+    /* Tablet */
+    @media (max-width: 992px) {
+        .visi-img {
+            width: 100%;
+        }
+    }
+    
+    /* Mobile */
+    @media (max-width: 576px) {
+        .visi-img {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+</style>
 @endsection

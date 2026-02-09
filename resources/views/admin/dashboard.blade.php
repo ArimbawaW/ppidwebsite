@@ -4,88 +4,171 @@
 
 @push('styles')
 <style>
-    .stat-card {
-        background: #fff;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border-left: 5px solid;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        transition: transform 0.2s;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Tema Biru untuk Permohonan */
-    .stat-card.blue-theme {
-        border-left-color: #0d6efd;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
-    }
-    
-    .stat-card.blue-theme .stat-number {
-        color: #0d6efd;
-    }
-    
-    .stat-card.blue-theme .icon-box {
-        background: rgba(13, 110, 253, 0.1);
-    }
-    
-    .stat-card.blue-theme .icon-box i {
-        color: #0d6efd;
-    }
-    
-    /* Tema Merah Soft untuk Keberatan */
-    .stat-card.red-theme {
-        border-left-color: #dc3545;
-        background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
-    }
-    
-    .stat-card.red-theme .stat-number {
-        color: #dc3545;
-    }
-    
-    .stat-card.red-theme .icon-box {
-        background: rgba(220, 53, 69, 0.08);
-    }
-    
-    .stat-card.red-theme .icon-box i {
-        color: #dc3545;
-    }
-    
-    .stat-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #6c757d;
-        margin-bottom: 0.5rem;
-    }
-    
-    .stat-number {
-        font-size: 3rem;
-        font-weight: 700;
-        line-height: 1;
-        margin: 0;
-    }
-    
-    .icon-box {
-        padding: 16px;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .icon-box i {
-        font-size: 40px;
-    }
-    
-    .badge {
-        padding: 0.5em 0.75em;
-        font-weight: 600;
-    }
+/* =========================================================
+   GLOBAL OVERRIDE (FORCE THEME RESET)
+   ========================================================= */
+.card,
+.card-header,
+.card-body,
+.table,
+.table thead,
+.table tbody,
+.table tr,
+.table td,
+.table th {
+    background-image: none !important;
+    background-color: #fff !important;
+    color: #212529 !important;
+}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+.stat-card {
+    background: #ffffff !important;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 5px solid;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+/* Permohonan */
+.stat-card.blue-theme {
+    border-left-color: #0d6efd;
+    background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 100%) !important;
+}
+
+/* Keberatan */
+.stat-card.red-theme {
+    border-left-color: #dc3545;
+    background: linear-gradient(135deg, #ffffff 0%, #fff2f2 100%) !important;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: #6c757d;
+    text-transform: uppercase;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.icon-box {
+    padding: 16px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-box i {
+    font-size: 40px;
+}
+
+/* =========================================================
+   CARD HEADER (FORCE SAME HEADER)
+   ========================================================= */
+.card-header {
+    background: #0b4f6c !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-header h5,
+.card-header i {
+    color: #ffffff !important;
+}
+
+/* =========================================================
+   TABLE FORCE STRUCTURE
+   ========================================================= */
+.table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+
+.table thead th {
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #000 !important;
+    background: #f8f9fa !important;
+}
+
+/* FORCE SAME COLUMN WIDTH */
+.col-reg   { width: 35% !important; }
+.col-name  { width: 22% !important; }
+.col-stat  { width: 23% !important; text-align: center !important; }
+.col-date  { width: 20% !important; text-align: center !important; }
+
+/* =========================================================
+   BADGE FORCE STYLE
+   ========================================================= */
+.badge {
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    padding: 0.45em 0.9em !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.4px;
+}
+
+.bg-warning {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.bg-success {
+    background: #198754 !important;
+    color: #fff !important;
+}
+
+.bg-info {
+    background: #0dcaf0 !important;
+    color: #fff !important;
+}
+
+.bg-danger {
+    background: #dc3545 !important;
+    color: #fff !important;
+}
+
+.bg-secondary {
+    background: #6c757d !important;
+    color: #fff !important;
+}
+
+/* =========================================================
+   BUTTON FORCE SAME STYLE
+   ========================================================= */
+.btn-outline-primary,
+.btn-outline-danger {
+    border-radius: 8px !important;
+    font-weight: 600;
+}
+
+/* =========================================================
+   ALIGNMENT FIX
+   ========================================================= */
+.table td, .table th {
+    vertical-align: middle !important;
+}
+
+.text-nowrap {
+    white-space: nowrap !important;
+}
 </style>
 @endpush
 
@@ -97,7 +180,7 @@
         <h2 class="fw-bold">Dashboard</h2>
         <p class="text-muted">Selamat datang di Panel Admin PPID Kementerian PKP</p>
     </div>
-    <div class="text-end">
+    <div>
         <span class="badge bg-light text-dark border">
             <i class="bi bi-calendar3 me-1"></i>
             {{ now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
@@ -105,150 +188,140 @@
     </div>
 </div>
 
-{{-- STATISTICS CARDS - 2 KOTAK DENGAN TEMA WARNA --}}
+{{-- STAT CARDS --}}
 <div class="row mb-4">
-    {{-- Permohonan Perlu Verifikasi - TEMA BIRU --}}
     <div class="col-md-6 mb-3">
         <div class="stat-card blue-theme">
-            <div class="d-flex justify-content-between align-items-start">
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <p class="stat-label">Permohonan Perlu Verifikasi</p>
                     <h1 class="stat-number">{{ $stats['permohonan_pending'] ?? 0 }}</h1>
                 </div>
                 <div class="icon-box">
-                    <i class="bi bi-envelope-exclamation"></i>
+                    <i class="bi bi-envelope-exclamation text-primary"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Keberatan Perlu Verifikasi - TEMA MERAH SOFT --}}
     <div class="col-md-6 mb-3">
         <div class="stat-card red-theme">
-            <div class="d-flex justify-content-between align-items-start">
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <p class="stat-label">Keberatan Perlu Verifikasi</p>
                     <h1 class="stat-number">{{ $stats['keberatan_pending'] ?? 0 }}</h1>
                 </div>
                 <div class="icon-box">
-                    <i class="bi bi-exclamation-octagon"></i>
+                    <i class="bi bi-exclamation-octagon text-danger"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- RECENT DATA --}}
+{{-- TABLES --}}
 <div class="row">
-    {{-- Permohonan Terbaru --}}
-    <div class="col-md-6 mb-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-clock-history me-2 text-primary"></i>Permohonan Terbaru
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-nowrap" width="35%">No. Registrasi</th>
-                                <th class="text-nowrap" width="22%">Nama</th>
-                                <th class="text-nowrap" width="23%">Status</th>
-                                <th class="text-nowrap" width="20%">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($permohonanTerbaru as $item)
-                            <tr>
-                                <td class="text-nowrap">
-                                    <a href="{{ route('admin.permohonan.show', $item) }}" class="fw-bold text-decoration-none small">
-                                        {{ $item->nomor_registrasi }}
-                                    </a>
-                                </td>
-                                <td>{{ Str::limit($item->nama, 12) }}</td>
-                                <td>
-                                    @if($item->status === 'perlu_verifikasi')
-                                        <span class="badge bg-warning text-dark">Verifikasi</span>
-                                    @elseif($item->status === 'diproses')
-                                        <span class="badge bg-info text-white">Diproses</span>
-                                    @elseif(str_contains($item->status, 'dikabulkan'))
-                                        <span class="badge bg-success">Dikabulkan</span>
-                                    @elseif($item->status === 'ditolak')
-                                        <span class="badge bg-danger">Ditolak</span>
-                                    @else
-                                        <span class="badge bg-secondary">{{ $item->status }}</span>
-                                    @endif
-                                </td>
-                                <td class="text-nowrap"><small class="text-muted">{{ $item->created_at->format('d/m/y') }}</small></td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Belum ada permohonan masuk</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-grid mt-3">
-                    <a href="{{ route('admin.permohonan.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- Keberatan Terbaru --}}
-    <div class="col-md-6 mb-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Keberatan Terbaru
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="min-width: 180px;">No. Registrasi</th>
-                                <th style="min-width: 100px;">Nama</th>
-                                <th style="min-width: 100px;">Status</th>
-                                <th style="min-width: 90px;">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($keberatanTerbaru as $item)
-                            <tr>
-                                <td><span class="fw-bold">{{ $item->nomor_registrasi }}</span></td>
-                                <td>{{ Str::limit($item->nama_pemohon ?? '-', 15) }}</td>
-                                <td>
-                                    @if($item->status === 'pending')
-                                        <span class="badge bg-warning text-dark">Perlu Verifikasi</span>
-                                    @elseif($item->status === 'diproses')
-                                        <span class="badge bg-info text-white">Diproses</span>
-                                    @elseif($item->status === 'selesai')
-                                        <span class="badge bg-success">Selesai</span>
-                                    @else
-                                        <span class="badge bg-secondary">{{ $item->status }}</span>
-                                    @endif
-                                </td>
-                                <td><small class="text-muted text-nowrap">{{ $item->created_at->format('d/m/y') }}</small></td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Tidak ada keberatan baru</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-grid mt-3">
-                    <a href="{{ route('admin.keberatan.index') }}" class="btn btn-outline-danger btn-sm">Lihat Semua</a>
-                </div>
-            </div>
-        </div>
-    </div>
+{{-- PERMOHONAN --}}
+<div class="col-md-6 mb-4">
+<div class="card shadow-sm border-0">
+<div class="card-header">
+<h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Permohonan Terbaru</h5>
+</div>
+<div class="card-body">
+
+<table class="table table-hover align-middle">
+<thead>
+<tr>
+<th class="col-reg">No. Registrasi</th>
+<th class="col-name">Nama</th>
+<th class="col-stat">Status</th>
+<th class="col-date">Tanggal</th>
+</tr>
+</thead>
+<tbody>
+@forelse($permohonanTerbaru as $item)
+<tr>
+<td class="col-reg fw-bold">{{ $item->nomor_registrasi }}</td>
+<td class="col-name">{{ Str::limit($item->nama, 12) }}</td>
+<td class="col-stat">
+@if($item->status === 'perlu_verifikasi')
+<span class="badge bg-warning">Perlu Diverifikasi</span>
+@elseif($item->status === 'diproses')
+<span class="badge bg-info">Diproses</span>
+@elseif(str_contains($item->status, 'dikabulkan'))
+<span class="badge bg-success">Dikabulkan</span>
+@elseif($item->status === 'ditolak')
+<span class="badge bg-danger">Ditolak</span>
+@else
+<span class="badge bg-secondary">{{ $item->status }}</span>
+@endif
+</td>
+<td class="col-date">{{ $item->created_at->format('d/m/y') }}</td>
+</tr>
+@empty
+<tr><td colspan="4" class="text-center text-muted py-4">Belum ada permohonan</td></tr>
+@endforelse
+</tbody>
+</table>
+
+<div class="d-grid mt-3">
+<a href="{{ route('admin.permohonan.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
+</div>
+
+</div>
+</div>
+</div>
+
+{{-- KEBERATAN --}}
+<div class="col-md-6 mb-4">
+<div class="card shadow-sm border-0">
+<div class="card-header">
+<h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Keberatan Terbaru</h5>
+</div>
+<div class="card-body">
+
+<table class="table table-hover align-middle">
+<thead>
+<tr>
+<th class="col-reg">No. Registrasi</th>
+<th class="col-name">Nama</th>
+<th class="col-stat">Status</th>
+<th class="col-date">Tanggal</th>
+</tr>
+</thead>
+<tbody>
+@forelse($keberatanTerbaru as $item)
+<tr>
+<td class="col-reg fw-bold">{{ $item->nomor_registrasi }}</td>
+<td class="col-name">{{ Str::limit($item->nama_pemohon ?? '-', 12) }}</td>
+<td class="col-stat">
+@if($item->status === 'pending')
+<span class="badge bg-warning">Perlu Diverifikasi</span>
+@elseif($item->status === 'diproses')
+<span class="badge bg-info">Diproses</span>
+@elseif($item->status === 'selesai')
+<span class="badge bg-success">Selesai</span>
+@else
+<span class="badge bg-secondary">{{ $item->status }}</span>
+@endif
+</td>
+<td class="col-date">{{ $item->created_at->format('d/m/y') }}</td>
+</tr>
+@empty
+<tr><td colspan="4" class="text-center text-muted py-4">Tidak ada keberatan</td></tr>
+@endforelse
+</tbody>
+</table>
+
+<div class="d-grid mt-3">
+<a href="{{ route('admin.keberatan.index') }}" class="btn btn-outline-danger btn-sm">Lihat Semua</a>
+</div>
+
+</div>
+</div>
+</div>
+
 </div>
 
 @endsection

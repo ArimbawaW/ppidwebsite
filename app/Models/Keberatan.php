@@ -71,26 +71,38 @@ class Keberatan extends Model
     const BATAS_WAKTU_HARI_KERJA = 30;
 
     // ========================================
-    // AUTO NUMBERING
+    // AUTO NUMBERING - RANDOM FORMAT
     // ========================================
     /**
-     * Format: KBR-YYYYMMDD-XXXX
-     * Contoh: KBR-20260130-0001
+     * Format: KBR-YYYYMMDD-XXXXXX (Random 6 digit alphanumeric)
+     * Contoh: KBR-20260206-A3F7K9
      */
     public static function generateNomorRegistrasi()
     {
         $tanggal = Carbon::now()->format('Ymd');
+        $maxAttempts = 100;
+        $attempt = 0;
 
-        $last = self::whereDate('created_at', Carbon::today())
-            ->where('nomor_registrasi', 'like', "KBR-{$tanggal}-%")
-            ->orderBy('nomor_registrasi', 'desc')
-            ->first();
+        do {
+            // Generate random 6 character alphanumeric (uppercase)
+            $randomCode = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6));
+            $nomorRegistrasi = 'KBR-' . $tanggal . '-' . $randomCode;
+            
+            // Check if this number already exists
+            $exists = self::where('nomor_registrasi', $nomorRegistrasi)->exists();
+            
+            $attempt++;
+            
+            if ($attempt >= $maxAttempts) {
+                // Fallback: use timestamp-based unique code
+                $randomCode = strtoupper(substr(md5(microtime()), 0, 6));
+                $nomorRegistrasi = 'KBR-' . $tanggal . '-' . $randomCode;
+                break;
+            }
+            
+        } while ($exists);
 
-        $newNumber = $last
-            ? ((int) substr($last->nomor_registrasi, -4)) + 1
-            : 1;
-
-        return 'KBR-' . $tanggal . '-' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        return $nomorRegistrasi;
     }
 
     /**
@@ -191,37 +203,39 @@ class Keberatan extends Model
     // ========================================
     // ACCESSORS
     // ========================================
-    public function getStatusLabelAttribute(): string
+    public function getStatusLabelAttribute()
     {
-        return match($this->status) {
-            'pending'   => 'Menunggu Verifikasi',
+        $labels = [
+            'pending' => 'Menunggu Verifikasi',
             'perlu_verifikasi' => 'Menunggu Verifikasi',
-            'diproses'  => 'Sedang Diproses',
-            'ditunda'   => 'Ditunda',
-            'selesai'   => 'Selesai',
-            'dikabulkan'=> 'Dikabulkan',
-            'ditolak'   => 'Ditolak',
-            default     => 'Unknown',
-        };
+            'diproses' => 'Sedang Diproses',
+            'ditunda' => 'Ditunda',
+            'selesai' => 'Selesai',
+            'dikabulkan' => 'Dikabulkan',
+            'ditolak' => 'Ditolak',
+        ];
+        
+        return isset($labels[$this->status]) ? $labels[$this->status] : 'Unknown';
     }
 
-    public function getStatusLabelAdminAttribute(): string
+    public function getStatusLabelAdminAttribute()
     {
-        return match($this->status) {
-            'pending'   => 'Perlu Diverifikasi',
+        $labels = [
+            'pending' => 'Perlu Diverifikasi',
             'perlu_verifikasi' => 'Perlu Diverifikasi',
-            'diproses'  => 'Sedang Diproses',
-            'ditunda'   => 'Ditunda',
-            'selesai'   => 'Selesai',
-            'dikabulkan'=> 'Dikabulkan',
-            'ditolak'   => 'Ditolak',
-            default     => 'Unknown',
-        };
+            'diproses' => 'Sedang Diproses',
+            'ditunda' => 'Ditunda',
+            'selesai' => 'Selesai',
+            'dikabulkan' => 'Dikabulkan',
+            'ditolak' => 'Ditolak',
+        ];
+        
+        return isset($labels[$this->status]) ? $labels[$this->status] : 'Unknown';
     }
 
-    public function getAlasanKeberatanLabelAttribute(): string
+    public function getAlasanKeberatanLabelAttribute()
     {
-        return match($this->alasan_keberatan) {
+        $labels = [
             'penolakan_pasal_17' => 'Penolakan Pasal 17 UU KIP',
             'tidak_disediakan_berkala' => 'Tidak Disediakan Secara Berkala',
             'tidak_ditanggapi' => 'Tidak Ditanggapi',
@@ -229,8 +243,9 @@ class Keberatan extends Model
             'tidak_dipenuhi' => 'Tidak Dipenuhi',
             'biaya_tidak_wajar' => 'Biaya Tidak Wajar',
             'melebihi_jangka_waktu' => 'Melebihi Jangka Waktu',
-            default => 'Tidak Diketahui',
-        };
+        ];
+        
+        return isset($labels[$this->alasan_keberatan]) ? $labels[$this->alasan_keberatan] : 'Tidak Diketahui';
     }
 
     // ========================================

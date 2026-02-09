@@ -463,11 +463,11 @@
                                     </span>
                                 @elseif(isset($indikator['terlambat']) && $indikator['terlambat'])
                                     <span class="sisa-hari-text text-danger fw-bold">
-                                        +{{ $indikator['hari_keterlambatan'] }}h
+                                        +{{ $indikator['hari_keterlambatan'] }}hari
                                     </span>
                                 @else
                                     <span class="sisa-hari-text">
-                                        Sisa: {{ $indikator['sisa_hari'] }}h
+                                        Sisa: {{ $indikator['sisa_hari'] }}hari
                                     </span>
                                     <div class="mini-progress">
                                         <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 
@@ -561,7 +561,7 @@ $(document).ready(function () {
     const table = $('#permohonanTable').DataTable({
         pageLength: 25,
         responsive: true,
-        order: [[1, 'desc']], 
+        order: [[0, 'asc']], 
         language: {
             search: "",
             searchPlaceholder: "Cari...",

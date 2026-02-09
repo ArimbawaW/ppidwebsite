@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header text-white" style="background-color: #1e7b8f;">
                     <h4 class="mb-0">Login Admin</h4>
                 </div>
                 <div class="card-body">
@@ -34,7 +34,7 @@
                             <label class="form-check-label" for="remember">Ingat saya</label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <button type="submit" class="btn w-100 text-white" style="background-color: #1e7b8f;">Login</button>
                     </form>
                 </div>
             </div>
@@ -42,4 +42,3 @@
     </div>
 </div>
 @endsection
-

@@ -390,119 +390,131 @@
                     </tr>
                 </thead>
                 <tbody>
-                @forelse($keberatan as $index => $item)
-                    @php
-                        $indikator = $item->indikator_waktu;
-                        $statusMap = [
-                            'pending' => 'status-vibrant-warning',
-                            'diproses' => 'status-vibrant-info',
-                            'dikabulkan' => 'status-vibrant-success',
-                            'ditolak' => 'status-vibrant-danger',
-                        ];
-                        $class = $statusMap[$item->status] ?? 'bg-secondary text-white';
-                        
-                        // Label status yang diperbaiki
-                        $statusLabel = match($item->status) {
-                            'pending' => 'PERLU VERIFIKASI',
-                            'diproses' => 'DIPROSES',
-                            'dikabulkan' => 'DIKABULKAN',
-                            'ditolak' => 'DITOLAK',
-                            default => strtoupper($item->status)
-                        };
-                    @endphp
-                    <tr data-indikator="{{ strtolower($indikator['label']) }}">
-                        <td class="text-center text-muted">{{ $index + 1 }}</td>
-                        <td>
-                            <a href="{{ route('admin.keberatan.show', $item) }}" class="registrasi-link">
-                                {{ $item->nomor_registrasi }}
-                            </a>
-                        </td>
-                        
-                        {{-- KOLOM INDIKATOR WAKTU --}}
-                        <td>
-                            <div class="waktu-indikator">
-                                <span class="waktu-badge {{ strtolower($indikator['label']) }}">
-                                    <i class="bi bi-{{ $indikator['icon'] }}"></i>
-                                    {{ $indikator['label'] }}
-                                </span>
-                                
-                                @if($item->tanggal_selesai)
-                                    <span class="sisa-hari-text">
-                                        ✓ {{ $indikator['hari_terpakai'] }} hari
-                                    </span>
-                                @elseif(isset($indikator['terlambat']) && $indikator['terlambat'])
-                                    <span class="sisa-hari-text text-danger fw-bold">
-                                        +{{ $indikator['hari_keterlambatan'] }}hari
-                                    </span>
-                                @else
-                                    <span class="sisa-hari-text">
-                                        Sisa: {{ $indikator['sisa_hari'] }}hari
-                                    </span>
-                                    <div class="mini-progress">
-                                        <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 
-                                             style="width: {{ $indikator['persentase'] }}%"></div>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
+@forelse($keberatan as $index => $item)
+    @php
+        // Ambil indikator waktu
+        $indikator = $item->indikator_waktu;
+        
+        // Tentukan status class dan label
+        $statusMapping = [
+            'pending' => ['class' => 'status-vibrant-warning', 'label' => 'Perlu Verifikasi'],
+            'perlu_verifikasi' => ['class' => 'status-vibrant-warning', 'label' => 'Perlu Verifikasi'],
+            'diproses' => ['class' => 'status-vibrant-info', 'label' => 'Sedang Diproses'],
+            'ditunda' => ['class' => 'status-vibrant-danger', 'label' => 'Ditunda'],
+            'selesai' => ['class' => 'status-vibrant-success', 'label' => 'Selesai'],
+            'dikabulkan' => ['class' => 'status-vibrant-success', 'label' => 'Dikabulkan'],
+            'ditolak' => ['class' => 'status-vibrant-danger', 'label' => 'Ditolak'],
+        ];
+        
+        $statusClass = $statusMapping[$item->status]['class'] ?? 'status-vibrant-warning';
+        $statusLabel = $statusMapping[$item->status]['label'] ?? 'Unknown';
+        
+        // Tentukan icon berdasarkan status
+        $statusIcons = [
+            'pending' => 'exclamation-circle-fill',
+            'perlu_verifikasi' => 'exclamation-circle-fill',
+            'diproses' => 'arrow-repeat',
+            'ditunda' => 'pause-circle-fill',
+            'selesai' => 'check-circle-fill',
+            'dikabulkan' => 'check-circle-fill',
+            'ditolak' => 'x-octagon-fill',
+        ];
+        
+        $statusIcon = $statusIcons[$item->status] ?? 'question-circle-fill';
+    @endphp
+    
+    <tr data-indikator="{{ strtolower($indikator['label']) }}">
+        <td class="text-center text-muted">{{ $index + 1 }}</td>
+        <td>
+            <a href="{{ route('admin.keberatan.show', $item) }}" class="registrasi-link">
+                {{ $item->nomor_registrasi }}
+            </a>
+        </td>
 
-                        <td>
-                            <span class="badge-soft-primary small">
-                                {{ $item->permohonan ? $item->permohonan->nomor_registrasi : '-' }}
-                            </span>
-                        </td>
+        <td>
+            <div class="waktu-indikator">
+                <span class="waktu-badge {{ strtolower($indikator['label']) }}">
+                    <i class="bi bi-{{ $indikator['icon'] }}"></i>
+                    {{ $indikator['label'] }}
+                </span>
 
-                        <td>
-                            <div class="identitas-cell">
-                                <div class="fw-bold text-dark">{{ $item->nama_pemohon }}</div>
-                                <div class="small text-muted text-truncate" style="max-width: 160px;">
-                                    <i class="bi bi-envelope me-1"></i>{{ $item->email }}
-                                </div>
-                            </div>
-                        </td>
+                @if($item->tanggal_selesai)
+                    <span class="sisa-hari-text">
+                        ✓ {{ $indikator['hari_terpakai'] }} hari
+                    </span>
+                @elseif(isset($indikator['terlambat']) && $indikator['terlambat'])
+                    <span class="sisa-hari-text text-danger fw-bold">
+                        +{{ $indikator['hari_keterlambatan'] }} hari
+                    </span>
+                @else
+                    <span class="sisa-hari-text">
+                        Sisa: {{ $indikator['sisa_hari'] }} hari
+                    </span>
+                    <div class="mini-progress">
+                        <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 
+                             style="width: {{ $indikator['persentase'] }}%"></div>
+                    </div>
+                @endif
+            </div>
+        </td>
 
-                        <td>
-                            <div class="wrap-text" title="{{ $item->alasan_keberatan }}">
-                                {{ $item->alasan_keberatan }}
-                            </div>
-                        </td>
+        <td>
+            <span class="badge-soft-primary small">
+                {{ $item->permohonan ? $item->permohonan->nomor_registrasi : '-' }}
+            </span>
+        </td>
 
-                        <td class="text-center">
-                            <span class="badge status-badge {{ $class }}">
-                                <i class="bi bi-{{ $item->status === 'pending' ? 'exclamation-circle-fill' : ($item->status === 'diproses' ? 'arrow-repeat' : ($item->status === 'dikabulkan' ? 'check-circle-fill' : 'x-octagon-fill')) }} me-1"></i>
-                                {{ $statusLabel }}
-                            </span>
-                        </td>
+        <td>
+            <div class="identitas-cell">
+                <div class="fw-bold text-dark">{{ $item->nama_pemohon }}</div>
+                <div class="small text-muted text-truncate" style="max-width: 160px;">
+                    <i class="bi bi-envelope me-1"></i>{{ $item->email }}
+                </div>
+            </div>
+        </td>
 
-                        <td>
-                            <div class="date-cell">
-                                <div class="fw-bold">{{ $item->created_at?->format('d/m/Y') ?? '-' }}</div>
-                                <div class="text-muted small">{{ $item->created_at?->format('H:i') ?? '' }}</div>
-                            </div>
-                        </td>
+        <td>
+            <div class="wrap-text" title="{{ $item->alasan_keberatan_label }}">
+                {{ $item->alasan_keberatan_label }}
+            </div>
+        </td>
 
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-1">
-                                <a href="{{ route('admin.keberatan.show', $item) }}" class="btn btn-sm btn-info btn-action" title="Detail">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <button type="button" class="btn btn-sm btn-danger btn-action" onclick="confirmDelete({{ $item->id }})" title="Hapus">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                            <form id="delete-form-{{ $item->id }}" action="{{ route('admin.keberatan.destroy', $item) }}" method="POST" class="d-none">
-                                @csrf @method('DELETE')
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="9" class="text-center py-4">
-                            <i class="bi bi-inbox fs-1 text-muted"></i>
-                            <p class="text-muted mt-2 mb-0">Tidak ada data keberatan</p>
-                        </td>
-                    </tr>
-                @endforelse
+        <td class="text-center">
+            <span class="badge status-badge {{ $statusClass }}">
+                <i class="bi bi-{{ $statusIcon }} me-1"></i>
+                {{ $statusLabel }}
+            </span>
+        </td>
+
+        <td>
+            <div class="date-cell">
+                <div class="fw-bold">{{ $item->created_at?->format('d/m/Y') ?? '-' }}</div>
+                <div class="text-muted small">{{ $item->created_at?->format('H:i') ?? '' }}</div>
+            </div>
+        </td>
+
+        <td class="text-center">
+            <div class="d-flex justify-content-center gap-1">
+                <a href="{{ route('admin.keberatan.show', $item) }}" class="btn btn-sm btn-info btn-action">
+                    <i class="bi bi-eye"></i>
+                </a>
+                <button type="button" class="btn btn-sm btn-danger btn-action" onclick="confirmDelete({{ $item->id }})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <form id="delete-form-{{ $item->id }}" action="{{ route('admin.keberatan.destroy', $item) }}" method="POST" class="d-none">
+                @csrf @method('DELETE')
+            </form>
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="9" class="text-center text-muted py-4">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            <p class="mb-0">Belum ada data keberatan</p>
+        </td>
+    </tr>
+@endforelse
                 </tbody>
             </table>
         </div>
@@ -515,7 +527,7 @@
 $(document).ready(function () {
     $('#keberatanTable').DataTable({
         pageLength: 25,
-        responsive: true,
+        responsive: false,
         order: [[0, 'asc']], 
         language: {
             processing: "Memproses...",
@@ -527,7 +539,7 @@ $(document).ready(function () {
             infoFiltered: "(dari _MAX_ total)",
             loadingRecords: "Memuat data...",
             zeroRecords: "Tidak ada data",
-            emptyTable: "Tidak ada data tersedia",
+            emptyTable: "Tidak ada data keberatan",
             paginate: {
                 first: "‹‹",
                 previous: "‹",

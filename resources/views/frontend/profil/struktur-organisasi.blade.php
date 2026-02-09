@@ -12,12 +12,33 @@
             <img 
                 src="{{ asset('images/struktur2.png') }}" 
                 alt="Tugas dan Fungsi PPID"
-                class="img-fluid mx-auto d-block"
-                style="max-width: 700px;"
+                class="img-fluid mx-auto d-block struktur-img"
             >
 
         </div>
     </div>
-
 </div>
+
+<style>
+    .struktur-img {
+        max-width: 100%;
+        height: auto;
+        width: 1200px;
+    }
+    
+    /* Tablet */
+    @media (max-width: 992px) {
+        .struktur-img {
+            width: 100%;
+        }
+    }
+    
+    /* Mobile */
+    @media (max-width: 576px) {
+        .struktur-img {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+</style>
 @endsection

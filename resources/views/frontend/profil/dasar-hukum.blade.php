@@ -8,17 +8,37 @@
     <div class="card shadow-sm border-0">
         <div class="card-body text-center">
 
-            {{-- GAMBAR TUGAS & FUNGSI --}}
+            {{-- GAMBAR MAKLUMAT --}}
             <img 
                 src="{{ asset('images/maklumat.png') }}" 
-                alt="Tugas dan Fungsi PPID"
-                class="img-fluid mx-auto d-block"
-                style="max-width: 700px;"
+                alt="Maklumat Pelayanan PPID"
+                class="img-fluid mx-auto d-block maklumat-img"
             >
 
         </div>
     </div>
-
 </div>
-@endsection
 
+<style>
+    .maklumat-img {
+        max-width: 100%;
+        height: auto;
+        width: 1200px;
+    }
+    
+    /* Tablet */
+    @media (max-width: 992px) {
+        .maklumat-img {
+            width: 100%;
+        }
+    }
+    
+    /* Mobile */
+    @media (max-width: 576px) {
+        .maklumat-img {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+</style>
+@endsection

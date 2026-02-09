@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class Permohonan extends Model
 {
@@ -54,6 +55,22 @@ class Permohonan extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted()
+{
+    static::creating(function ($model) {
+        if (empty($model->nomor_registrasi)) {
+
+            do {
+                $prefix = 'PMH-' . now()->format('Ymd'); 
+                $random = strtoupper(Str::random(6)); // A-Z0-9
+                $nomor = $prefix . '-' . $random;
+            } while (self::where('nomor_registrasi', $nomor)->exists());
+
+            $model->nomor_registrasi = $nomor;
+        }
+    });
+}
 
     // ========================================
     // WAKTU & INDIKATOR METHODS
@@ -260,12 +277,13 @@ class Permohonan extends Model
      */
     public function getKategoriLabelAttribute()
     {
-        return match($this->kategori_pemohon) {
+        $labels = [
             'perorangan' => 'Perorangan',
             'kelompok' => 'Kelompok Orang',
             'badan_hukum' => 'Badan Hukum',
-            default => $this->kategori_pemohon,
-        };
+        ];
+        
+        return isset($labels[$this->kategori_pemohon]) ? $labels[$this->kategori_pemohon] : $this->kategori_pemohon;
     }
 
     /**
@@ -273,13 +291,14 @@ class Permohonan extends Model
      */
     public function getKategoriInformasiLabelAttribute()
     {
-        return match($this->kategori_informasi) {
+        $labels = [
             'informasi_berkala' => 'Informasi Berkala',
             'informasi_setiap_saat' => 'Informasi Setiap Saat',
             'informasi_serta_merta' => 'Informasi Serta Merta',
             'informasi_dikecualikan' => 'Informasi Dikecualikan',
-            default => '-',
-        };
+        ];
+        
+        return isset($labels[$this->kategori_informasi]) ? $labels[$this->kategori_informasi] : '-';
     }
 
     /**
@@ -308,7 +327,7 @@ class Permohonan extends Model
             return 'Lain-lain: ' . $this->jenis_permohonan_lainnya;
         }
 
-        return $labels[$this->jenis_permohonan_informasi] ?? '-';
+        return isset($labels[$this->jenis_permohonan_informasi]) ? $labels[$this->jenis_permohonan_informasi] : '-';
     }
 
     /**
@@ -316,13 +335,14 @@ class Permohonan extends Model
      */
     public function getStatusInformasiLabelAttribute()
     {
-        return match($this->status_informasi) {
+        $labels = [
             'ya' => 'Ya',
             'dibawah_penguasaan' => 'Di Bawah Penguasaan',
             'tidak_dibawah_penguasaan' => 'Tidak Di Bawah Penguasaan',
             'belum_didokumentasikan' => 'Belum Didokumentasikan',
-            default => '-',
-        };
+        ];
+        
+        return isset($labels[$this->status_informasi]) ? $labels[$this->status_informasi] : '-';
     }
 
     /**
@@ -330,12 +350,13 @@ class Permohonan extends Model
      */
     public function getBentukInformasiLabelAttribute()
     {
-        return match($this->bentuk_informasi) {
+        $labels = [
             'softcopy' => 'Softcopy',
             'hardcopy' => 'Hardcopy',
             'softcopy_hardcopy' => 'Softcopy & Hardcopy',
-            default => '-',
-        };
+        ];
+        
+        return isset($labels[$this->bentuk_informasi]) ? $labels[$this->bentuk_informasi] : '-';
     }
 
     /**
@@ -343,12 +364,13 @@ class Permohonan extends Model
      */
     public function getJenisPermintaanLabelAttribute()
     {
-        return match($this->jenis_permintaan) {
+        $labels = [
             'melihat_mengetahui' => 'Melihat/Mengetahui',
             'meminta_salinan' => 'Meminta Salinan',
             'melihat_dan_salinan' => 'Melihat/Mengetahui & Meminta Salinan',
-            default => '-',
-        };
+        ];
+        
+        return isset($labels[$this->jenis_permintaan]) ? $labels[$this->jenis_permintaan] : '-';
     }
 
     /**
@@ -356,15 +378,16 @@ class Permohonan extends Model
      */
     public function getStatusColorAttribute()
     {
-        return match($this->status) {
+        $colors = [
             'perlu_verifikasi' => 'warning',
             'diproses' => 'info',
             'ditunda' => 'secondary',
             'dikabulkan_seluruhnya' => 'success',
             'dikabulkan_sebagian' => 'success',
             'ditolak' => 'danger',
-            default => 'secondary',
-        };
+        ];
+        
+        return isset($colors[$this->status]) ? $colors[$this->status] : 'secondary';
     }
 
     /**
@@ -372,15 +395,16 @@ class Permohonan extends Model
      */
     public function getStatusLabelAttribute()
     {
-        return match($this->status) {
+        $labels = [
             'perlu_verifikasi' => 'Perlu Verifikasi',
             'diproses' => 'Sedang Diproses',
             'ditunda' => 'Ditunda',
             'dikabulkan_seluruhnya' => 'Dikabulkan Seluruhnya',
             'dikabulkan_sebagian' => 'Dikabulkan Sebagian',
             'ditolak' => 'Ditolak',
-            default => 'Unknown',
-        };
+        ];
+        
+        return isset($labels[$this->status]) ? $labels[$this->status] : 'Unknown';
     }
 
     /**
@@ -388,15 +412,16 @@ class Permohonan extends Model
      */
     public function getStatusLabelPublicAttribute()
     {
-        return match($this->status) {
+        $labels = [
             'perlu_verifikasi' => 'Menunggu Verifikasi',
             'diproses' => 'Sedang Diproses',
             'ditunda' => 'Ditunda',
             'dikabulkan_seluruhnya' => 'Disetujui',
             'dikabulkan_sebagian' => 'Disetujui',
             'ditolak' => 'Ditolak',
-            default => 'Unknown',
-        };
+        ];
+        
+        return isset($labels[$this->status]) ? $labels[$this->status] : 'Unknown';
     }
 
     /**
@@ -465,7 +490,7 @@ class Permohonan extends Model
     /**
      * Cek apakah ada keberatan yang masih aktif (pending atau diproses)
      */
-    public function hasActiveKeberatan(): bool
+    public function hasActiveKeberatan()
     {
         return $this->keberatan()
             ->whereIn('status', ['pending', 'diproses'])
