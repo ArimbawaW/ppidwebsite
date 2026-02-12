@@ -119,7 +119,7 @@
                                     <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
                                     <div>
                                         <h6 class="fw-bold mb-1">Kontak</h6>
-                                        <p class="mb-0 text-muted">ppid@pu.go.id</p>
+                                        <p class="mb-0 text-muted">ppid@pkp.go.id</p>
                                     </div>
                                 </div>
                             </div>

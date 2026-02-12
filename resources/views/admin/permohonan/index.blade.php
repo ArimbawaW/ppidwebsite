@@ -42,18 +42,17 @@
 
     /* Compact Status Badge */
     .status-badge {
-        font-size: 0.58rem !important;
-        padding: 0.3em 0.6em !important;
-        border-radius: 50rem !important;
-        letter-spacing: 0.02em;
-        min-width: 85px;
-        max-width: 120px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        white-space: nowrap;
-    }
+    font-size: 0.6rem !important;
+    padding: 0.3em 0.65em !important;
+    border-radius: 999px !important;
+    letter-spacing: 0.03em;
+    display: inline-block;
+    font-weight: 700;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+    max-width: 160px;   /* optional */
+}
 
     /* Compact Detail Tags */
     .detail-tags {
@@ -168,13 +167,14 @@
     }
 
     /* Warna Indikator */
-    .waktu-badge.aman {
+    .waktu-badge.on.schedule,
+    .waktu-badge.on-schedule {
         background-color: #d1fae5;
         color: #065f46;
         border: 1px solid #a7f3d0;
     }
 
-    .waktu-badge.perhatian {
+    .waktu-badge.attention {
         background-color: #fef3c7;
         color: #92400e;
         border: 1px solid #fde68a;
@@ -194,9 +194,7 @@
     }
 
     .waktu-badge.selesai {
-    
         color: #065f46;
-       
     }
 
     @keyframes pulse-red {
@@ -225,9 +223,18 @@
         transition: width 0.3s ease;
     }
 
-    .mini-progress-bar.aman { background-color: #10b981; }
-    .mini-progress-bar.perhatian { background-color: #f59e0b; }
-    .mini-progress-bar.urgent { background-color: #ef4444; }
+   .mini-progress-bar.on.schedule,
+    .mini-progress-bar.on-schedule { 
+        background-color: #10b981; 
+    }
+    
+    .mini-progress-bar.attention { 
+        background-color: #f59e0b; 
+    }
+    
+    .mini-progress-bar.urgent { 
+        background-color: #ef4444; 
+    }
 
     /* Compact Filter Stats */
     .filter-stats {
@@ -252,7 +259,7 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    .stat-card.aman {
+     .stat-card.aman {
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         color: #065f46;
     }
@@ -366,21 +373,20 @@
     </a>
 </div>
 
-{{-- Statistik Indikator Waktu - HITUNG DARI PHP (SELESAI TIDAK MASUK AMAN) --}}
 @php
-    $countAman = 0;
-    $countPerhatian = 0;
+    $countOnSchedule = 0;
+    $countAttention = 0;
     $countUrgent = 0;
     
     foreach($permohonan as $item) {
         $indikator = $item->indikator_waktu;
         $label = strtolower($indikator['label']);
         
-        // PENTING: Selesai TIDAK dihitung sebagai Aman
-        if ($label === 'aman') {
-            $countAman++;
-        } elseif ($label === 'perhatian') {
-            $countPerhatian++;
+        // PENTING: Selesai TIDAK dihitung sebagai On Schedule
+        if ($label === 'on schedule') {
+            $countOnSchedule++;
+        } elseif ($label === 'attention') {
+            $countAttention++;
         } elseif ($label === 'urgent' || $label === 'terlambat') {
             $countUrgent++;
         }
@@ -389,13 +395,13 @@
 @endphp
 
 <div class="filter-stats">
-    <div class="stat-card aman" onclick="filterByIndikator('aman')">
-        <h3>{{ $countAman }}</h3>
-        <p><i class="bi bi-check-circle"></i> Aman (H1-H5)</p>
+    <div class="stat-card aman" onclick="filterByIndikator('on schedule')">
+        <h3>{{ $countOnSchedule }}</h3>
+        <p><i class="bi bi-check-circle"></i> On Schedule (H1-H5)</p>
     </div>
-    <div class="stat-card perhatian" onclick="filterByIndikator('perhatian')">
-        <h3>{{ $countPerhatian }}</h3>
-        <p><i class="bi bi-exclamation-triangle"></i> Perhatian (H6-H8)</p>
+    <div class="stat-card perhatian" onclick="filterByIndikator('attention')">
+        <h3>{{ $countAttention }}</h3>
+        <p><i class="bi bi-exclamation-triangle"></i> Attention (H6-H8)</p>
     </div>
     <div class="stat-card urgent" onclick="filterByIndikator('urgent')">
         <h3>{{ $countUrgent }}</h3>
@@ -590,11 +596,11 @@ $(document).ready(function () {
 function filterByIndikator(tipe) {
     const table = $('#permohonanTable').DataTable();
     
-    // PENTING: Filter hanya untuk yang belum selesai
-    if (tipe === 'aman') {
-        table.column(2).search('^aman$', true, false).draw(); // Hanya "aman", tidak termasuk "selesai"
-    } else if (tipe === 'perhatian') {
-        table.column(2).search('perhatian', true, false).draw();
+    // PENTING: Filter hanya untuk yang belum selesai - UPDATED LABELS
+    if (tipe === 'on schedule') {
+        table.column(2).search('^on schedule$', true, false).draw(); // Hanya "on schedule", tidak termasuk "selesai"
+    } else if (tipe === 'attention') {
+        table.column(2).search('attention', true, false).draw();
     } else if (tipe === 'urgent') {
         table.column(2).search('urgent|terlambat', true, false).draw();
     }

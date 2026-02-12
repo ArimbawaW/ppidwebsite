@@ -135,7 +135,7 @@ class PermohonanController extends Controller
             $pemohonContent = $this->generateEmailTemplatePemohon($permohonan);
             $mailer->send(
                 $permohonan->email, 
-                'Konfirmasi Penerimaan Permohonan Informasi Publik - PPID Kementerian PUPR', 
+                'Konfirmasi Penerimaan Permohonan Informasi Publik - PPID Kementerian PKP', 
                 $pemohonContent
             );
 
@@ -216,7 +216,7 @@ class PermohonanController extends Controller
         $template .= "Link Detail: " . route('admin.permohonan.show', $permohonan->id) . "\n";
         $template .= "----------------------------------------\n\n";
         $template .= "Harap segera melakukan verifikasi dan tindak lanjut.\n\n";
-        $template .= "Sistem PPID Kementerian PUPR\n";
+        $template .= "Sistem PPID Kementerian PKP\n";
 
         return $template;
     }

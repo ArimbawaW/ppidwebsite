@@ -827,25 +827,25 @@
                         </div>
                         
                         @if(!$permohonan->tanggal_selesai)
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="alert alert-{{ $indikator['warna'] }} mb-0 py-2">
-                                    <small>
-                                        <i class="fas fa-info-circle"></i>
-                                        @if($indikator['label'] === 'Aman')
-                                            Permohonan masih dalam batas waktu normal. Proses sesuai prioritas.
-                                        @elseif($indikator['label'] === 'Perhatian')
-                                            <strong>Perhatian!</strong> Waktu pemrosesan mendekati deadline. Harap segera ditindaklanjuti.
-                                        @elseif($indikator['label'] === 'Urgent')
-                                            <strong>URGENT!</strong> Permohonan ini harus segera diselesaikan! Tinggal {{ $indikator['sisa_hari'] }} hari kerja lagi.
-                                        @else
-                                            <strong>TERLAMBAT!</strong> Permohonan ini telah melewati batas waktu {{ \App\Models\Permohonan::BATAS_WAKTU_HARI_KERJA }} hari kerja.
-                                        @endif
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="alert alert-{{ $indikator['warna'] }} mb-0 py-2">
+            <small>
+                <i class="fas fa-info-circle"></i>
+                @if($indikator['label'] === 'On Schedule')
+                    Permohonan masih dalam batas waktu normal. Proses sesuai prioritas.
+                @elseif($indikator['label'] === 'Attention')
+                    <strong>Attention!</strong> Waktu pemrosesan mendekati deadline. Harap segera ditindaklanjuti.
+                @elseif($indikator['label'] === 'Urgent')
+                    <strong>URGENT!</strong> Permohonan ini harus segera diselesaikan! Tinggal {{ $indikator['sisa_hari'] }} hari kerja lagi.
+                @else
+                    <strong>TERLAMBAT!</strong> Permohonan ini telah melewati batas waktu {{ \App\Models\Permohonan::BATAS_WAKTU_HARI_KERJA }} hari kerja.
+                @endif
+            </small>
+        </div>
+    </div>
+</div>
+@endif
                     </div>
                 </div>
             </div>

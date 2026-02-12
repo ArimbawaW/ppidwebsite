@@ -82,6 +82,10 @@
         </div>
 
     </div>
+
+    <!-- Section Berita Terbaru -->
+    <x-news-section :beritaTerbaru="$beritaTerbaru ?? collect()" />
+
 </div>
 
 @push('styles')

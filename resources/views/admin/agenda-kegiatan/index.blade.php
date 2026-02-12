@@ -30,6 +30,7 @@
 .btn-group-action {
     display: inline-flex;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .btn-group-action .btn {
@@ -41,15 +42,27 @@
     font-size: 0.875rem;
 }
 
-/* Responsive button sizing */
+/* Table Responsive Enhancement */
 @media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-responsive table {
+        margin-bottom: 0;
+    }
+    
     .btn-group-action {
-        flex-direction: column;
+        flex-direction: row;
         gap: 4px;
+        flex-wrap: nowrap;
     }
     
     .btn-group-action .btn {
-        width: 100%;
+        padding: 0.25rem 0.5rem;
     }
 }
 </style>
@@ -71,7 +84,7 @@
 
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show">
-    {{ session('success') }}
+    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 @endif
@@ -87,8 +100,8 @@
 
     <div class="card-body">
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+        <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-hover align-middle" style="min-width: 800px;">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
@@ -104,23 +117,40 @@
                     @forelse($agenda as $index => $item)
                     <tr>
                         <td>{{ $agenda->firstItem() + $index }}</td>
-                        <td>{{ $item->tanggal_format }}</td>
+                        <td style="white-space: nowrap;">
+                            <i class="bi bi-calendar3 me-1 text-primary"></i>
+                            {{ $item->tanggal_format }}
+                        </td>
                         <td><strong>{{ $item->judul }}</strong></td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             @if($item->waktu_mulai)
+                                <i class="bi bi-clock me-1 text-muted"></i>
                                 {{ date('H:i', strtotime($item->waktu_mulai)) }} WIB
                             @else
-                                -
+                                <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td>{{ $item->lokasi ?? '-' }}</td>
                         <td>
-                            @if($item->status === 'upcoming')
-                                <span class="badge status-upcoming">Akan Datang</span>
-                            @elseif($item->status === 'ongoing')
-                                <span class="badge status-ongoing">Berlangsung</span>
+                            @if($item->lokasi)
+                                <i class="bi bi-geo-alt me-1 text-danger"></i>
+                                {{ Str::limit($item->lokasi, 30) }}
                             @else
-                                <span class="badge status-selesai-agenda">Selesai</span>
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td style="white-space: nowrap;">
+                            @if($item->status === 'upcoming')
+                                <span class="badge status-upcoming">
+                                    <i class="bi bi-clock-history me-1"></i>Akan Datang
+                                </span>
+                            @elseif($item->status === 'ongoing')
+                                <span class="badge status-ongoing">
+                                    <i class="bi bi-hourglass-split me-1"></i>Berlangsung
+                                </span>
+                            @else
+                                <span class="badge status-selesai-agenda">
+                                    <i class="bi bi-check-circle me-1"></i>Selesai
+                                </span>
                             @endif
                         </td>
                         <td>
@@ -154,9 +184,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">
-                            <i class="bi bi-calendar-x fs-3 d-block mb-2"></i>
-                            Belum ada agenda kegiatan
+                        <td colspan="7" class="text-center py-5">
+                            <i class="bi bi-calendar-x fs-1 text-muted d-block mb-3"></i>
+                            <p class="text-muted mb-3">Belum ada agenda kegiatan</p>
+                            <a href="{{ route('admin.agenda-kegiatan.create') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i> Tambah Agenda Pertama
+                            </a>
                         </td>
                     </tr>
                     @endforelse
@@ -165,7 +198,11 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-end mt-4">
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+            <p class="text-muted mb-2 mb-md-0">
+                Menampilkan {{ $agenda->firstItem() ?? 0 }}–{{ $agenda->lastItem() ?? 0 }}
+                dari {{ $agenda->total() }} data
+            </p>
             {{ $agenda->links() }}
         </div>
 

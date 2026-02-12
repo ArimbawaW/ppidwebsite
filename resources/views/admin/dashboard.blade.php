@@ -79,7 +79,7 @@
    CARD HEADER (FORCE SAME HEADER)
    ========================================================= */
 .card-header {
-    background: #0b4f6c !important;
+    background: #1A6B8A !important;
     color: #ffffff !important;
     border-bottom: none !important;
     border-radius: 12px 12px 0 0 !important;
@@ -169,6 +169,141 @@
 .text-nowrap {
     white-space: nowrap !important;
 }
+
+@media (max-width: 768px) {
+
+    :root{
+        --ppid-blue:#1A6B8A;
+        --ppid-blue-dark:#13556e;
+        --ppid-blue-soft:#e7f2f6;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px;
+        border-left: 4px solid var(--ppid-blue);
+        padding-left: 10px;
+    }
+
+    .page-header h2 {
+        font-size: 1.2rem;
+        color: var(--ppid-blue);
+        font-weight: 700;
+    }
+
+    .page-header p {
+        font-size: 0.8rem;
+        color: var(--ppid-blue-dark);
+    }
+
+    /* STAT CARDS */
+    .stat-card {
+        padding: 1rem !important;
+        border-left: 4px solid var(--ppid-blue);
+    }
+
+    .stat-number {
+        font-size: 2rem !important;
+        color: var(--ppid-blue);
+        font-weight: 700;
+    }
+
+    .icon-box {
+        padding: 10px !important;
+        background: var(--ppid-blue-soft);
+        border-radius: 8px;
+    }
+
+    .icon-box i {
+        font-size: 26px !important;
+        color: var(--ppid-blue);
+    }
+
+    /* TABLE CONTAINER */
+    .card-body {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* TABLE STRUCTURE (KEEP PC MODEL) */
+    .table {
+        table-layout: fixed !important;
+        width: 100% !important;
+        min-width: 620px;
+        font-size: 0.65rem !important;
+    }
+
+    /* HEADERS */
+    .table thead th {
+        font-size: 0.6rem !important;
+        padding: 6px 6px !important;
+        white-space: nowrap !important;
+        background: var(--ppid-blue);
+        color: #fff;
+        border-bottom: 2px solid var(--ppid-blue-dark);
+    }
+
+    /* CELLS */
+    .table td {
+        padding: 6px 6px !important;
+        font-size: 0.65rem !important;
+        white-space: nowrap !important;
+        color: var(--ppid-blue-dark);
+    }
+
+    /* FORCE COLUMN MODEL SAME AS PC */
+    .col-reg   { width: 35% !important; }
+    .col-name  { width: 22% !important; }
+    .col-stat  { width: 23% !important; text-align: center !important; }
+    .col-date  { width: 20% !important; text-align: center !important; }
+
+    /* TEXT CUT CLEAN */
+    .col-reg,
+    .col-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* BADGES */
+    .badge {
+        font-size: 0.6rem !important;
+        padding: 0.35em 0.6em !important;
+        border-radius: 6px !important;
+        white-space: nowrap;
+        background: var(--ppid-blue);
+        color: #fff;
+    }
+
+    /* BUTTONS */
+    .btn {
+        font-size: 0.7rem !important;
+        padding: 6px 10px !important;
+        background: var(--ppid-blue);
+        border: none;
+        color: #fff;
+    }
+
+    .btn:hover{
+        background: var(--ppid-blue-dark);
+        color:#fff;
+    }
+
+    /* CARD HEADER */
+    .card-header {
+        background: var(--ppid-blue);
+        border-bottom: 2px solid var(--ppid-blue-dark);
+    }
+
+    .card-header h5 {
+        font-size: 0.9rem !important;
+        color: #fff;
+        font-weight: 600;
+    }
+
+}
+
 </style>
 @endpush
 

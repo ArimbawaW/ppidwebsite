@@ -2,7 +2,7 @@
 
 @section('title', 'Kelola Halaman Statis')
 
-@section('styles')
+@push('styles')
 <style>
 .badge.status-aktif-halaman {
     background-color: #28a745 !important;
@@ -22,6 +22,7 @@
 .btn-group-action {
     display: inline-flex;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .btn-group-action .btn {
@@ -33,19 +34,39 @@
     font-size: 0.875rem;
 }
 
-/* Responsive button sizing */
+/* Slug styling */
+code.text-primary {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #e7f3ff;
+    border-radius: 0.25rem;
+}
+
+/* Table Responsive Enhancement */
 @media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-responsive table {
+        margin-bottom: 0;
+    }
+    
     .btn-group-action {
-        flex-direction: column;
+        flex-direction: row;
         gap: 4px;
+        flex-wrap: nowrap;
     }
     
     .btn-group-action .btn {
-        width: 100%;
+        padding: 0.25rem 0.5rem;
     }
 }
 </style>
-@endsection
+@endpush
 
 @section('content')
 
@@ -79,8 +100,8 @@
 
     <div class="card-body">
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+        <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-hover align-middle" style="min-width: 700px;">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
@@ -95,8 +116,10 @@
                     <tr>
                         <td>{{ $halaman->firstItem() + $index }}</td>
                         <td><strong>{{ $item->judul }}</strong></td>
-                        <td><code class="text-primary">{{ $item->slug }}</code></td>
-                        <td>
+                        <td style="white-space: nowrap;">
+                            <code class="text-primary">{{ $item->slug }}</code>
+                        </td>
+                        <td style="white-space: nowrap;">
                             @if($item->is_active)
                                 <span class="badge status-aktif-halaman">Aktif</span>
                             @else
@@ -157,7 +180,11 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-end mt-4">
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+            <p class="text-muted mb-2 mb-md-0">
+                Menampilkan {{ $halaman->firstItem() ?? 0 }}–{{ $halaman->lastItem() ?? 0 }}
+                dari {{ $halaman->total() }} data
+            </p>
             {{ $halaman->links() }}
         </div>
 

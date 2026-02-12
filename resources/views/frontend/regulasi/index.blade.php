@@ -5,12 +5,12 @@
 @section('content')
 
 <!-- Hero Section -->
-<section class="py-5" style="background: linear-gradient(135deg, #1a6b8a 0%, #003344 100%);">
+<section class="py-5" style="background;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h1 class="text-white fw-bold mb-3">Regulasi</h1>
-                <p class="text-white-50 mb-0 fs-5">
+                <h1 class="text-black fw-bold mb-3">Regulasi</h1>
+                <p class="text-black-50 mb-0 fs-5">
                     Kumpulan peraturan perundang-undangan yang menjadi dasar pelaksanaan PPID
                 </p>
             </div>
@@ -215,30 +215,65 @@
 </section>
 
 <style>
+:root {
+    --main-blue: #1A6B8A;
+}
+
+/* Bootstrap primary */
+.bg-primary,
+.btn-primary,
+.badge.bg-primary,
+.text-primary {
+    background-color: var(--main-blue) !important;
+    color: #fff !important;
+    border-color: var(--main-blue) !important;
+}
+
+/* Outline */
+.btn-outline-primary,
+.btn-outline-info {
+    color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+}
+.btn-outline-primary:hover,
+.btn-outline-info:hover {
+    background-color: var(--main-blue) !important;
+    color: #fff !important;
+}
+
+/* Alert */
+.alert-info {
+    background-color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+    color: #fff !important;
+}
+
+/* Text info */
+.text-info {
+    color: var(--main-blue) !important;
+}
+
+/* Custom title */
+.title-clamp {
+    color: var(--main-blue) !important;
+}
+
+/* Hover card */
 .hover-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .hover-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
 }
 
-/* Highlight search results */
+/* Highlight */
 mark {
     background-color: #ffd700;
     padding: 2px 4px;
     border-radius: 3px;
     font-weight: 600;
 }
-.title-clamp {
-    color: #1a6b8a;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
 </style>
 
 @endsection

@@ -95,7 +95,7 @@
         display: flex;
         flex-direction: column;
         gap: 3px;
-        min-width: 100px;
+        min-width: 110px;
     }
 
     .waktu-badge {
@@ -115,13 +115,13 @@
     }
 
     /* Warna Indikator */
-    .waktu-badge.aman {
+    .waktu-badge.on-schedule {
         background-color: #d1fae5;
         color: #065f46;
         border: 1px solid #a7f3d0;
     }
 
-    .waktu-badge.perhatian {
+    .waktu-badge.attention {
         background-color: #fef3c7;
         color: #92400e;
         border: 1px solid #fde68a;
@@ -172,8 +172,8 @@
         transition: width 0.3s ease;
     }
 
-    .mini-progress-bar.aman { background-color: #10b981; }
-    .mini-progress-bar.perhatian { background-color: #f59e0b; }
+    .mini-progress-bar.on-schedule { background-color: #10b981; }
+    .mini-progress-bar.attention { background-color: #f59e0b; }
     .mini-progress-bar.urgent { background-color: #ef4444; }
 
     /* Compact Filter Stats */
@@ -199,12 +199,12 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    .stat-card.aman {
+    .stat-card.on-schedule {
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         color: #065f46;
     }
 
-    .stat-card.perhatian {
+    .stat-card.attention {
         background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         color: #92400e;
     }
@@ -331,32 +331,34 @@
 
 {{-- Statistik Indikator Waktu Keberatan --}}
 @php
-    $countAman = 0;
-    $countPerhatian = 0;
+    $countOnSchedule = 0;
+    $countAttention = 0;
     $countUrgent = 0;
     
     foreach($keberatan as $item) {
         $indikator = $item->indikator_waktu;
-        $label = strtolower($indikator['label']);
+        $label = strtolower(str_replace(' ', '-', $indikator['label']));
         
-        if ($label === 'aman') {
-            $countAman++;
-        } elseif ($label === 'perhatian') {
-            $countPerhatian++;
+        // PENTING: Selesai TIDAK dihitung sebagai On Schedule
+        if ($label === 'on-schedule') {
+            $countOnSchedule++;
+        } elseif ($label === 'attention') {
+            $countAttention++;
         } elseif ($label === 'urgent' || $label === 'terlambat') {
             $countUrgent++;
         }
+        // 'selesai' tidak masuk ke perhitungan manapun
     }
 @endphp
 
 <div class="filter-stats">
-    <div class="stat-card aman" onclick="filterByIndikator('aman')">
-        <h3>{{ $countAman }}</h3>
-        <p><i class="bi bi-check-circle"></i> Aman (H1-H14)</p>
+    <div class="stat-card on-schedule" onclick="filterByIndikator('on-schedule')">
+        <h3>{{ $countOnSchedule }}</h3>
+        <p><i class="bi bi-check-circle"></i> On Schedule (H1-H14)</p>
     </div>
-    <div class="stat-card perhatian" onclick="filterByIndikator('perhatian')">
-        <h3>{{ $countPerhatian }}</h3>
-        <p><i class="bi bi-exclamation-triangle"></i> Perhatian (H15-H21)</p>
+    <div class="stat-card attention" onclick="filterByIndikator('attention')">
+        <h3>{{ $countAttention }}</h3>
+        <p><i class="bi bi-exclamation-triangle"></i> Attention (H15-H21)</p>
     </div>
     <div class="stat-card urgent" onclick="filterByIndikator('urgent')">
         <h3>{{ $countUrgent }}</h3>
@@ -395,6 +397,9 @@
         // Ambil indikator waktu
         $indikator = $item->indikator_waktu;
         
+        // Konversi label untuk CSS class (replace space dengan dash, lowercase)
+        $labelClass = strtolower(str_replace(' ', '-', $indikator['label']));
+        
         // Tentukan status class dan label
         $statusMapping = [
             'pending' => ['class' => 'status-vibrant-warning', 'label' => 'Perlu Verifikasi'],
@@ -423,7 +428,7 @@
         $statusIcon = $statusIcons[$item->status] ?? 'question-circle-fill';
     @endphp
     
-    <tr data-indikator="{{ strtolower($indikator['label']) }}">
+    <tr data-indikator="{{ $labelClass }}">
         <td class="text-center text-muted">{{ $index + 1 }}</td>
         <td>
             <a href="{{ route('admin.keberatan.show', $item) }}" class="registrasi-link">
@@ -433,7 +438,7 @@
 
         <td>
             <div class="waktu-indikator">
-                <span class="waktu-badge {{ strtolower($indikator['label']) }}">
+                <span class="waktu-badge {{ $labelClass }}">
                     <i class="bi bi-{{ $indikator['icon'] }}"></i>
                     {{ $indikator['label'] }}
                 </span>
@@ -451,7 +456,7 @@
                         Sisa: {{ $indikator['sisa_hari'] }} hari
                     </span>
                     <div class="mini-progress">
-                        <div class="mini-progress-bar {{ strtolower($indikator['label']) }}" 
+                        <div class="mini-progress-bar {{ $labelClass }}" 
                              style="width: {{ $indikator['persentase'] }}%"></div>
                     </div>
                 @endif
@@ -559,10 +564,11 @@ $(document).ready(function () {
 function filterByIndikator(tipe) {
     const table = $('#keberatanTable').DataTable();
     
-    if (tipe === 'aman') {
-        table.column(2).search('^aman$', true, false).draw();
-    } else if (tipe === 'perhatian') {
-        table.column(2).search('perhatian', true, false).draw();
+    // PENTING: Filter hanya untuk yang belum selesai
+    if (tipe === 'on-schedule') {
+        table.column(2).search('^on.schedule$', true, false).draw(); // Hanya "on-schedule", tidak termasuk "selesai"
+    } else if (tipe === 'attention') {
+        table.column(2).search('attention', true, false).draw();
     } else if (tipe === 'urgent') {
         table.column(2).search('urgent|terlambat', true, false).draw();
     }

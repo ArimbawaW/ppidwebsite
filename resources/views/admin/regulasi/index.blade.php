@@ -22,13 +22,83 @@
         gap: 0.25rem;
         border: 1px solid transparent;
     }
+
+    /* Responsive Table Wrapper */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 768px) {
+        .table-responsive {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+        .table {
+            min-width: 800px; /* Ensure table is scrollable on mobile */
+        }
+
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .page-header > div {
+            width: 100%;
+        }
+
+        .page-header .btn {
+            width: 100%;
+        }
+
+        /* Filter Form Mobile */
+        .filter-form .row {
+            margin: 0;
+        }
+
+        .filter-form .col-md-4,
+        .filter-form .col-md-3,
+        .filter-form .col-md-2 {
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Pagination on mobile */
+        .pagination {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    /* Scrollbar styling for better UX */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 </style>
 @endpush
 
 @section('content')
 
 <!-- PAGE HEADER -->
-<div class="page-header">
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2>Kelola Regulasi</h2>
     </div>
@@ -58,7 +128,7 @@
     <div class="card-body">
 
         <!-- FILTER -->
-        <form method="GET" action="{{ route('admin.regulasi.index') }}" class="mb-4">
+        <form method="GET" action="{{ route('admin.regulasi.index') }}" class="mb-4 filter-form">
             <div class="row g-2">
                 <div class="col-md-4">
                     <input type="text"
@@ -71,7 +141,7 @@
                 <div class="col-md-3">
                    <select name="kategori" class="form-select">
                     <option value="">Semua Kategori</option>
-                     @foreach(['Undang-Undang','Peraturan Pemerintah','Peraturan Presiden','Peraturan Menteri','Peraturan Daerah','Keputusan','Lainnya'] as $kat)
+                     @foreach(['Undang-Undang','Peraturan Pemerintah','Peraturan Presiden','Peraturan Menteri','Peraturan Daerah','Surat Edaran','Keputusan','Lainnya'] as $kat)
                     <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>
                  {{ $kat }}
                         </option>
@@ -88,19 +158,28 @@
                 </div>
 
                 <div class="col-md-3">
-                    <button class="btn btn-secondary me-1">
-                        <i class="bi bi-search"></i> Filter
-                    </button>
-                    <a href="{{ route('admin.regulasi.index') }}" class="btn btn-outline-secondary">
-                        Reset
-                    </a>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-secondary flex-fill">
+                            <i class="bi bi-search"></i> Filter
+                        </button>
+                        <a href="{{ route('admin.regulasi.index') }}" class="btn btn-outline-secondary flex-fill">
+                            Reset
+                        </a>
+                    </div>
                 </div>
             </div>
         </form>
 
-        <!-- TABLE -->
+        <!-- TABLE WITH SCROLL INDICATOR -->
+        <div class="mb-2 d-md-none">
+            <small class="text-muted">
+                <i class="bi bi-arrow-left-right me-1"></i>
+                Geser tabel ke kiri/kanan untuk melihat seluruh data
+            </small>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
@@ -125,6 +204,7 @@
                             'Peraturan Presiden' => 'bg-danger',
                             'Peraturan Menteri' => 'bg-info',
                             'Peraturan Daerah' => 'bg-warning',
+                            'Surat Edaran' => 'bg-info',
                             'Keputusan' => 'bg-danger',
                             default => 'bg-secondary'
                             };
@@ -134,7 +214,7 @@
                             </span>
                         </td>
 
-                        <td>{{ $reg->nomor }}</td>
+                        <td>{{ $reg->nomor ?? '-' }}</td>
 
                         <td>{{ Str::limit($reg->judul, 60) }}</td>
 
@@ -145,7 +225,6 @@
                         }}
                         </td>
 
-
                         <td class="text-center">
                             @if($reg->is_active)
                                 <span class="badge bg-success">Aktif</span>
@@ -155,22 +234,25 @@
                         </td>
 
                         <td>
-                            <div class="d-flex gap-1">
+                            <div class="d-flex gap-1 flex-nowrap">
                                 <a href="{{ route('admin.regulasi.edit', $reg) }}"
                                    class="btn-action btn btn-warning"
                                    title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
+                                @if($reg->file)
                                 <a href="{{ asset('storage/' . $reg->file) }}"
                                    target="_blank"
                                    class="btn-action btn btn-info"
                                    title="Lihat File">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @endif
 
                                 <form action="{{ route('admin.regulasi.destroy', $reg) }}"
                                       method="POST"
+                                      class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus regulasi ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -194,13 +276,15 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-3">
             <div class="text-muted">
                 Menampilkan {{ $regulasi->firstItem() ?? 0 }} –
                 {{ $regulasi->lastItem() ?? 0 }}
                 dari {{ $regulasi->total() }} data
             </div>
-            {{ $regulasi->links() }}
+            <div>
+                {{ $regulasi->links() }}
+            </div>
         </div>
 
     </div>

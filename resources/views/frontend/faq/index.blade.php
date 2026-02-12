@@ -5,12 +5,12 @@
 @section('content')
 
 <!-- Hero Section -->
-<section class="py-5" style="background: linear-gradient(135deg, #1a6b8a 0%, #003344 100%);">
+<section class="py-5" style="background:);">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h1 class="text-white fw-bold mb-3">Frequently Asked Questions</h1>
-                <p class="text-white-50 mb-0 fs-5">
+                <h1 class="text-black fw-bold mb-3">Frequently Asked Questions</h1>
+                <p class="text-black-50 mb-0 fs-5">
                     Pertanyaan yang sering diajukan seputar layanan PPID
                 </p>
             </div>
@@ -101,7 +101,7 @@
         <div class="row mt-5">
             <div class="col-lg-10 mx-auto">
                 <div class="card shadow-sm border-0 text-white" 
-                     style="background: linear-gradient(135deg, #1a6b8a 0%, #003344 100%);">
+                        style="background: #1A6B8A;">
                     <div class="card-body text-center p-5">
                         <i class="bi bi-envelope-open fs-1 mb-3"></i>
                         <h3 class="fw-bold mb-3">Tidak Menemukan Jawaban?</h3>

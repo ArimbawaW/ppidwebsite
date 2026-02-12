@@ -78,35 +78,35 @@ class RegulasiController extends Controller
     }
 
     public function update(Request $request, Regulasi $regulasi)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string',
-            'nomor' => 'nullable|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Presiden,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
-            'status' => 'required|in:aktif,tidak_aktif',
-        ]);
+{
+    $validated = $request->validate([
+        'judul' => 'required|string',
+        'nomor' => 'nullable|string|max:100',
+        'deskripsi' => 'nullable|string',
+        'kategori' => 'required|in:Undang-Undang,Peraturan Pemerintah,Peraturan Presiden,Peraturan Menteri,Peraturan Daerah,Surat Edaran,Keputusan,Lainnya',
+        'tanggal_terbit' => 'nullable|date', // ← Ini yang kurang!
+        'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+        'status' => 'required|in:aktif,tidak_aktif',
+    ]);
 
-        if ($request->hasFile('file')) {
-            if ($regulasi->file) {
-                Storage::disk('public')->delete($regulasi->file);
-            }
-            $validated['file'] = $request->file('file')->store('regulasi', 'public');
+    if ($request->hasFile('file')) {
+        if ($regulasi->file) {
+            Storage::disk('public')->delete($regulasi->file);
         }
-
-        // Convert status string ke boolean
-        $validated['is_active'] = ($request->status === 'aktif');
-
-        // Hapus field 'status' karena tidak ada di database
-        unset($validated['status']);
-
-        $regulasi->update($validated);
-
-        return redirect()->route('admin.regulasi.index')
-            ->with('success', 'Regulasi berhasil diperbarui');
+        $validated['file'] = $request->file('file')->store('regulasi', 'public');
     }
 
+    // Convert status string ke boolean
+    $validated['is_active'] = ($request->status === 'aktif');
+
+    // Hapus field 'status' karena tidak ada di database
+    unset($validated['status']);
+
+    $regulasi->update($validated);
+
+    return redirect()->route('admin.regulasi.index')
+        ->with('success', 'Regulasi berhasil diperbarui');
+}
     public function destroy(Regulasi $regulasi)
     {
         if ($regulasi->file) {

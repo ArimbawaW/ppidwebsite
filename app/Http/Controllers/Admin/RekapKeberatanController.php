@@ -94,29 +94,48 @@ class RekapKeberatanController extends Controller
      * Preview
      */
     public function preview(Request $request)
-    {
-        $query = Keberatan::query();
-        
-        if ($request->filled('tanggal_mulai')) {
-            $query->whereDate('created_at', '>=', $request->tanggal_mulai);
-        }
-        
-        if ($request->filled('tanggal_selesai')) {
-            $query->whereDate('created_at', '<=', $request->tanggal_selesai);
-        }
-        
-        if ($request->filled('status') && $request->status != 'semua') {
-            $query->where('status', $request->status);
-        }
-        
-        if ($request->filled('alasan') && $request->alasan != 'semua') {
-            $query->where('alasan_keberatan', $request->alasan);
-        }
-        
-        $keberatan = $query->orderBy('created_at', 'desc')->get();
-        
-        return view('admin.rekap.keberatan.preview', compact('keberatan'));
+{
+    // Normalisasi input (biar konsisten)
+    $validated = [
+        'tanggal_mulai' => $request->input('tanggal_mulai')
+            ?? $request->input('periode_mulai')
+            ?? null,
+
+        'tanggal_akhir' => $request->input('tanggal_selesai')
+            ?? $request->input('periode_selesai')
+            ?? null,
+
+        'status' => $request->input('status'),
+        'alasan' => $request->input('alasan'),
+    ];
+
+    $query = Keberatan::query();
+
+    if ($validated['tanggal_mulai']) {
+        $query->whereDate('created_at', '>=', $validated['tanggal_mulai']);
     }
+
+    if ($validated['tanggal_akhir']) {
+        $query->whereDate('created_at', '<=', $validated['tanggal_akhir']);
+    }
+
+    if ($validated['status'] && $validated['status'] !== 'semua') {
+        $query->where('status', $validated['status']);
+    }
+
+    if ($validated['alasan'] && $validated['alasan'] !== 'semua') {
+        $query->where('alasan_keberatan', $validated['alasan']);
+    }
+
+    $keberatan = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.rekap.keberatan.preview', [
+        'keberatan' => $keberatan,
+        'validated' => $validated, // ✅ STRUKTUR DIJAMIN ADA KEY-NYA
+    ]);
+}
+
+
     
     /**
      * EXPORT EXCEL (FULL DATA)

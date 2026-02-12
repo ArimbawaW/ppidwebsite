@@ -5,7 +5,7 @@
 @section('content')
 
 {{-- ================= HEADER ================= --}}
-<section class="py-5" style="background: linear-gradient(90deg, #0a3568 0%, #1f6fe5 100%); color: white;">
+<section class="py-5" style="background; color: black;">
     <div class="container">
         <h1 class="fw-bold display-6 mb-2">Daftar Informasi Publik (DIP)</h1>
         <p class="fs-5 mb-0">

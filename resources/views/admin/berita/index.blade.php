@@ -23,6 +23,7 @@
 .btn-group-action {
     display: inline-flex;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .btn-group-action .btn {
@@ -53,15 +54,27 @@
     justify-content: center;
 }
 
-/* Responsive button sizing */
+/* Table Responsive Enhancement */
 @media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-responsive table {
+        margin-bottom: 0;
+    }
+    
     .btn-group-action {
-        flex-direction: column;
+        flex-direction: row;
         gap: 4px;
+        flex-wrap: nowrap;
     }
     
     .btn-group-action .btn {
-        width: 100%;
+        padding: 0.25rem 0.5rem;
     }
 }
 </style>
@@ -141,8 +154,8 @@
 
         @if($berita->count())
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+        <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-hover align-middle" style="min-width: 900px;">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
@@ -176,7 +189,7 @@
                             <strong>{{ Str::limit($item->judul, 50) }}</strong>
                         </td>
 
-                        <td>
+                        <td style="white-space: nowrap;">
                             @if($item->kategori === 'berita')
                                 <span class="badge bg-primary">Berita</span>
                             @elseif($item->kategori === 'artikel')
@@ -186,7 +199,7 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td style="white-space: nowrap;">
                             @if($item->is_published)
                                 <span class="badge status-published">Published</span>
                             @else
@@ -194,13 +207,13 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span class="badge bg-light text-dark">
                                 <i class="bi bi-eye me-1"></i>{{ $item->views }}
                             </span>
                         </td>
 
-                        <td>
+                        <td style="white-space: nowrap;">
                             <small class="text-muted">
                                 {{ $item->created_at->format('d M Y') }}
                             </small>
@@ -241,8 +254,8 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <p class="text-muted mb-0">
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+            <p class="text-muted mb-2 mb-md-0">
                 Menampilkan {{ $berita->firstItem() }}–{{ $berita->lastItem() }}
                 dari {{ $berita->total() }} data
             </p>

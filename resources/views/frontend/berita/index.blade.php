@@ -60,3 +60,57 @@
 </div>
 @endsection
 
+<style>
+:root {
+    --main-blue: #1A6B8A;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-sm.btn-primary {
+    background-color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-sm.btn-primary:hover {
+    background-color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+    color: #fff !important;
+    box-shadow: 0 6px 16px rgba(26, 107, 138, 0.35);
+}
+
+/* Alerts */
+.alert-info {
+    background-color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+    color: #fff !important;
+}
+
+/* Text */
+.text-primary,
+.text-info {
+    color: var(--main-blue) !important;
+}
+
+/* Pagination */
+.page-link {
+    color: var(--main-blue) !important;
+}
+.page-item.active .page-link {
+    background-color: var(--main-blue) !important;
+    border-color: var(--main-blue) !important;
+    color: #fff !important;
+}
+
+/* Badges (primary only, secondary tetap netral) */
+.badge.bg-primary {
+    background-color: var(--main-blue) !important;
+}
+
+/* Search button width consistency */
+form .btn {
+    font-weight: 500;
+}
+</style>

@@ -10,11 +10,11 @@
                 ],
                 [
                     'label' => ['Inspektorat Jenderal'],
-                    'url' => 'https://pkp.go.id/'
+                    'url' => 'https://pkp.go.id/unor/inspektorat-jenderal'
                 ],
                 [
                     'label' => ['Direktorat Jenderal', 'Kawasan Permukiman'],
-                    'url' => 'https://pkp.go.id/'
+                    'url' => 'https://pkp.go.id/unor/direktorat-jenderal-kawasan-permukiman'
                 ],
                 [
                     'label' => ['Direktorat Jenderal', 'Perumahan Perdesaan'],
@@ -22,7 +22,7 @@
                 ],
                 [
                     'label' => ['Direktorat Jenderal', 'Perumahan Perkotaan'],
-                    'url' => 'https://pkp.go.id/'
+                    'url' => 'https://pkp.go.id/unor/direktorat-jenderal-perumahan-perkotaan'
                 ],
                 [
                     'label' => ['Direktorat Jenderal', 'Tata Kelola dan', 'Pengendalian Risiko'],

@@ -139,8 +139,8 @@ class Permohonan extends Model
 
     /**
      * Get status warna indikator berdasarkan sisa hari
-     * H1-H5 = Hijau (Aman)
-     * H6-H8 = Kuning (Perhatian)
+     * H1-H5 = Hijau (On Schedule)
+     * H6-H8 = Kuning (Attention)
      * H9-H10 = Merah (Urgent)
      * >H10 = Merah Tua (Terlambat)
      */
@@ -166,7 +166,7 @@ class Permohonan extends Model
         $hariTerpakai = $this->hari_kerja_terpakai;
         $persentase = min(100, ($hariTerpakai / self::BATAS_WAKTU_HARI_KERJA) * 100);
 
-        // H1-H5 (Hari ke-1 sampai ke-5) = HIJAU (Masih aman, sisa 5 hari atau lebih)
+        // H1-H5 (Hari ke-1 sampai ke-5) = HIJAU (On Schedule, sisa 5 hari atau lebih)
         if ($sisaHari >= 5) {
             return [
                 'warna' => 'success',
@@ -174,7 +174,7 @@ class Permohonan extends Model
                 'bg_class' => 'bg-success',
                 'text_class' => 'text-success',
                 'badge_class' => 'badge-success',
-                'label' => 'Aman',
+                'label' => 'On Schedule',
                 'icon' => 'check-circle',
                 'sisa_hari' => $sisaHari,
                 'hari_terpakai' => $hariTerpakai,
@@ -182,7 +182,7 @@ class Permohonan extends Model
             ];
         }
         
-        // H6-H8 (Hari ke-6 sampai ke-8) = KUNING (Perhatian, sisa 2-4 hari)
+        // H6-H8 (Hari ke-6 sampai ke-8) = KUNING (Attention, sisa 2-4 hari)
         if ($sisaHari >= 2 && $sisaHari <= 4) {
             return [
                 'warna' => 'warning',
@@ -190,7 +190,7 @@ class Permohonan extends Model
                 'bg_class' => 'bg-warning',
                 'text_class' => 'text-warning',
                 'badge_class' => 'badge-warning',
-                'label' => 'Perhatian',
+                'label' => 'Attention',
                 'icon' => 'exclamation-triangle',
                 'sisa_hari' => $sisaHari,
                 'hari_terpakai' => $hariTerpakai,

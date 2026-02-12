@@ -3,32 +3,37 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Berita;
 
 class ProfilController extends Controller
 {
     public function index()
     {
-        return view('frontend.profil.index');
+        $beritaTerbaru = Berita::latest()->take(3)->get();
+        return view('frontend.profil.index', compact('beritaTerbaru'));
     }
 
     public function strukturOrganisasi()
     {
-        return view('frontend.profil.struktur-organisasi');
+        $beritaTerbaru = Berita::latest()->take(3)->get();
+        return view('frontend.profil.struktur-organisasi', compact('beritaTerbaru'));
     }
 
     public function dasarHukum()
     {
-        return view('frontend.profil.dasar-hukum');
+        $beritaTerbaru = Berita::latest()->take(3)->get();
+        return view('frontend.profil.dasar-hukum', compact('beritaTerbaru'));
     }
 
     public function tugasFungsi()
     {
-        return view('frontend.profil.tugas-fungsi');
+        $beritaTerbaru = Berita::latest()->take(3)->get();
+        return view('frontend.profil.tugas-fungsi', compact('beritaTerbaru'));
     }
 
     public function visiMisi()
     {
-        return view('frontend.profil.visi-misi');
+        $beritaTerbaru = Berita::latest()->take(3)->get();
+        return view('frontend.profil.visi-misi', compact('beritaTerbaru'));
     }
 }
-

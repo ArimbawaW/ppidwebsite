@@ -5,9 +5,9 @@
 @section('content')
 
 <!-- ================= HEADER ================= -->
-<section class="py-5" style="background: linear-gradient(135deg, #1a6b8a 0%, #003344 100%);">
+<section class="py-5" style="background:;">
     <div class="container">
-        <h1 class="text-white fw-bold mb-2">
+        <h1 class="text-black fw-bold mb-2">
             {{ $layanan->nama_layanan }}
         </h1>
 

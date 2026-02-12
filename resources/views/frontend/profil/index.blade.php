@@ -5,7 +5,7 @@
 @section('content')
 <style>
     .header-banner {
-        background: #0B638A;
+        background: #1A6B8A;
         color: white;
         padding: 40px 0;
         border-radius: 15px;
@@ -81,7 +81,7 @@
         <!-- Latar Belakang -->
         <div class="col-md-6">
             <div class="text-content text-justify">
-                <div class="profile-title">Gambaran Umum</div>
+                <div class="profile-title">Gambaran Singkat</div>
 
                 <p>
                     Dalam rangka mewujudkan penyelenggaraan Pelayanan Publik Terpadu sesuai dengan asas 
@@ -135,6 +135,9 @@
             </iframe>
         </div>
     </div>
+
+    <!-- Section Berita Terbaru -->
+    <x-news-section :beritaTerbaru="$beritaTerbaru ?? collect()" />
 
 </div>
 @endsection

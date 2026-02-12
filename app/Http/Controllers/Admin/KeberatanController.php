@@ -49,18 +49,38 @@ class KeberatanController extends Controller
     public function update(Request $request, Keberatan $keberatan)
     {
         $request->validate([
-            'status' => 'required|in:pending,diproses,dikabulkan,ditolak',
-            'tanggapan_ppid' => 'nullable|string',
+            'status' => 'required|in:pending,perlu_verifikasi,diproses,ditunda,selesai,dikabulkan,ditolak',
+            'keterangan' => 'nullable|string',
+            'tanggapan_atasan_ppid' => 'nullable|string',
+            'nama_atasan_ppid' => 'nullable|string',
+            'jabatan_atasan_ppid' => 'nullable|string',
+            'nomor_surat_tanggapan' => 'nullable|string',
+            'tanggal_surat_tanggapan' => 'nullable|date',
+            'keputusan_mediasi' => 'nullable|string',
+            'putusan_pengadilan' => 'nullable|string',
         ]);
 
         $oldStatus = $keberatan->status;
 
+        // Update field satu per satu untuk menghindari mass assignment error
         $keberatan->status = $request->status;
-        $keberatan->tanggapan_ppid = $request->tanggapan_ppid;
+        $keberatan->keterangan = $request->keterangan;
+        $keberatan->tanggapan_atasan_ppid = $request->tanggapan_atasan_ppid;
+        $keberatan->nama_atasan_ppid = $request->nama_atasan_ppid;
+        $keberatan->jabatan_atasan_ppid = $request->jabatan_atasan_ppid;
+        $keberatan->nomor_surat_tanggapan = $request->nomor_surat_tanggapan;
+        $keberatan->tanggal_surat_tanggapan = $request->tanggal_surat_tanggapan;
+        $keberatan->keputusan_mediasi = $request->keputusan_mediasi;
+        $keberatan->putusan_pengadilan = $request->putusan_pengadilan;
         
-        // Set tanggal selesai jika status dikabulkan atau ditolak
-        if (in_array($request->status, ['dikabulkan', 'ditolak'])) {
+        // Set tanggal selesai jika status selesai, dikabulkan, atau ditolak
+        if (in_array($request->status, ['selesai', 'dikabulkan', 'ditolak']) && !$keberatan->tanggal_selesai) {
             $keberatan->tanggal_selesai = now();
+        }
+        
+        // Reset tanggal selesai jika status kembali ke pending/diproses/ditunda
+        if (in_array($request->status, ['pending', 'perlu_verifikasi', 'diproses', 'ditunda'])) {
+            $keberatan->tanggal_selesai = null;
         }
         
         $keberatan->save();
@@ -110,20 +130,20 @@ class KeberatanController extends Controller
         // Statistik Indikator Waktu
         $keberatanAktif = Keberatan::aktif()->get();
         $statsIndikator = [
-            'aman' => 0,
-            'perhatian' => 0,
+            'on_schedule' => 0,
+            'attention' => 0,
             'urgent' => 0,
             'terlambat' => 0,
         ];
 
         foreach ($keberatanAktif as $item) {
             $indikator = $item->indikator_waktu;
-            $label = strtolower($indikator['label']);
+            $label = strtolower(str_replace(' ', '_', $indikator['label']));
             
-            if ($label === 'aman') {
-                $statsIndikator['aman']++;
-            } elseif ($label === 'perhatian') {
-                $statsIndikator['perhatian']++;
+            if ($label === 'on_schedule') {
+                $statsIndikator['on_schedule']++;
+            } elseif ($label === 'attention') {
+                $statsIndikator['attention']++;
             } elseif ($label === 'urgent') {
                 $statsIndikator['urgent']++;
             } elseif ($label === 'terlambat') {

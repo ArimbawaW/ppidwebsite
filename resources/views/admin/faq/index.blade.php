@@ -2,7 +2,7 @@
 
 @section('title', 'Manajemen FAQ')
 
-@section('styles')
+@push('styles')
 <style>
     button, a.btn, .btn {
         display: inline-block !important;
@@ -16,8 +16,37 @@
         text-align: center !important;
         vertical-align: middle !important;
     }
+
+    /* Button Group Styling */
+    .btn-group-action {
+        display: inline-flex;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    /* Table Responsive Enhancement */
+    @media (max-width: 768px) {
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table-responsive table {
+            margin-bottom: 0;
+        }
+        
+        .btn-group-action {
+            flex-wrap: nowrap;
+        }
+        
+        .btn-group-action .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    }
 </style>
-@endsection
+@endpush
 
 @section('content')
 
@@ -85,9 +114,9 @@
         </form>
 
         <!-- TABLE -->
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
+        <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-hover align-middle" style="min-width: 800px;">
+                <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
                         <th width="15%">Kategori</th>
@@ -101,14 +130,14 @@
                     @forelse($faqs as $index => $faq)
                     <tr>
                         <td>{{ $faqs->firstItem() + $index }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span class="badge bg-primary">{{ $faq->kategori }}</span>
                         </td>
                         <td>{{ Str::limit($faq->pertanyaan, 80) }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span class="badge bg-secondary">{{ $faq->urutan }}</span>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             @if($faq->is_active)
                                 <span class="badge bg-success">Aktif</span>
                             @else
@@ -116,15 +145,16 @@
                             @endif
                         </td>
                         <td>
-                            <div class="d-flex gap-1">
+                            <div class="btn-group-action">
                                 <a href="{{ route('admin.faq.edit', $faq) }}"
-                                   class="btn btn-warning btn-sm"
+                                   class="btn btn-warning btn-sm text-white"
+                                   data-bs-toggle="tooltip"
                                    title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
                                 <button type="button"
-                                        class="btn btn-info btn-sm"
+                                        class="btn btn-info btn-sm text-white"
                                         data-bs-toggle="modal"
                                         data-bs-target="#detailModal{{ $faq->id }}"
                                         title="Detail">
@@ -133,10 +163,13 @@
 
                                 <form action="{{ route('admin.faq.destroy', $faq) }}"
                                       method="POST"
+                                      class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" title="Hapus">
+                                    <button class="btn btn-danger btn-sm" 
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -146,6 +179,7 @@
                     @empty
                     <tr>
                         <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                             Belum ada data FAQ
                         </td>
                     </tr>
@@ -155,8 +189,8 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+            <div class="text-muted mb-2 mb-md-0">
                 Menampilkan {{ $faqs->firstItem() ?? 0 }}–{{ $faqs->lastItem() ?? 0 }}
                 dari {{ $faqs->total() }} data
             </div>
@@ -176,15 +210,38 @@
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Kategori:</strong> {{ $faq->kategori }}</p>
-                <p><strong>Pertanyaan:</strong><br>{{ $faq->pertanyaan }}</p>
-                <p><strong>Jawaban:</strong></p>
-                <div class="p-3 bg-light rounded">
-                    {!! nl2br(e($faq->jawaban)) !!}
+                <div class="mb-3">
+                    <strong>Kategori:</strong>
+                    <span class="badge bg-primary">{{ $faq->kategori }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Status:</strong>
+                    @if($faq->is_active)
+                        <span class="badge bg-success">Aktif</span>
+                    @else
+                        <span class="badge bg-secondary">Nonaktif</span>
+                    @endif
+                </div>
+                <div class="mb-3">
+                    <strong>Urutan:</strong>
+                    <span class="badge bg-secondary">{{ $faq->urutan }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Pertanyaan:</strong>
+                    <p class="mt-2">{{ $faq->pertanyaan }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Jawaban:</strong>
+                    <div class="p-3 bg-light rounded mt-2">
+                        {!! nl2br(e($faq->jawaban)) !!}
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <a href="{{ route('admin.faq.edit', $faq) }}" class="btn btn-warning text-white">
+                    <i class="bi bi-pencil me-1"></i>Edit FAQ
+                </a>
             </div>
         </div>
     </div>
@@ -192,3 +249,17 @@
 @endforeach
 
 @endsection
+
+@push('scripts')
+<script>
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
+});
+</script>
+@endpush

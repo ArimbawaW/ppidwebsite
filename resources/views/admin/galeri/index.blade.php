@@ -22,6 +22,7 @@
 .btn-group-action {
     display: inline-flex;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .btn-group-action .btn {
@@ -80,15 +81,32 @@
     object-fit: contain;
 }
 
-/* Responsive button sizing */
+/* Table Responsive Enhancement */
 @media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-responsive table {
+        margin-bottom: 0;
+    }
+    
     .btn-group-action {
-        flex-direction: column;
+        flex-direction: row;
         gap: 4px;
+        flex-wrap: nowrap;
     }
     
     .btn-group-action .btn {
-        width: 100%;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .gallery-thumbnail {
+        max-width: 80px;
+        height: 60px;
     }
 }
 </style>
@@ -128,8 +146,8 @@
 
         @if($galeri->count())
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+        <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-hover align-middle" style="min-width: 700px;">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
@@ -156,14 +174,14 @@
                             @endif
                         </td>
                         <td><strong>{{ $item->judul }}</strong></td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             @if($item->is_active)
                                 <span class="badge status-aktif-galeri">Aktif</span>
                             @else
                                 <span class="badge status-nonaktif-galeri">Tidak Aktif</span>
                             @endif
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
                         </td>
                         <td>
@@ -201,7 +219,11 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="d-flex justify-content-end mt-4">
+        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+            <p class="text-muted mb-2 mb-md-0">
+                Menampilkan {{ $galeri->firstItem() }}–{{ $galeri->lastItem() }}
+                dari {{ $galeri->total() }} data
+            </p>
             {{ $galeri->links() }}
         </div>
 

@@ -28,8 +28,8 @@
         <div class="card-body">
             
             @if($banners->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                    <table class="table table-hover align-middle" style="min-width: 800px;">
                         <thead class="table-light">
                             <tr>
                                 <th width="5%">No</th>
@@ -58,7 +58,7 @@
                                         <span class="badge bg-secondary">{{ $banner->urutan }}</span>
                                     </td>
                                     <td>
-                                        <div class="form-check form-switch">
+                                        <div class="form-check form-switch" style="min-width: 100px;">
                                             <input class="form-check-input toggle-status" 
                                                    type="checkbox" 
                                                    role="switch"
@@ -69,14 +69,14 @@
                                             </label>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <small class="text-muted">
                                             <i class="bi bi-calendar me-1"></i>
                                             {{ $banner->created_at->format('d M Y') }}
                                         </small>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
+                                        <div class="btn-group" role="group" style="white-space: nowrap;">
                                             <a href="{{ route('admin.banner-slider.edit', $banner->id) }}" 
                                                class="btn btn-sm btn-warning"
                                                title="Edit">
@@ -125,6 +125,27 @@
 
 </div>
 @endsection
+
+@push('styles')
+<style>
+@media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-responsive table {
+        margin-bottom: 0;
+    }
+    
+    .btn-group {
+        flex-wrap: nowrap;
+    }
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>

@@ -158,7 +158,8 @@ class Keberatan extends Model
     // ========================================
     public function getIndikatorWaktuAttribute()
     {
-        if ($this->tanggal_selesai) {
+        // Cek jika status selesai, dikabulkan, atau ada tanggal_selesai
+        if ($this->tanggal_selesai || in_array($this->status, ['selesai', 'dikabulkan'])) {
             return [
                 'label' => 'Selesai',
                 'warna' => 'success',
@@ -174,9 +175,9 @@ class Keberatan extends Model
         $persentase = min(100, ($hariTerpakai / self::BATAS_WAKTU_HARI_KERJA) * 100);
 
         if ($sisaHari >= 16) {
-            $label = 'Aman'; $warna = 'success';
+            $label = 'On Schedule'; $warna = 'success';
         } elseif ($sisaHari >= 9) {
-            $label = 'Perhatian'; $warna = 'warning';
+            $label = 'Attention'; $warna = 'warning';
         } elseif ($sisaHari >= 0) {
             $label = 'Urgent'; $warna = 'danger';
         } else {
@@ -186,7 +187,7 @@ class Keberatan extends Model
         return [
             'label' => $label,
             'warna' => $warna,
-            'icon'  => in_array($label, ['Aman','Selesai']) ? 'check-circle' : 'exclamation-circle',
+            'icon'  => in_array($label, ['On Schedule','Selesai']) ? 'check-circle' : 'exclamation-circle',
             'sisa_hari' => max(0, $sisaHari),
             'hari_terpakai' => $hariTerpakai,
             'persentase' => $persentase,
