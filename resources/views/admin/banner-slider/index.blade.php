@@ -120,7 +120,7 @@
     <div class="alert alert-info mt-4">
         <i class="bi bi-info-circle me-2"></i>
         <strong>Tips:</strong> Gunakan kolom "Urutan" untuk menentukan posisi tampil banner. Angka lebih kecil akan tampil lebih dulu. 
-        Ukuran gambar yang disarankan: minimal 1440 x 410 pixel. dengan rasio 3,5:1 untuk hasil terbaik.
+        Ukuran gambar yang disarankan: minimal 1920x548 untuk hasil terbaik.
     </div>
 
 </div>

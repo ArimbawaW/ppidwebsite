@@ -1,14 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5">
+
+<!-- ================= HERO SECTION (MASTER TEMPLATE) ================= -->
+<section class="hero-section">
+    <div class="container hero-container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="text-white fw-bold mb-1">Agenda Kegiatan</h1>
+                <p class="text-white-50 mb-0">
+                    Jadwal kegiatan dan acara yang akan dilaksanakan
+                </p>
+            </div>
+            <div class="col-md-4 text-end d-none d-md-block">
+                <i class="bi bi-calendar-event text-white icon-hero"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= CONTENT ================= -->
+<div class="container py-4">
 
     {{-- ================= SEARCH BAR ================= --}}
     <form method="GET"
           action="{{ route('frontend.agenda-kegiatan.index') }}"
           class="mb-4">
 
-        <div class="input-group">
+        <div class="input-group shadow-sm">
             <input type="text"
                    name="q"
                    value="{{ request('q') }}"
@@ -21,7 +40,7 @@
         </div>
 
         @if(request('q'))
-            <small class="text-muted">
+            <small class="text-muted d-block mt-1">
                 Hasil pencarian untuk: <strong>{{ request('q') }}</strong>
             </small>
         @endif
@@ -45,7 +64,7 @@
                         {{ $item->tanggal->locale('id')->isoFormat('dddd') }}
                     </div>
 
-                    {{-- JUDUL WITH TEXT TRUNCATION --}}
+                    {{-- JUDUL --}}
                     <h6 class="agenda-title-modern"
                         title="{{ $item->judul }}">
                         {{ Str::limit($item->judul, 50) }}
@@ -65,13 +84,12 @@
                     </span>
                 </div>
 
-                {{-- DETAIL BUTTON - FIXED SIZE --}}
+                {{-- DETAIL BUTTON --}}
                 <div class="agenda-detail-btn-modern">
                     <button class="btn btn-link p-0 text-decoration-none"
-                            style="font-size: 0.875rem;"
                             data-bs-toggle="modal"
                             data-bs-target="#modalAgenda{{ $item->id }}">
-                        <i class="bi bi-info-circle" style="font-size: 1rem;"></i> Detail
+                        <i class="bi bi-info-circle"></i> Detail
                     </button>
                 </div>
             </div>
@@ -86,7 +104,7 @@
     </div>
 
     {{-- ================= PAGINATION ================= --}}
-    <div class="mt-4 d-flex justify-content-center">
+    <div class="mt-4 d-flex justify-content-center pagination-wrapper">
         {{ $agenda->links() }}
     </div>
 </div>
@@ -127,7 +145,6 @@
                     {{ $item->deskripsi ?? 'Tidak ada deskripsi.' }}
                 </p>
 
-                {{-- STATUS BADGE --}}
                 <div class="mt-3">
                     <span class="badge {{ $item->status_badge_class }}">
                         {{ $item->status_badge }}
@@ -139,138 +156,165 @@
 </div>
 @endforeach
 
-{{-- ================= CUSTOM STYLES ================= --}}
+{{-- ================= STYLES ================= --}}
 <style>
-    /* Fix button size in agenda cards */
-    .agenda-detail-btn-modern {
-        margin-top: auto;
-        padding-top: 0.5rem;
-    }
+/* ========================================
+   HERO SECTION (MASTER TEMPLATE)
+   ======================================== */
 
-    .agenda-detail-btn-modern .btn {
-        font-size: 0.875rem !important;
-        line-height: 1.5;
-        color: #0d6efd;
-    }
-    
-    .agenda-detail-btn-modern .btn i {
-        font-size: 1rem !important;
-        vertical-align: middle;
-    }
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #1a6b8a 0%, #003344 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 120px;
+    padding: 32px 0;
+    z-index: 1;
+}
 
-    .agenda-detail-btn-modern .btn:hover {
-        color: #0a58ca;
-    }
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('{{ asset("images/Pattern - Midnight Green.png") }}');
+    background-size: 180px;
+    background-repeat: repeat;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+    z-index: -1;
+    pointer-events: none;
+}
 
-    /* Ensure agenda cards have consistent height */
-    .agenda-card-modern {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        min-height: 280px;
-    }
+.hero-container {
+    position: relative;
+    z-index: 10;
+}
 
-    .agenda-card-modern > div:first-child {
-        flex: 1;
-    }
+.hero-section h1 {
+    font-size: 1.9rem;
+    line-height: 1.2;
+}
 
-    /* Fix title text overflow */
-    .agenda-title-modern {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        word-wrap: break-word;
-        line-height: 1.4;
-    }
+.hero-section p {
+    font-size: 0.95rem;
+}
 
-    /* ========== COMPLETE PAGINATION FIX ========== */
-    
-    /* Hide ALL SVG and icons in pagination */
-    .pagination svg {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        visibility: hidden !important;
-    }
+.icon-hero {
+    font-size: 64px;
+    opacity: 0.18;
+}
 
-    .pagination .page-link svg {
-        display: none !important;
-    }
+/* ========================================
+   AGENDA CARD FIX
+   ======================================== */
 
-    /* Force hide any icon elements */
-    .pagination i,
-    .pagination .bi,
-    .pagination [class*="icon"] {
-        display: none !important;
-    }
+.agenda-card-modern {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 280px;
+}
 
-    /* Reset pagination link styling */
-    .pagination .page-link {
-        font-size: 0.9rem !important;
-        padding: 0.5rem 0.75rem !important;
-        min-width: 40px;
+.agenda-card-modern > div:first-child {
+    flex: 1;
+}
+
+.agenda-detail-btn-modern {
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+.agenda-detail-btn-modern .btn {
+    font-size: 0.85rem;
+    color: #0d6efd;
+}
+
+.agenda-detail-btn-modern .btn:hover {
+    color: #0a58ca;
+}
+
+.agenda-title-modern {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+/* ========================================
+   PAGINATION CLEAN
+   ======================================== */
+
+.pagination svg,
+.pagination i,
+.pagination .bi {
+    display: none !important;
+}
+
+.pagination .page-link {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    min-width: 40px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    color: #0d6efd;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+}
+
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    font-size: 0 !important;
+}
+
+.pagination .page-item:first-child .page-link::after {
+    content: "‹ Prev";
+    font-size: 0.9rem;
+}
+
+.pagination .page-item:last-child .page-link::after {
+    content: "Next ›";
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 100px;
+        padding: 24px 0;
         text-align: center;
-        border: 1px solid #dee2e6;
-        color: #0d6efd;
     }
 
-    /* Style for active page */
-    .pagination .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        color: white;
+    .hero-section h1 {
+        font-size: 1.5rem;
     }
 
-    /* Style for disabled items */
-    .pagination .page-item.disabled .page-link {
-        color: #6c757d;
-        pointer-events: none;
-        background-color: #fff;
-        border-color: #dee2e6;
+    .hero-section p {
+        font-size: 0.85rem;
     }
 
-    /* Override any inline styles that might add icons */
-    .pagination * {
-        background-image: none !important;
+    .icon-hero {
+        display: none;
     }
 
-    /* Pagination wrapper */
-    .pagination {
-        margin-bottom: 0 !important;
-        gap: 5px;
+    .hero-section::before {
+        background-size: 140px;
     }
-
-    /* Remove any pseudo-elements that might be adding icons */
-    .pagination .page-link::before,
-    .pagination .page-link::after {
-        content: none !important;
-    }
-
-    /* Specifically target Laravel's pagination arrows */
-    .pagination .page-item:first-child .page-link,
-    .pagination .page-item:last-child .page-link {
-        font-size: 0 !important; /* Hide default text */
-    }
-
-    /* Add simple text arrows */
-    .pagination .page-item:first-child .page-link::after {
-        content: "‹ Prev" !important;
-        font-size: 0.9rem !important;
-        display: inline-block !important;
-    }
-
-    .pagination .page-item:last-child .page-link::after {
-        content: "Next ›" !important;
-        font-size: 0.9rem !important;
-        display: inline-block !important;
-    }
-
-    /* Make sure the container doesn't overflow */
-    .pagination-wrapper {
-        overflow: hidden;
-    }
+}
 </style>
 
 @endsection

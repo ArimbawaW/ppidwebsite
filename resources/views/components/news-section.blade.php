@@ -1,40 +1,57 @@
 @if($beritaTerbaru->count() > 0)
 <div class="my-5 pt-4">
     <h3 class="fw-bold mb-4 news-section-title">Berita Terbaru</h3>
+
     <div class="row g-4">
         @foreach($beritaTerbaru as $berita)
         <div class="col-md-4">
             <div class="card news-card h-100 border-0 shadow-sm">
+
+                {{-- IMAGE --}}
                 @if($berita->gambar)
                 <div class="news-image-wrapper position-relative">
                     <img src="{{ asset('storage/' . $berita->gambar) }}"
                          class="card-img-top"
                          alt="{{ $berita->judul }}">
-                    
-                    <!-- Views Badge di pojok kanan bawah -->
+
+                    {{-- Views Badge --}}
                     <div class="position-absolute bottom-0 end-0 m-2">
-                        <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-circle 
+                                     d-flex align-items-center justify-content-center"
+                              style="width:50px;height:50px;">
                             <i class="bi bi-eye me-1"></i> {{ $berita->views }}
                         </span>
                     </div>
                 </div>
                 @endif
 
+
+                {{-- BODY --}}
                 <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold news-title mb-3">{{ $berita->judul }}</h5>
-                    
-                    <!-- Tanggal di bawah judul -->
+
+                    {{-- TITLE --}}
+                    <h5 class="fw-bold news-title mb-3">
+                        {{ $berita->judul }}
+                    </h5>
+
+                    {{-- DATE --}}
                     <p class="text-muted small mb-auto">
-                        <i class="bi bi-calendar3"></i> 
-                        {{ \Carbon\Carbon::parse($berita->created_at)->locale('id')->isoFormat('D MMMM YYYY') }}
+                        <i class="bi bi-calendar3"></i>
+
+                        {{ $berita->published_at
+                            ? $berita->published_at->translatedFormat('d F Y')
+                            : $berita->created_at->translatedFormat('d F Y') }}
                     </p>
-                    
+
+
+                    {{-- BUTTON --}}
                     <div class="mt-3">
                         <a href="{{ route('berita.show', $berita->slug) }}"
                            class="btn btn-news w-100">
                            Baca Selengkapnya
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -42,19 +59,22 @@
     </div>
 </div>
 
+
 <style>
-   
+
 :root {
     --main-blue: #1A6B8A;
 }
 
-/* News Section Title */
+
+/* ================= TITLE ================= */
 .news-section-title {
     color: var(--main-blue);
     font-size: 1.75rem;
 }
 
-/* News Card Enhancement */
+
+/* ================= CARD ================= */
 .news-card {
     border-radius: 15px;
     overflow: hidden;
@@ -90,7 +110,8 @@
     z-index: 2;
 }
 
-/* News Image */
+
+/* ================= IMAGE ================= */
 .news-image-wrapper {
     overflow: hidden;
     height: 220px;
@@ -108,19 +129,22 @@
     transform: scale(1.1);
 }
 
-/* News Title */
+
+/* ================= TITLE TEXT ================= */
 .news-title {
     color: var(--main-blue);
     font-size: 1.1rem;
     line-height: 1.4;
     min-height: 2.8em;
+
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* Button News */
+
+/* ================= BUTTON ================= */
 .btn-news {
     background: var(--main-blue);
     color: #fff;
@@ -138,14 +162,17 @@
     box-shadow: 0 6px 18px rgba(26, 107, 138, 0.35);
 }
 
-/* Views Badge */
+
+/* ================= BADGE ================= */
 .news-image-wrapper .badge {
     font-size: 0.85rem;
     font-weight: 500;
 }
 
-/* Responsive */
+
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
+
     .news-image-wrapper {
         height: 200px;
     }
@@ -157,6 +184,7 @@
     .news-title {
         font-size: 1rem;
     }
+
 }
 
 </style>

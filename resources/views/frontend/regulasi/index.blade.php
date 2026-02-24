@@ -4,46 +4,47 @@
 
 @section('content')
 
-<!-- Hero Section -->
-<section class="py-5" style="background;">
-    <div class="container">
+<!-- ================= HERO SECTION (MASTER TEMPLATE) ================= -->
+<section class="hero-section">
+    <div class="container hero-container">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h1 class="text-black fw-bold mb-3">Regulasi</h1>
-                <p class="text-black-50 mb-0 fs-5">
+                <h1 class="text-white fw-bold mb-1">Regulasi</h1>
+                <p class="text-white-50 mb-0">
                     Kumpulan peraturan perundang-undangan yang menjadi dasar pelaksanaan PPID
                 </p>
             </div>
-            <div class="col-md-4 text-end">
-                <i class="bi bi-file-earmark-text text-white" style="font-size: 120px; opacity: 0.2;"></i>
+            <div class="col-md-4 text-end d-none d-md-block">
+                <i class="bi bi-file-earmark-text text-white icon-hero"></i>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Filter Section -->
-<section class="py-4 bg-light">
+<!-- ================= FILTER SECTION ================= -->
+<section class="filter-section">
     <div class="container">
         <form action="{{ route('regulasi.index') }}" method="GET">
             <div class="row g-3 align-items-end">
-                <!-- Search Box -->
+
+                <!-- Search -->
                 <div class="col-md-4">
-                    <label class="form-label fw-bold small">
+                    <label class="form-label fw-semibold small">
                         <i class="bi bi-search me-1"></i>Cari Regulasi
                     </label>
                     <input type="text" 
-                           name="search" 
-                           class="form-control" 
-                           placeholder="Cari judul, nomor, atau deskripsi..."
-                           value="{{ request('search') }}">
+                        name="search" 
+                        class="form-control form-control-sm" 
+                        placeholder="Judul, nomor, atau deskripsi..."
+                        value="{{ request('search') }}">
                 </div>
 
-                <!-- Filter Kategori -->
+                <!-- Kategori -->
                 <div class="col-md-3">
-                    <label class="form-label fw-bold small">
+                    <label class="form-label fw-semibold small">
                         <i class="bi bi-funnel me-1"></i>Kategori
                     </label>
-                    <select name="kategori" class="form-select">
+                    <select name="kategori" class="form-select form-select-sm">
                         <option value="">Semua Kategori</option>
                         @foreach(['Undang-Undang','Peraturan Pemerintah','Peraturan Menteri','Peraturan Daerah','Peraturan Presiden','Surat Edaran','Keputusan','Lainnya'] as $kat)
                             <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>
@@ -53,12 +54,12 @@
                     </select>
                 </div>
 
-                <!-- Filter Tahun -->
+                <!-- Tahun -->
                 <div class="col-md-2">
-                    <label class="form-label fw-bold small">
+                    <label class="form-label fw-semibold small">
                         <i class="bi bi-calendar3 me-1"></i>Tahun
                     </label>
-                    <select name="tahun" class="form-select">
+                    <select name="tahun" class="form-select form-select-sm">
                         <option value="">Semua Tahun</option>
                         @if(isset($tahuns))
                             @foreach($tahuns as $tahun)
@@ -70,39 +71,39 @@
                     </select>
                 </div>
 
-                <!-- Buttons -->
+                <!-- Button -->
                 <div class="col-md-3">
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-search me-1"></i>Cari
                         </button>
-                        <a href="{{ route('regulasi.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('regulasi.index') }}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-arrow-clockwise me-1"></i>Reset
                         </a>
                     </div>
                 </div>
+
             </div>
         </form>
 
-        <!-- Search Results Info -->
+        <!-- Result Info -->
         @if(request()->hasAny(['search', 'kategori', 'tahun']))
         <div class="mt-3">
-            <div class="alert alert-info mb-0 d-flex justify-content-between align-items-center">
-                <div>
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Hasil Pencarian:</strong> 
-                    Ditemukan {{ $regulasi->total() }} regulasi
+            <div class="alert alert-info compact-alert d-flex justify-content-between align-items-center">
+                <div class="small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ditemukan <strong>{{ $regulasi->total() }}</strong> regulasi
                     @if(request('search'))
                         untuk "<strong>{{ request('search') }}</strong>"
                     @endif
                     @if(request('kategori'))
-                        dalam kategori <strong>{{ request('kategori') }}</strong>
+                        | <strong>{{ request('kategori') }}</strong>
                     @endif
                     @if(request('tahun'))
-                        tahun <strong>{{ request('tahun') }}</strong>
+                        | Tahun <strong>{{ request('tahun') }}</strong>
                     @endif
                 </div>
-                <a href="{{ route('regulasi.index') }}" class="btn btn-sm btn-outline-info">
+                <a href="{{ route('regulasi.index') }}" class="btn btn-sm btn-outline-light">
                     Lihat Semua
                 </a>
             </div>
@@ -111,168 +112,230 @@
     </div>
 </section>
 
-<!-- Content Section -->
-<section class="py-5">
+<!-- ================= CONTENT ================= -->
+<section class="content-section">
     <div class="container">
         <div class="row g-4">
+
             @forelse($regulasi as $item)
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card regulasi-card h-100 border-0 shadow-sm">
+
                     <div class="card-body">
-                        <!-- Badge Kategori -->
-                        <div class="mb-3">
-                            <span class="badge bg-primary">{{ $item->kategori ?? 'Regulasi' }}</span>
+
+                        <!-- Badges -->
+                        <div class="mb-2">
+                            <span class="badge badge-main">{{ $item->kategori ?? 'Regulasi' }}</span>
                             @if($item->tanggal_terbit)
-                            <span class="badge bg-secondary">{{ $item->tanggal_terbit->format('Y') }}</span>
+                                <span class="badge badge-year">{{ $item->tanggal_terbit->format('Y') }}</span>
                             @endif
                         </div>
 
                         <!-- Nomor -->
                         @if($item->nomor)
-                        <h6 class="text-muted mb-2">{{ $item->nomor }}</h6>
+                            <div class="small text-muted mb-1">{{ $item->nomor }}</div>
                         @endif
 
                         <!-- Judul -->
-                        <h5 class="card-title fw-bold mb-3 title-clamp"
-    title="{{ $item->judul }}">
-    @if(request('search'))
-        {!! Str::limit(
-            str_ireplace(
-                request('search'),
-                '<mark>' . request('search') . '</mark>',
-                $item->judul
-            ),
-            150
-        ) !!}
-    @else
-        {{ Str::limit($item->judul, 150) }}
-    @endif
-</h5>
-
+                        <h6 class="fw-bold regulasi-title mb-2"
+                            title="{{ $item->judul }}">
+                            @if(request('search'))
+                                {!! Str::limit(
+                                    str_ireplace(
+                                        request('search'),
+                                        '<mark>' . request('search') . '</mark>',
+                                        $item->judul
+                                    ),
+                                    140
+                                ) !!}
+                            @else
+                                {{ Str::limit($item->judul, 140) }}
+                            @endif
+                        </h6>
 
                         <!-- Deskripsi -->
                         @if($item->deskripsi)
-                        <p class="card-text text-muted small">
-                            {{ Str::limit($item->deskripsi, 100) }}
-                        </p>
+                            <p class="small text-muted mb-2">
+                                {{ Str::limit($item->deskripsi, 90) }}
+                            </p>
                         @endif
 
                         <!-- Tanggal -->
                         @if($item->tanggal_terbit)
-                        <p class="text-muted small mb-3">
-                            <i class="bi bi-calendar3 me-1"></i>
-                            Ditetapkan: {{ $item->tanggal_terbit->format('d F Y') }}
-                        </p>
+                            <div class="small text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ $item->tanggal_terbit->format('d F Y') }}
+                            </div>
                         @endif
                     </div>
-                    
+
                     <div class="card-footer bg-white border-0">
                         @if($item->file)
-                        <a href="{{ asset('storage/' . $item->file) }}" 
-                           target="_blank" 
-                           class="btn btn-outline-primary btn-sm w-100">
-                            <i class="bi bi-download me-2"></i>Baca online
-                        </a>
+                            <a href="{{ asset('storage/' . $item->file) }}" 
+                               target="_blank" 
+                               class="btn btn-outline-primary btn-sm w-100">
+                                <i class="bi bi-file-earmark-text me-2"></i>Baca Dokumen
+                            </a>
                         @else
-                        <button class="btn btn-outline-secondary btn-sm w-100" disabled>
-                            <i class="bi bi-file-earmark-x me-2"></i>Dokumen Tidak Tersedia
-                        </button>
+                            <button class="btn btn-outline-secondary btn-sm w-100" disabled>
+                                <i class="bi bi-file-earmark-x me-2"></i>Dokumen Tidak Tersedia
+                            </button>
                         @endif
                     </div>
+
                 </div>
             </div>
             @empty
             <div class="col-12">
-                <div class="alert alert-info text-center py-5">
-                    <i class="bi bi-search fs-1 d-block mb-3 text-muted"></i>
-                    <h5 class="mb-2">Tidak Ada Hasil</h5>
-                    <p class="mb-3">
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h6>Tidak Ada Data</h6>
+                    <p>
                         @if(request()->hasAny(['search', 'kategori', 'tahun']))
-                            Tidak ditemukan regulasi yang sesuai dengan pencarian Anda.
+                            Tidak ditemukan regulasi sesuai filter.
                         @else
-                            Belum ada regulasi yang tersedia.
+                            Belum ada regulasi tersedia.
                         @endif
                     </p>
                     @if(request()->hasAny(['search', 'kategori', 'tahun']))
-                    <a href="{{ route('regulasi.index') }}" class="btn btn-primary">
-                        <i class="bi bi-arrow-clockwise me-2"></i>Reset Pencarian
-                    </a>
+                        <a href="{{ route('regulasi.index') }}" class="btn btn-primary btn-sm">
+                            Reset Filter
+                        </a>
                     @endif
                 </div>
             </div>
             @endforelse
+
         </div>
 
         <!-- Pagination -->
         @if($regulasi->hasPages())
-        <div class="row mt-5">
-            <div class="col-12 d-flex justify-content-center">
-                {{ $regulasi->links() }}
-            </div>
+        <div class="d-flex justify-content-center mt-5">
+            {{ $regulasi->links() }}
         </div>
         @endif
     </div>
 </section>
 
+{{-- ================= STYLES ================= --}}
 <style>
-:root {
-    --main-blue: #1A6B8A;
+:root{
+    --main-blue:#1A6B8A;
 }
 
-/* Bootstrap primary */
-.bg-primary,
-.btn-primary,
-.badge.bg-primary,
-.text-primary {
-    background-color: var(--main-blue) !important;
-    color: #fff !important;
-    border-color: var(--main-blue) !important;
+/* ================= HERO ================= */
+.hero-section{
+    position:relative;
+    background:linear-gradient(135deg,#1a6b8a 0%,#003344 100%);
+    min-height:120px;
+    padding:32px 0;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    z-index:1;
+}
+.hero-section::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:url('{{ asset("images/Pattern - Midnight Green.png") }}');
+    background-size:180px;
+    background-repeat:repeat;
+    mix-blend-mode:overlay;
+    opacity:.35;
+    z-index:-1;
+}
+.hero-container{z-index:5;position:relative;}
+.icon-hero{font-size:64px;opacity:.18}
+
+/* ================= FILTER ================= */
+.filter-section{
+    background:#f6f9fb;
+    padding:20px 0;
+    border-bottom:1px solid #e5eef3;
 }
 
-/* Outline */
-.btn-outline-primary,
-.btn-outline-info {
-    color: var(--main-blue) !important;
-    border-color: var(--main-blue) !important;
-}
-.btn-outline-primary:hover,
-.btn-outline-info:hover {
-    background-color: var(--main-blue) !important;
-    color: #fff !important;
+/* ================= CONTENT ================= */
+.content-section{
+    padding:40px 0;
 }
 
-/* Alert */
-.alert-info {
-    background-color: var(--main-blue) !important;
-    border-color: var(--main-blue) !important;
-    color: #fff !important;
+/* ================= CARD ================= */
+.regulasi-card{
+    border-radius:12px;
+    transition:.3s ease;
+}
+.regulasi-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 12px 30px rgba(0,0,0,.12)!important;
 }
 
-/* Text info */
-.text-info {
-    color: var(--main-blue) !important;
+/* ================= BADGES ================= */
+.badge-main{
+    background:var(--main-blue);
+}
+.badge-year{
+    background:#6c757d;
 }
 
-/* Custom title */
-.title-clamp {
-    color: var(--main-blue) !important;
+/* ================= TITLE ================= */
+.regulasi-title{
+    color:var(--main-blue);
 }
 
-/* Hover card */
-.hover-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* ================= BUTTON ================= */
+.btn-primary{
+    background:var(--main-blue);
+    border-color:var(--main-blue);
 }
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+.btn-outline-primary{
+    color:var(--main-blue);
+    border-color:var(--main-blue);
+}
+.btn-outline-primary:hover{
+    background:var(--main-blue);
+    color:#fff;
 }
 
-/* Highlight */
-mark {
-    background-color: #ffd700;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-weight: 600;
+/* ================= ALERT ================= */
+.alert-info{
+    background:var(--main-blue);
+    color:#fff;
+    border:none;
+}
+.compact-alert{
+    padding:.6rem .8rem;
+    border-radius:8px;
+}
+
+/* ================= EMPTY ================= */
+.empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:#6c757d;
+}
+.empty-state i{
+    font-size:48px;
+    opacity:.4;
+    margin-bottom:10px;
+}
+
+/* ================= HIGHLIGHT ================= */
+mark{
+    background:#ffd700;
+    padding:2px 4px;
+    border-radius:3px;
+    font-weight:600;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .hero-section{
+        min-height:100px;
+        padding:24px 0;
+        text-align:center;
+    }
+    .icon-hero{display:none}
 }
 </style>
 

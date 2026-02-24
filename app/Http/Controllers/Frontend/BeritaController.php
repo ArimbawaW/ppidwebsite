@@ -8,24 +8,33 @@ use Illuminate\Http\Request;
 
 class BeritaController extends Controller
 {
-    // ================================
-    // AUTO FORMAT PARAGRAF
-    // ================================
+    /**
+     * ================================
+     * AUTO FORMAT PARAGRAF
+     * ================================
+     * Mengubah teks mentah menjadi tag HTML <p> 
+     * agar tampilan di halaman detail tetap rapi.
+     */
     private function formatKonten($konten)
     {
         // Hilangkan spasi/tab berlebih di awal & akhir
         $konten = trim($konten);
 
-        // Normalize line breaks berlipat-lipat → menjadi PARAGRAF yang sah
+        // Jika konten sudah mengandung tag HTML (dari CKEditor), kembalikan langsung
+        if (strip_tags($konten) !== $konten) {
+            return $konten;
+        }
+
+        // Normalize line breaks berlipat-lipat menjadi array paragraf
         $paragraphs = preg_split('/\n\s*\n+/', $konten);
 
         $formatted = '';
 
         foreach ($paragraphs as $p) {
-            $p = trim($p);                     // bersihkan
-            if ($p === '') continue;           // skip paragraf kosong
+            $p = trim($p);
+            if ($p === '') continue; // skip paragraf kosong
 
-            // Rapikan spasi berlebihan (double space → single)
+            // Rapikan spasi berlebihan di dalam kalimat
             $p = preg_replace('/\s+/', ' ', $p);
 
             // Bungkus menjadi <p>...</p>
@@ -35,49 +44,60 @@ class BeritaController extends Controller
         return $formatted;
     }
 
-    // ================================
-    // HALAMAN LIST BERITA
-    // ================================
+    /**
+     * ================================
+     * HALAMAN LIST BERITA
+     * ================================
+     */
     public function index(Request $request)
     {
-        $query = Berita::where('is_published', true);
+        // Menggunakan scopePublished() dari Model agar berita 
+        // yang dijadwalkan (future date) tidak muncul prematur.
+        $query = Berita::published();
 
-        if ($request->has('kategori') && $request->kategori) {
+        // Filter Berdasarkan Kategori
+        if ($request->filled('kategori')) {
             $query->where('kategori', $request->kategori);
         }
 
-        if ($request->has('search') && $request->search) {
-            $query->where(function($q) use ($request) {
-                $q->where('judul', 'like', '%' . $request->search . '%')
-                  ->orWhere('konten', 'like', '%' . $request->search . '%');
+        // Filter Berdasarkan Pencarian
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('judul', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('konten', 'like', '%' . $searchTerm . '%');
             });
         }
 
-        $berita = $query->orderBy('created_at', 'desc')->paginate(9);
+        // Urutkan berdasarkan tanggal publikasi terbaru
+        $berita = $query->orderBy('published_at', 'desc')->paginate(9);
 
         return view('frontend.berita.index', compact('berita'));
     }
 
-    // ================================
-    // HALAMAN DETAIL BERITA
-    // ================================
+    /**
+     * ================================
+     * HALAMAN DETAIL BERITA
+     * ================================
+     */
     public function show($slug)
     {
-        $berita = Berita::where('slug', $slug)
-            ->where('is_published', true)
+        // Pastikan berita yang dipanggil sudah Published dan tanggalnya sudah lewat
+        $berita = Berita::published()
+            ->where('slug', $slug)
             ->firstOrFail();
 
-        // Increment views - Tambahkan langsung
+        // Tambah jumlah view secara otomatis
         $berita->increment('views');
 
-        // Format konten otomatis
+        // Format konten (hanya jika konten tidak berisi tag HTML dari editor)
         $berita->konten = $this->formatKonten($berita->konten);
 
-        // Ambil berita terbaru lain - HANYA 3 BERITA
-        $beritaTerbaru = Berita::where('is_published', true)
+        // Ambil berita terbaru lain sebagai rekomendasi di Sidebar (Limit 3)
+        $beritaTerbaru = Berita::published()
             ->where('id', '!=', $berita->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(3)  // ← UBAH DARI 5 MENJADI 3
+            ->orderBy('published_at', 'desc')
+            ->limit(3)
             ->get();
 
         return view('frontend.berita.show', compact('berita', 'beritaTerbaru'));

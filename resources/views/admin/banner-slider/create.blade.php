@@ -118,7 +118,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small class="text-muted d-block mt-1">
-                        Format: JPG, PNG, WEBP. Maksimal 5MB. Ukuran disarankan: 1440 x 410 pixel dengan rasio 3,5:1
+                        Format: JPG, PNG, WEBP. Maksimal 5MB. Ukuran disarankan: 1920x548
                     </small>
                     <small class="text-info d-block mt-1">
                         <i class="bi bi-info-circle me-1"></i>
@@ -425,11 +425,11 @@
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memproses...';
         
         const canvas = cropper.getCroppedCanvas({
-            width: 1440,
-            height: 410,
-            imageSmoothingEnabled: true,
-            imageSmoothingQuality: 'high',
-        });
+    width: 1920,
+    height: 548,
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: 'high',
+});
         
         canvas.toBlob(function(blob) {
             const file = new File([blob], currentFile.name, {

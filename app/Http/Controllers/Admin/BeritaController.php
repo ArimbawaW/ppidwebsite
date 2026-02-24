@@ -7,6 +7,7 @@ use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
@@ -14,7 +15,8 @@ class BeritaController extends Controller
     {
         if ($request->ajax()) {
             try {
-                $berita = Berita::with('user');
+                // Mengurutkan berdasarkan published_at terbaru di DataTables
+                $berita = Berita::with('user')->orderBy('published_at', 'desc');
                 return DataTables::of($berita)
                     ->addColumn('action', function ($item) {
                         return view('admin.berita.action', compact('item'))->render();
@@ -23,6 +25,10 @@ class BeritaController extends Controller
                         return $item->is_published 
                             ? '<span class="badge bg-success">Published</span>'
                             : '<span class="badge bg-secondary">Draft</span>';
+                    })
+                    ->editColumn('published_at', function ($item) {
+                        // Menampilkan tanggal publikasi yang dipilih admin
+                        return $item->published_at ? $item->published_at->format('d/m/Y H:i') : '-';
                     })
                     ->editColumn('kategori', function ($item) {
                         return ucfirst($item->kategori);
@@ -35,8 +41,8 @@ class BeritaController extends Controller
             }
         }
 
-        // Fallback: Simple pagination jika DataTables tidak bekerja
-        $berita = Berita::with('user')->orderBy('created_at', 'desc')->paginate(10);
+        // Fallback: Simple pagination
+        $berita = Berita::with('user')->orderBy('published_at', 'desc')->paginate(10);
         return view('admin.berita.index', compact('berita'));
     }
 
@@ -53,6 +59,7 @@ class BeritaController extends Controller
                 'konten' => 'required|string',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
                 'kategori' => 'required|in:berita,artikel,pengumuman',
+                'published_at' => 'required|date', // Validasi tanggal publikasi
             ]);
 
             if ($request->hasFile('gambar')) {
@@ -60,7 +67,12 @@ class BeritaController extends Controller
             }
 
             $validated['user_id'] = auth()->id();
-            $validated['is_published'] = $request->has('is_published') ? true : false;
+            $validated['is_published'] = $request->has('is_published');
+            $validated['published_at'] = $request->published_at;
+            
+            // Slug otomatis ditangani oleh boot() di Model, 
+            // tapi bisa didefinisikan di sini jika ingin eksplisit
+            $validated['slug'] = Str::slug($request->judul);
 
             Berita::create($validated);
 
@@ -90,6 +102,7 @@ class BeritaController extends Controller
                 'konten' => 'required|string',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
                 'kategori' => 'required|in:berita,artikel,pengumuman',
+                'published_at' => 'required|date', // Validasi tanggal publikasi
             ]);
 
             if ($request->hasFile('gambar')) {
@@ -99,7 +112,9 @@ class BeritaController extends Controller
                 $validated['gambar'] = $request->file('gambar')->store('berita', 'public');
             }
 
-            $validated['is_published'] = $request->has('is_published') ? true : false;
+            $validated['is_published'] = $request->has('is_published');
+            $validated['published_at'] = $request->published_at;
+            $validated['slug'] = Str::slug($request->judul);
 
             $berita->update($validated);
 
@@ -127,4 +142,3 @@ class BeritaController extends Controller
             ->with('success', 'Berita berhasil dihapus.');
     }
 }
-
